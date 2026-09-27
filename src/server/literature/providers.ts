@@ -18,12 +18,15 @@ export function takeawayProvider(): TakeawayChoice {
   if (config.SUMMARY_PROVIDER === 'ollama') {
     if (!config.OLLAMA_MODEL) return { unavailable: 'No local model configured (OLLAMA_MODEL).' };
     return {
-      provider: createOllamaTakeawayProvider({
-        baseUrl: config.OLLAMA_BASE_URL,
-        model: config.OLLAMA_MODEL,
-        numCtx: config.OLLAMA_NUM_CTX,
-        timeoutMs: config.OLLAMA_TIMEOUT_MS,
-      }),
+      provider: createOllamaTakeawayProvider(
+        {
+          baseUrl: config.OLLAMA_BASE_URL,
+          model: config.OLLAMA_MODEL,
+          numCtx: config.OLLAMA_NUM_CTX,
+          timeoutMs: config.OLLAMA_TIMEOUT_MS,
+        },
+        { checkModel: config.OLLAMA_CHECK_MODEL },
+      ),
     };
   }
   if (!config.ANTHROPIC_API_KEY) {

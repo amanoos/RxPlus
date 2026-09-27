@@ -64,6 +64,7 @@ Fields: NCT ID, brief title, status, phase(s), has results, start date, last upd
 - **Only abstract text** (plus PMIDs) goes to the model: no notes, no medication list.
 - **Support check (added 2026-09-27, after Checkpoint A):** the quote check only proves the quote is in the abstract and on topic. In the first live run, qwen2.5:7b wrote "lisinopril caused more coughing than other ACE inhibitors" while its quote said moexipril ranked first, and it passed. So a second local-model call receives each linked takeaway with its quote (small input) and answers whether the quote alone supports everything the takeaway says (population, drugs, direction of effects, numbers). The answer is stored as `supported` (true / false; null when not checked, when the check fails, or with Claude, whose citations already tie text to sources). A failed check never fails the takeaways.
 - **Measured (lisinopril, 10 papers, 2026-09-27):** 5:00 in all (the check adds about 20–30 s); 8 linked, 2 not linked; of the 8, 3 supported and 5 not, including the moexipril case. The check is strict: most "not supported" takeaways add details (sample size, a second finding) that the quote doesn't contain.
+- **Tighter prompt, then the check turned off (decision 2026-09-27):** the model now picks the quote first (one full results or conclusion sentence) and rewrites only that. Rerun: 4:28, 8/10 linked, quotes are the papers' conclusion sentences and the takeaways paraphrase them closely. But the 7B check then called at least 4 faithful rewrites "not supported" and passed one overstatement, so its warnings would mislead. The check is **off by default** and runs only when `OLLAMA_CHECK_MODEL` names a (stronger) model; the quote is always shown inline so the reader can compare. The advice filter also catches reader-directed advice ("it's better not to use…", "you must avoid…").
 
 ## Data model (Drizzle, `src/server/db/schema/literature.ts`, migration `0003_*`)
 
@@ -185,7 +186,7 @@ The GET fetches and stores the lists on first use (a few seconds: esearch ×2, e
 
 ## Resolved decisions (2026-09-27)
 
-0. After Checkpoint A: show each takeaway's quote inline and add the support check (both). The drug summary panel gets a "Show quotes" toggle that shows every sentence's quote inline.
+0. After Checkpoint A: show each takeaway's quote inline and add the support check (both); then, after measuring, tighten the takeaway prompt and keep the check off unless `OLLAMA_CHECK_MODEL` is set. The drug summary panel gets a "Show quotes" toggle that shows every sentence's quote inline.
 
 1. Strongest evidence first: reviews (≤ 4), then randomized trials, to 10.
 2. Trials as a separate list of up to 5 (completed with results, then recruiting).

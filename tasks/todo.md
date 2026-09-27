@@ -72,7 +72,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 ### Checkpoint A
 
 - [x] Unit and integration tests pass; migration applies
-- [x] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b` (2026-09-27: lists 2.5 s first, 11 ms stored; takeaways 4:38, 8/10 linked; one linked takeaway misread its quote → support check added, rerun 5:00, 3 supported / 5 not / 2 not linked)
+- [x] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b` (2026-09-27: lists 2.5 s first, 11 ms stored; takeaways 4:38, 8/10 linked; one linked takeaway misread its quote → support check added, rerun 5:00, 3 supported / 5 not / 2 not linked; tighter prompt rerun 4:28, 8/10 linked with close paraphrases, but the 7B check misjudged ≥ 4 of 5 → check off unless `OLLAMA_CHECK_MODEL` is set)
 
 ## Phase 2: Client
 

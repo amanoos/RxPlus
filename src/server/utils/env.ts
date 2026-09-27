@@ -51,6 +51,8 @@ const envSchema = z.object({
     // 127.0.0.1, not localhost: Node may resolve localhost to ::1 while Ollama listens on IPv4.
     .default('http://127.0.0.1:11434'),
   OLLAMA_MODEL: z.string().trim().min(1).optional(),
+  // Optional: a (stronger) model that checks each takeaway against its quote. Off when unset.
+  OLLAMA_CHECK_MODEL: z.string().trim().min(1).optional(),
   OLLAMA_NUM_CTX: z.coerce.number().int().min(2048).max(262144).default(16384),
   OLLAMA_TIMEOUT_MS: z.coerce.number().int().min(10_000).default(600_000),
   ANTHROPIC_API_KEY: z.string().trim().min(1).optional(),

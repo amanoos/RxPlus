@@ -15,7 +15,12 @@ describe('verify helpers', () => {
   it('spots advice to start, stop or change a medication', () => {
     expect(isAdvice('Stop taking it if your face swells.')).toBe(true);
     expect(isAdvice('You should not take it while pregnant.')).toBe(true);
+    expect(isAdvice("For heart failure, it's better not to use very low doses.")).toBe(true);
+    expect(isAdvice('You must avoid grapefruit juice.')).toBe(true);
     expect(isAdvice('In the trial, people took it for 12 weeks.')).toBe(false);
+    // Label warnings in the passive voice stay: they report the label, not advise.
+    expect(isAdvice('It should not be used during pregnancy.')).toBe(false);
+    expect(isAdvice('If you feel faint, tell your doctor.')).toBe(false);
   });
 
   it('judges relevance by shared stems and synonyms, ignoring the drug name', () => {

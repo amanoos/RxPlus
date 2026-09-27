@@ -46,7 +46,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 ### Checkpoint A
 
 - [x] Unit and integration tests pass; migration applies
-- [ ] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
+- [x] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
 
 ### Phase 2: Client
 

@@ -212,19 +212,23 @@ describe('support check', () => {
           }),
         ),
     );
-    const provider = createOllamaTakeawayProvider({
-      baseUrl: 'http://ollama.test',
-      model: 'qwen2.5:7b',
-      numCtx: 16384,
-      timeoutMs: 1000,
-      fetch: fetchFn,
-    });
+    const provider = createOllamaTakeawayProvider(
+      {
+        baseUrl: 'http://ollama.test',
+        model: 'qwen2.5:7b',
+        numCtx: 16384,
+        timeoutMs: 1000,
+        fetch: fetchFn,
+      },
+      { checkModel: 'qwen2.5:14b' },
+    );
     const answers = await provider.checkSupport!(items);
     expect([...answers]).toEqual([['222', false]]);
 
     const body = JSON.parse(
       String((fetchFn.mock.calls[0] as unknown as [string, RequestInit])[1].body),
     );
+    expect(body.model).toBe('qwen2.5:14b');
     expect(body.messages).toEqual([
       { role: 'system', content: SUPPORT_SYSTEM_PROMPT },
       { role: 'user', content: buildSupportMessage(items) },
@@ -235,7 +239,14 @@ describe('support check', () => {
     expect(SUPPORT_SYSTEM_PROMPT).toMatch(/every number and the direction/i);
   });
 
-  it('is not offered for Claude, whose citations already tie text to sources', () => {
+  it('is off unless a check model is set, and never offered for Claude', () => {
+    const plain = createOllamaTakeawayProvider({
+      baseUrl: 'http://ollama.test',
+      model: 'qwen2.5:7b',
+      numCtx: 16384,
+      timeoutMs: 1000,
+    });
+    expect(plain.checkSupport).toBeUndefined();
     const provider = createClaudeTakeawayProvider({ apiKey: 'test', client: {} as ClaudeClient });
     expect(provider.checkSupport).toBeUndefined();
   });

@@ -18,8 +18,17 @@ export function normalizeText(text: string): string {
 }
 
 /** Advice to start, stop or change a medication: removed whatever the model wrote. */
-const ADVICE =
-  /\b(stop|start|quit|discontinue|keep) (taking|using)\b|\b(do not|don['’]t|never) (take|use|stop)\b|\byou should (stop|start|take|not take|avoid taking)\b|\b(increase|decrease|lower|raise|change|skip) (your|the) dose\b/i;
+const ADVICE = new RegExp(
+  [
+    String.raw`\b(stop|start|quit|discontinue|keep) (taking|using)\b`,
+    String.raw`\b(do not|don['’]t|never) (take|use|stop)\b`,
+    String.raw`\byou (should|must|need to) (not )?(stop|start|take|use|avoid|change|keep)\b`,
+    String.raw`\b(increase|decrease|lower|raise|change|skip) (your|the) dose\b`,
+    // Reader-directed recommendations, e.g. "it's better not to use very low doses".
+    String.raw`\b(better|best|safer) (not )?to (use|take|start|stop|avoid|switch)\b`,
+  ].join('|'),
+  'i',
+);
 
 export const isAdvice = (text: string): boolean => ADVICE.test(text);
 

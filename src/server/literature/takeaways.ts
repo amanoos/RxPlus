@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import { createClaudeCited, type CitedBlock, type ClaudeClient } from '../ai/claude';
 import { ProviderOutputError } from '../ai/errors';
-import { createOllamaJson, type OllamaOptions } from '../ai/ollama';
+import { createOllamaJson, type OllamaJson, type OllamaOptions } from '../ai/ollama';
 import { ignoreSet, isAdvice, isRelevant, MIN_QUOTE_CHARS, normalizeText } from '../ai/verify';
 import type { PaperTakeaway } from '../db/schema';
 
@@ -78,8 +78,17 @@ export function buildSupportMessage(items: SupportItem[]): string {
     .join('\n\n');
 }
 
-export function createOllamaTakeawayProvider(options: OllamaOptions): TakeawayProvider {
+/**
+ * `checkModel` turns on the support check with that model. Off by default: with
+ * qwen2.5:7b the check misjudged faithful rewrites as often as it caught errors
+ * (live run 2026-09-27), so its warnings would mislead.
+ */
+export function createOllamaTakeawayProvider(
+  options: OllamaOptions,
+  { checkModel }: { checkModel?: string } = {},
+): TakeawayProvider {
   const ollama = createOllamaJson(options);
+  const checker = checkModel ? createOllamaJson({ ...options, model: checkModel }) : null;
   return {
     name: 'ollama',
     model: ollama.model,
@@ -92,21 +101,23 @@ export function createOllamaTakeawayProvider(options: OllamaOptions): TakeawayPr
       });
       return { raw: data, inputTokens, outputTokens };
     },
-    async checkSupport(items) {
-      const { data } = await ollama.generateJson({
-        system: SUPPORT_SYSTEM_PROMPT,
-        user: buildSupportMessage(items),
-        schema: SupportSchema,
-        inputName: 'takeaways to check',
-      });
-      const asked = new Set(items.map((i) => i.pmid));
-      return new Map(
-        data.checks
-          .map((c) => [c.pmid.replace(/\D/g, ''), c.supported] as const)
-          .filter(([pmid]) => asked.has(pmid)),
-      );
-    },
+    checkSupport: checker ? (items) => checkWith(checker, items) : undefined,
   };
+}
+
+async function checkWith(checker: OllamaJson, items: SupportItem[]): Promise<Map<string, boolean>> {
+  const { data } = await checker.generateJson({
+    system: SUPPORT_SYSTEM_PROMPT,
+    user: buildSupportMessage(items),
+    schema: SupportSchema,
+    inputName: 'takeaways to check',
+  });
+  const asked = new Set(items.map((i) => i.pmid));
+  return new Map(
+    data.checks
+      .map((c) => [c.pmid.replace(/\D/g, ''), c.supported] as const)
+      .filter(([pmid]) => asked.has(pmid)),
+  );
 }
 
 const CLAUDE_FORMAT = `Format: for each paper, a line "## PMID <id>", then its takeaway on the next line, citing the abstract.`;
