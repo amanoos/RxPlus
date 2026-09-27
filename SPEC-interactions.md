@@ -1,6 +1,6 @@
 # Spec: interactions
 
-Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications`. Status: **draft, awaiting review**.
+Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications`. Status: **approved 2026-09-27**.
 Research basis: [docs/research/free-data-sources.md](docs/research/free-data-sources.md).
 
 ## Objective
@@ -154,7 +154,7 @@ A new NgRx feature, `interactions`:
   - show notCovered
 - **Ask first:**
   - adding the ONC high-priority overlay or another severity source
-  - using AI in this module
+  - using AI in this module (deferred; see Resolved decisions)
 - **Never:**
   - say a combination is "safe"
   - derive or change severity with AI
@@ -172,9 +172,13 @@ A new NgRx feature, `interactions`:
 7. With openFDA unreachable, severity still shows, with "Label text unavailable right now."
 8. Lint, unit, integration and e2e pass; coverage targets are met.
 
-## Open questions (need your answer)
+## Resolved decisions (2026-09-27)
 
-1. **AI in this module?** The intent calls for AI summaries with source links. _Recommendation: not here. The interaction view is safest as severity plus verbatim label quotes. Introduce the Claude API in the `drug-info` module, then add an optional "Explain this interaction" summary here later._
-2. **Warning inside the add dialog?** _Recommendation: yes, show it before Add. Checking a new prescription is the main reason you use the app._
-3. **ONC high-priority list** as an always-Major override on top of DDInter? _Recommendation: not now. DDInter already rates those pairs Major; revisit if gaps appear._
-4. **Is the GitHub repo `amanoos/my-tracker` public?** It doesn't change the design (DDInter data is never committed), but if it's public, check that nothing else sensitive is there. _Recommendation: keep it private._
+1. **AI:** not in this module. Severity comes from DDInter and explanations are verbatim FDA label quotes. The Claude API arrives with `drug-info`; an optional "Explain this interaction" may be added later.
+2. **Add-dialog warning:** yes, shown before _Add_; adding stays allowed.
+3. **ONC high-priority overlay:** not now.
+4. **Repository:** `amanoos/my-tracker` is private. DDInter data is still never committed.
+
+## Open questions
+
+None.

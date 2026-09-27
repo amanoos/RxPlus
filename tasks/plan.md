@@ -1,75 +1,82 @@
-# Implementation Plan: medications
+# Implementation Plan: interactions
 
-Spec: [SPEC-medications.md](../SPEC-medications.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Tasks: [todo.md](todo.md) · Previous: [foundation](foundation/plan.md)
+Spec: [SPEC-interactions.md](../SPEC-interactions.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [medications](medications/plan.md), [foundation](foundation/plan.md)
 
 ## Overview
 
-Let the owner add, list, stop, restart and delete prescriptions, each resolved to an RxNorm product (SCD/SBD) through a server-side RxNav proxy, stored in Postgres (first real Drizzle migration), managed in an `@ngrx/entity` store, and rendered with SSR on `/medications`.
+Check a new prescription, or the current list, for drug–drug interactions:
+
+- **Severity:** from DDInter 2.0, imported into Postgres and mapped to RxNorm ingredients.
+- **Explanation:** verbatim FDA label sentences from openFDA.
+- **Where it shows:** `/interactions`, the add-medication dialog, and a dashboard line.
 
 ## Architecture Decisions
 
-- **One RxNav client on the server** (`src/server/rxnorm/client.ts`) owns base URL, 5-second timeout, one retry on network errors, TTL cache and response mapping. Routes and the repository never call `fetch` directly. It's an injectable `fetch` so tests use recorded fixtures.
-- **Save means re-verify:** `POST /api/medications` takes only `rxcui`. The server fetches the concept's properties, ingredients, dose form, brand and strength from RxNav and stores that snapshot. The client can't forge drug data.
-- **Unique active product** is enforced in the database (partial unique index on `rxcui` where `stopped_on is null`) and mapped to 409, not just checked in code.
-- **SSR list without flash:** the page dispatches `load` on init; the SSR render waits for the HTTP call (cookie forwarded by `forwardCookieInterceptor`). Angular's HTTP transfer cache (enabled by `provideClientHydration`) should hand the response to the browser, so the list doesn't refetch or flash. Verified in Task 6; if the URLs differ between server and client, fall back to Analog's page `load` (`.server.ts`).
-- **Stub RxNav for e2e:** Playwright starts a tiny fixture server and points `RXNAV_BASE_URL` at it, so e2e never depends on NLM.
+- **Import, don't query live:** DDInter has no API. A one-off `ddi:import` command downloads the CSVs, maps names through the existing RxNav client (new `ingredientByName`), and replaces the three `ddi_*` tables in one transaction. It's bundled like `migrate.cjs` so it runs in the container.
+- **Pure core, thin I/O:** CSV parsing, route-suffix parsing, report building (matching rules, notCovered) and label sentence matching are pure functions tested exhaustively. Queries and HTTP clients stay thin.
+- **One openFDA client** (`src/server/openfda/client.ts`) mirrors the RxNav client: base URL from `OPENFDA_BASE_URL` (optional; default `https://api.fda.gov`), optional `OPENFDA_API_KEY`, 5 s timeout, one retry, 7-day cache. It queries only labels that have the interaction section (`_exists_:drug_interactions`, newest first).
+- **Evidence loads lazily** per pair (`/api/interactions/evidence`), so severity shows immediately and label lookups never block the report.
+- **Shared product picker:** extract drug search → product selection from the add dialog into `ProductPickerComponent`, reused by `/interactions`.
+- **E2E stays offline:** the stub server gains DDInter CSV and openFDA routes. Playwright's global setup runs the importer against the stub.
 
 ## Dependency Graph
 
 ```
-1 RxNav client ── 2 RxNorm proxy routes ──────────────┐
-3 Schema + migration + repository ── 4 Medications API ┤
-                                                        ├─ 5 NgRx store ── 6 List page (SSR) ── 7 Add dialog ── 8 Edit/stop/delete
-                                                        │                                                           │
-                                                        └─────────────────────────── 9 E2E (stub RxNav) ────────────┘
-                                                                                     10 Docker migration + coverage + docs
+1 openFDA client ─────────────────────────────┐
+2 Schema + CSV parsing ── 3 Importer (RxNav) ──┤
+                          4 Report builder ───┼── 6 API routes ── 7 NgRx feature ── 9 /interactions page ── 10 Add-dialog warning + dashboard
+5 Label evidence (1 + RxClass EPC) ───────────┘                    8 ProductPicker extraction ┘
+                                                                     11 E2E (stubs) ── 12 Docker import, coverage, docs
 ```
 
 ## Task List
 
-### Phase 1: Server
+### Phase 1: Data and server
 
-- [x] Task 1: RxNav client with timeout, retry, cache and fixtures
-- [x] Task 2: RxNorm search and products proxy routes
-- [x] Task 3: Medications schema, first migration and repository
-- [x] Task 4: Medications API (list, create with re-verify, update, delete)
+- [ ] Task 1: openFDA label client
+- [ ] Task 2: DDInter schema, migration and CSV parsing
+- [ ] Task 3: DDInter importer and `ddi:import` command
+- [ ] Task 4: Interaction report builder and queries
+- [ ] Task 5: Label evidence matching (with RxClass class names)
+- [ ] Task 6: Interactions API routes
 
 ### Checkpoint A
 
-- [x] Unit + integration tests pass; `npm run db:migrate` applies `0000_*`
-- [x] curl: search `lisin`, list products, add, 409 on duplicate, stop, delete
+- [ ] Real import against live DDInter + RxNav (≥ 95% mapped, idempotent)
+- [ ] curl: spironolactone vs active lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered case
 
 ### Phase 2: Client
 
-- [x] Task 5: NgRx medications feature (`@ngrx/entity`) and API service
-- [x] Task 6: `/medications` list page with SSR, stopped section and empty state
-- [x] Task 7: Add-medication dialog (autocomplete, product pick, notes/date)
-- [x] Task 8: Edit notes/start date, stop, restart, delete with confirmation
+- [ ] Task 7: NgRx interactions feature and API service
+- [ ] Task 8: Extract `ProductPickerComponent` from the add dialog
+- [ ] Task 9: `/interactions` page (check + current + evidence)
+- [ ] Task 10: Add-dialog warning and dashboard summary
 
 ### Checkpoint B
 
-- [x] Manual in browser: full add/stop/restart/delete flow at 375px and 1280px, light and dark; no hydration warnings; RxNav-down message
+- [ ] Browser: check flow, current pairs, evidence expand, add-dialog warning, dashboard line; 375px and 1280px; openFDA-down message
 
 ### Phase 3: Verification
 
-- [x] Task 9: E2E against a stub RxNav
-- [x] Task 10: Migration in Docker, coverage targets, docs
+- [ ] Task 11: E2E with stub DDInter, RxNav and openFDA
+- [ ] Task 12: Docker import run, coverage, docs
 
-### Checkpoint C: medications complete
+### Checkpoint C: interactions complete
 
-- [x] Spec success criteria 1–8 verified
-- [ ] Human review, then `SPEC-interactions.md` (needs the interaction data-source decision)
+- [ ] Spec success criteria 1–8
+- [ ] Human review, then `SPEC-drug-info.md`
 
 ## Risks and Mitigations
 
-| Risk                                                                           | Impact | Mitigation                                                                                  |
-| ------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------- |
-| RxNav slow or down                                                             | Med    | Timeout + retry + cache; 503 with a friendly message; list/edit never depend on RxNav       |
-| RxNav response shape surprises (missing groups, multi-ingredient strength)     | Med    | Map defensively from recorded fixtures of several drug types (single, combination, branded) |
-| SSR transfer cache misses (server/client URL mismatch) → flash or double fetch | Med    | Check in Task 6; fallback to Analog server `load`                                           |
-| Partial unique index not expressible in Drizzle                                | Low    | Drizzle supports `uniqueIndex().on().where(sql…)`; otherwise a hand-written migration       |
-| Dev DB not running for integration tests                                       | Low    | `npm run db:test:up` in the task steps                                                      |
+| Risk                                              | Impact | Mitigation                                                                                                           |
+| ------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
+| DDInter URLs or CSV format change                 | Med    | Importer validates the header and fails loudly; the old data stays (transactional)                                   |
+| Name mapping misses                               | Med    | 90% guard; unmapped names printed; notCovered shown in the UI, so gaps are visible, never silent                     |
+| Label text uses class phrasing the matcher misses | Med    | EPC class names + a synonym list + always a link to the full section; never implies "not mentioned = no interaction" |
+| openFDA daily limit without a key (1,000/day)     | Low    | 7-day cache; lazy evidence; optional `OPENFDA_API_KEY`                                                               |
+| Import time (≈2k RxNav calls)                     | Low    | 10 req/s throttle (~4 min); reuse previous mappings                                                                  |
+| 235k-row insert speed                             | Low    | Batched inserts (e.g. 5k rows per statement) inside the transaction                                                  |
 
 ## Open Questions
 
-None. All spec questions resolved on 2026-09-27.
+None. Spec decisions resolved 2026-09-27.

@@ -1,109 +1,122 @@
-# Tasks: medications
+# Tasks: interactions
 
-Plan: [plan.md](plan.md) · Spec: [SPEC-medications.md](../SPEC-medications.md)
+Plan: [plan.md](plan.md) · Spec: [SPEC-interactions.md](../SPEC-interactions.md)
 
 Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
 
-## Phase 1: Server
+## Phase 1: Data and server
 
-- [x] **Task 1: RxNav client with timeout, retry, cache and fixtures** (M)
+- [ ] **Task 1: openFDA label client** (M)
   - Acceptance:
-    - `createRxNavClient({ baseUrl, fetch, now })` exposes `search(q)` (filters the cached Prescribe display-name list, ~13.6k names, case-insensitive), `products(name)`, `product(rxcui)` (properties first; skips the other calls for non-products); defaults from `RXNAV_BASE_URL` (optional env, default `https://rxnav.nlm.nih.gov/REST`)
-    - 5-second timeout, one retry on network error (not on 4xx), TTL cache (search 24 hours, product 7 days); failures throw `RxNavUnavailableError`
-    - Mapping handles single-ingredient, combination and branded products; `product()` returns `null` for non-SCD/SBD or unknown RXCUIs
-  - Verify: unit tests on recorded fixtures (lisinopril, a combination product, a branded product, empty results), fake timers for the timeout/retry/cache
-  - Files: `src/server/rxnorm/client.ts`, `src/server/rxnorm/client.spec.ts`, `src/server/rxnorm/fixtures/*.json`, `src/server/utils/env.ts`
+    - `createOpenFdaClient({ baseUrl, apiKey?, fetch, now })` with `interactionLabel(rxcui)`, which returns `{ setId, manufacturer, effectiveDate, sentences source text (drug_interactions + table, HTML stripped) }` or `null`
+    - Queries `openfda.rxcui:<rxcui> AND _exists_:drug_interactions`, sorted `effective_time:desc`, `limit=1`; 404 "no matches" → `null`
+    - 5 s timeout without retry, one retry on network/5xx, 7-day cache, `OpenFdaUnavailableError`; optional env `OPENFDA_BASE_URL`, `OPENFDA_API_KEY`
+  - Verify: unit tests with recorded fixtures (lisinopril, atorvastatin, no-match); live smoke check
+  - Files: `src/server/openfda/client.ts` (+ spec, fixtures), `src/server/openfda/index.ts`, `src/server/utils/env.ts`
   - Depends on: none
 
-- [x] **Task 2: RxNorm search and products proxy routes** (S)
+- [ ] **Task 2: DDInter schema, migration and CSV parsing** (M)
   - Acceptance:
-    - `GET /api/rxnorm/search?q=` (2–100 characters) and `GET /api/rxnorm/products?name=` return mapped results; 400 on bad input; 503 with a generic message when RxNav is unavailable
-    - Both require a session (existing middleware)
-  - Verify: route tests in `src/server/tests/` with a stubbed client
-  - Files: `src/server/routes/api/rxnorm/search.get.ts`, `src/server/routes/api/rxnorm/products.get.ts`, `src/server/rxnorm/index.ts` (shared instance), `src/server/tests/rxnorm-api.spec.ts`
+    - `ddi_drugs`, `ddi_interactions`, `ddi_imports` per spec; migration `0001_*` generated and committed
+    - `parseDdinterCsv(text)` handles quoted fields and validates the header; `splitRoute(name)` → `{ base, route }`; `normalizePairs()` orders A < B and keeps the most severe level
+  - Verify: unit tests (quoted commas, bad header, dedupe, routes); migration applies to the test DB
+  - Files: `src/server/db/schema/interactions.ts`, `src/server/db/schema/index.ts`, `drizzle/0001_*`, `src/server/interactions/ddinter.ts` (+ spec)
+  - Depends on: none
+
+- [ ] **Task 3: DDInter importer and `ddi:import` command** (M)
+  - Acceptance:
+    - Downloads the 14 CSVs (base URL configurable for tests); maps names via a new RxNav `ingredientByName(name)` (`rxcui.json?search=2`, IN preferred), throttled ≤ 10/s, reusing prior mappings
+    - Replaces all `ddi_*` rows in one transaction with batched inserts; records a `ddi_imports` row; prints a summary; exits non-zero below 90% mapped (old data kept)
+    - `npm run ddi:import` (dev) and `dist/ddi-import.cjs` (esbuild, copied into the Docker image)
+  - Verify: integration test with fixture CSVs + stubbed RxNav (replace, idempotence, 90% guard keeps old data)
+  - Files: `src/server/interactions/importer.ts` (+ int spec, fixtures), `scripts/ddi-import.ts`, `src/server/rxnorm/client.ts`, `package.json`, `Dockerfile`
+  - Depends on: 2
+
+- [ ] **Task 4: Interaction report builder and queries** (M)
+  - Acceptance:
+    - `buildReport(pairsFromDb, meds, candidate?)` implements the spec's matching rules: per ingredient; route filter by dose form; shared ingredients ignored; max level per pair; sorted Major → Unknown; notCovered
+    - The repository fetches DDInter drugs by ingredient RXCUIs and the pairs among them in two queries; `source.importedAt` comes from the latest import
+  - Verify: pure unit tests (combination product, topical vs oral, shared ingredient, notCovered, ordering); integration test on seeded tables
+  - Files: `src/server/interactions/report.ts` (+ spec), `src/server/interactions/repository.ts` (+ int spec)
+  - Depends on: 2
+
+- [ ] **Task 5: Label evidence matching** (M)
+  - Acceptance:
+    - RxNav client gains `classNames(ingredientRxcui)` (DAILYMED `has_epc`, cached)
+    - `matchEvidence(labelText, other: { ingredient, brands, classes })` splits into sentences and returns ≤ 3 verbatim matches using name, brand, class and a small synonym list (NSAID, potassium-sparing diuretic, …)
+    - `evidenceFor(a, b)` checks both labels; returns entries with manufacturer, date and DailyMed link; `OpenFdaUnavailableError` → 503 upstream
+  - Verify: unit tests on recorded label text (lisinopril ↔ spironolactone by name; atorvastatin ↔ clarithromycin in the table field; class-only phrasing via synonyms)
+  - Files: `src/server/interactions/evidence.ts` (+ spec), `src/server/rxnorm/client.ts` (+ spec)
   - Depends on: 1
 
-- [x] **Task 3: Medications schema, first migration and repository** (M)
+- [ ] **Task 6: Interactions API routes** (M)
   - Acceptance:
-    - `medications` table per spec, with a partial unique index on `rxcui` where `stopped_on is null`
-    - `drizzle/0000_*.sql` generated and committed; the drizzle config points at the schema index
-    - The repository offers `list()` (active first, then stopped, newest first), `create()`, `update()`, `remove()`; a unique violation maps to a `DuplicateActiveMedicationError`
-  - Verify: integration tests against `rxplus_test` (migrations applied in setup); `npm run db:migrate` against the dev DB
-  - Files: `src/server/db/schema/medications.ts`, `src/server/db/schema/index.ts`, `drizzle/`, `src/server/medications/repository.ts`, `src/server/medications/repository.int.spec.ts`
-  - Depends on: none
-
-- [x] **Task 4: Medications API (list, create with re-verify, update, delete)** (M)
-  - Acceptance:
-    - Routes per spec with zod validation: `POST` accepts only `{ rxcui, notes?, startedOn? }` and stores RxNav's details; 422 for non-SCD/SBD; 409 duplicate; 503 RxNav down
-    - `PATCH` updates notes/startedOn/stoppedOn (restart = `stoppedOn: null`, 409 if that creates a duplicate); `DELETE` returns 204/404
-    - Notes max 1000 characters; dates `YYYY-MM-DD`, `stoppedOn` not before `startedOn`
-  - Verify: route tests with a stubbed RxNav client and the test DB
-  - Files: `src/server/routes/api/medications/{index.get,index.post,[id].patch,[id].delete}.ts`, `src/server/medications/service.ts`, `src/server/tests/medications-api.int.spec.ts`
-  - Depends on: 1, 3
+    - `GET /api/interactions/check?rxcui=` (re-resolves via RxNav; 422 non-product; 503 RxNav down; 409 `no-data` before any import), `GET /api/interactions/current`, `GET /api/interactions/evidence?a=&b=` (503 if openFDA is down)
+    - zod validation; session required (existing middleware)
+  - Verify: route integration tests with the test DB, stubbed RxNav and openFDA
+  - Files: `src/server/routes/api/interactions/{check,current,evidence}.get.ts`, `src/server/interactions/service.ts`, `src/server/tests/interactions-api.int.spec.ts`
+  - Depends on: 3, 4, 5
 
 ### Checkpoint A
 
-- [x] Unit and integration tests pass; migration applies (runtime migrator and `drizzle-kit migrate`)
-- [x] Manual curl run of search → products → add → duplicate 409 → stop → delete (built server, live RxNav)
+- [ ] Real `npm run ddi:import` against the live DDInter + RxNav into the test DB: ≥ 95% mapped; a second run gives the same counts
+- [ ] curl on the built server: spironolactone vs lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered example
 
 ## Phase 2: Client
 
-- [x] **Task 5: NgRx medications feature (`@ngrx/entity`) and API service** (M)
+- [ ] **Task 7: NgRx interactions feature and API service** (M)
   - Acceptance:
-    - Entity adapter sorted active first; actions and effects for load/add/update/remove with user-facing error messages (409, 422, 503)
-    - Selectors `selectActive`, `selectStopped`, `selectLoaded`, `selectSaving`, `selectError`; registered in `provideAppStore`
-  - Verify: reducer, selector and effect unit tests; `MedicationsApi` tests with `HttpTestingController`
-  - Files: `src/app/features/medications/store/*`, `src/app/features/medications/medications-api.service.ts` (+ specs), `src/app/store/app.store.ts`
-  - Depends on: 4
-
-- [x] **Task 6: `/medications` list page with SSR, stopped section and empty state** (M)
-  - Acceptance:
-    - Cards show name, strength, form, brand, started date and notes; "Stopped" is a collapsible section; empty state with an "Add medication" button
-    - The SSR HTML already contains the list; no refetch on hydration: Analog's interceptor embeds SSR API responses in `ng-state` and the browser reuses them (verified: no second `/api/medications` request)
-  - Verify: component tests; curl the SSR HTML with a session for the medication name; browser check for no double request and no hydration warnings
-  - Files: `src/app/pages/(app)/medications.page.ts`, `src/app/features/medications/medication-card.component.ts` (+ specs)
-  - Depends on: 5
-
-- [x] **Task 7: Add-medication dialog** (M)
-  - Acceptance:
-    - A PrimeNG Dialog with AutoComplete (300 ms debounce, 2+ characters) → product list (single-ingredient first, then generics before brands, then by strength) → optional start date and notes → Save dispatches `add`; closes on success, shows the 409/503 message on failure
-    - RxNav-down message "Drug lookup is unavailable right now"; keyboard-operable
-  - Verify: component tests with a stubbed API; manual browser run
-  - Files: `src/app/features/medications/add-medication-dialog.component.ts` (+ spec), `src/app/features/medications/rxnorm-api.service.ts` (+ spec), `medications.page.ts`
+    - State `current`, `candidate`, `evidence` by pair key, loading/error; effects load `current` on medication load/add/update/remove success; `checkCandidate(rxcui)`, `loadEvidence(a, b)`
+  - Verify: reducer, selector and effect tests; `InteractionsApi` tests
+  - Files: `src/app/features/interactions/**` (+ specs), `src/app/store/app.store.ts`
   - Depends on: 6
 
-- [x] **Task 8: Edit notes/start date, stop, restart, delete with confirmation** (M)
+- [ ] **Task 8: Extract `ProductPickerComponent` from the add dialog** (M)
   - Acceptance:
-    - Per-card actions: Edit (notes, start date), Stop (date defaults to today, editable), Restart, Delete (PrimeNG ConfirmDialog)
-    - The store updates in place; errors surface as messages
-  - Verify: component tests; manual browser run
-  - Files: `src/app/features/medications/medication-card.component.ts`, `src/app/features/medications/edit-medication-dialog.component.ts` (+ specs), `medications.page.ts`
-  - Depends on: 7
+    - The drug search → product radio list moves into a reusable component with an `rxcui` output; the add dialog uses it with identical behavior (existing tests adapted, still green)
+  - Verify: component tests; existing medications e2e still passes
+  - Files: `src/app/features/medications/product-picker.component.ts` (+ spec), `add-medication-dialog.component.ts` (+ spec)
+  - Depends on: none
+
+- [ ] **Task 9: `/interactions` page** (M)
+  - Acceptance:
+    - "Check a new prescription" (picker → report) and "Between your current medications" (SSR); severity tags (Major red, Moderate orange, Minor blue, Unknown gray, "Listed, severity not rated"); expandable evidence with verbatim quotes and DailyMed links; notCovered message; attribution footer with import date and disclaimer; no-data state explaining `ddi:import`
+  - Verify: component tests; browser check
+  - Files: `src/app/pages/(app)/interactions.page.ts` (+ spec), `src/app/features/interactions/interaction-list.component.ts` (+ spec)
+  - Depends on: 7, 8
+
+- [ ] **Task 10: Add-dialog warning and dashboard summary** (S)
+  - Acceptance:
+    - After a product is picked in the add dialog, a compact warning lists interacting current meds with severity and a details link; _Add_ stays enabled
+    - The dashboard shows "N Major interactions between your current medications" (or none) linking to `/interactions`
+  - Verify: component tests; browser check
+  - Files: `add-medication-dialog.component.ts` (+ spec), `src/app/pages/(app)/index.page.ts` (+ spec)
+  - Depends on: 9
 
 ### Checkpoint B
 
-- [x] Full flow in the browser (add, duplicate, edit, stop, restart, delete with confirmation); 375px dark and 1280px light, no horizontal scroll; no hydration warnings. RxNav-down: 503 verified on the server (5.0s) and the message covered by component tests
+- [ ] Browser: check flow, current pairs, evidence, add-dialog warning, dashboard; 375px and 1280px; openFDA-down message
 
 ## Phase 3: Verification
 
-- [x] **Task 9: E2E against a stub RxNav** (M)
+- [ ] **Task 11: E2E with stub DDInter, RxNav and openFDA** (M)
   - Acceptance:
-    - Playwright starts a fixture server serving the recorded RxNav responses; the app's `RXNAV_BASE_URL` points at it
-    - Specs: add a medication via search → product; duplicate shows the message; stop → appears under Stopped → restart; delete with confirmation; reload keeps the data
-  - Verify: `npm run e2e` passes (5 repeats stable)
-  - Files: `playwright.config.ts`, `e2e/stub-rxnav.ts`, `e2e/medications.spec.ts`
-  - Depends on: 8
+    - The stub server serves small DDInter CSVs and openFDA label fixtures; global setup runs the importer against the stub
+    - Specs: check spironolactone vs active lisinopril (Major + label sentence); add-dialog warning; current pairs
+  - Verify: `npm run e2e` (5 repeats stable)
+  - Files: `e2e/stub-rxnav.ts` (renamed stub server if needed), `e2e/global-setup.ts`, `e2e/interactions.spec.ts`, fixtures
+  - Depends on: 10
 
-- [x] **Task 10: Migration in Docker, coverage and docs** (S)
+- [ ] **Task 12: Docker import run, coverage, docs** (S)
   - Acceptance:
-    - `docker compose up -d --build` logs `[migrate] database is up to date`, and the medications flow works in the container
-    - Coverage at least 80% on `src/server/rxnorm`, `src/server/medications`, `src/app/features/medications` (added to the coverage config)
-    - README updated (RxNav note, `RXNAV_BASE_URL`)
-  - Verify: Docker run under the `rxplus-verify` project, then removed; `npm run test:coverage`
+    - `docker compose run --rm app node dist/ddi-import.cjs` imports in the container; the app shows interactions
+    - Coverage ≥ 80% on `src/server/interactions`, `src/server/openfda`, `src/app/features/interactions`
+    - README: DDInter import, attribution, openFDA key note
+  - Verify: `rxplus-verify` Docker run (then removed); `npm run test:coverage`
   - Files: `vite.config.ts`, `README.md`, `.env.example`
-  - Depends on: 9
+  - Depends on: 11
 
-### Checkpoint C: medications complete
+### Checkpoint C: interactions complete
 
-- [x] Spec success criteria 1–8 verified (search 0.5 s uncached / 30 ms cached; add persists across reload and container restart; 409 message; stop/restart/edit/delete; 503 in 5.0 s with the list unaffected; SSR list without refetch; migration on `docker compose up`; lint, 165 unit+integration, 7 e2e, 97% line coverage)
-- [ ] Human review, then `SPEC-interactions.md`
+- [ ] Spec success criteria 1–8
+- [ ] Human review, then `SPEC-drug-info.md`
