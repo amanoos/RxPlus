@@ -30,7 +30,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/drug-info/facts.ts`, `src/server/routes/api/drugs/[rxcui]/index.get.ts`, `…/reported-reactions.get.ts`, `src/server/tests/drug-info-api.int.spec.ts`
   - Depends on: 1, 2
 
-- [ ] **Task 4: Summary core: prompt, output schema, quote verification** (M)
+- [x] **Task 4: Summary core: prompt, output schema, quote verification** (M)
   - Acceptance:
     - `buildPrompt(label)` (system rules + sections; only label text), the output zod schema (5 headings → sentences → quotes)
     - `verifySummary(raw, label)`: normalized substring match within the named section → citations; uncited flags; `uncitedRatio`; rejects wrong headings or order
