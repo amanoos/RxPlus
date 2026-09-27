@@ -51,7 +51,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/ai/{verify,ollama,claude}.ts` (+ specs), `src/server/drug-info/providers/*`, `src/server/drug-info/summary.ts`
   - Depends on: none
 
-- [ ] **Task 6: Takeaway core** (M)
+- [x] **Task 6: Takeaway core** (M)
   - Acceptance:
     - prompt rules from the spec; the user message has only `### PMID <id>` + abstract per paper
     - zod schema `{ takeaways: [{ pmid, text, quote }] }`; Claude variant parsed from `## PMID <id>` blocks with citations mapped by document index

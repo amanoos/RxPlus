@@ -40,7 +40,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 - [x] Task 3: Schema, migration 0003 and repository
 - [x] Task 4: Literature service and routes (lists, refresh, hide)
 - [x] Task 5: Provider refactor (generic structured generation), drug-info unchanged
-- [ ] Task 6: Takeaway core: prompt, schema, per-abstract verification
+- [x] Task 6: Takeaway core: prompt, schema, per-abstract verification
 - [ ] Task 7: Takeaway generation in the background, route, shared Claude limit
 
 ### Checkpoint A
