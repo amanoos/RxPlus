@@ -32,12 +32,12 @@ Let the owner add, list, stop, restart and delete prescriptions, each resolved t
 - [x] Task 1: RxNav client with timeout, retry, cache and fixtures
 - [x] Task 2: RxNorm search and products proxy routes
 - [x] Task 3: Medications schema, first migration and repository
-- [ ] Task 4: Medications API (list, create with re-verify, update, delete)
+- [x] Task 4: Medications API (list, create with re-verify, update, delete)
 
 ### Checkpoint A
 
-- [ ] Unit + integration tests pass; `npm run db:migrate` applies `0000_*` to the dev DB
-- [ ] curl: search `lisin`, list products, add, 409 on duplicate, stop, delete
+- [x] Unit + integration tests pass; `npm run db:migrate` applies `0000_*`
+- [x] curl: search `lisin`, list products, add, 409 on duplicate, stop, delete
 
 ### Phase 2: Client
 

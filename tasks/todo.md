@@ -32,7 +32,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/db/schema/medications.ts`, `src/server/db/schema/index.ts`, `drizzle/`, `src/server/medications/repository.ts`, `src/server/medications/repository.int.spec.ts`
   - Depends on: none
 
-- [ ] **Task 4: Medications API (list, create with re-verify, update, delete)** (M)
+- [x] **Task 4: Medications API (list, create with re-verify, update, delete)** (M)
   - Acceptance:
     - Routes per spec with zod validation: `POST` accepts only `{ rxcui, notes?, startedOn? }` and stores RxNav's details; 422 for non-SCD/SBD; 409 duplicate; 503 RxNav down
     - `PATCH` updates notes/startedOn/stoppedOn (restart = `stoppedOn: null`, 409 if that creates a duplicate); `DELETE` returns 204/404
@@ -43,8 +43,8 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies to the dev DB
-- [ ] Manual curl run of search → products → add → duplicate 409 → stop → delete
+- [x] Unit and integration tests pass; migration applies (runtime migrator and `drizzle-kit migrate`)
+- [x] Manual curl run of search → products → add → duplicate 409 → stop → delete (built server, live RxNav)
 
 ## Phase 2: Client
 
