@@ -41,10 +41,38 @@ export interface GeneratedTakeaways {
   outputTokens?: number;
 }
 
+export interface SupportItem {
+  pmid: string;
+  takeaway: string;
+  quote: string;
+}
+
 export interface TakeawayProvider {
   name: 'ollama' | 'claude';
   model: string;
   generate(papers: PaperInput[]): Promise<GeneratedTakeaways>;
+  /**
+   * Second pass: does each quote on its own support its takeaway? Optional:
+   * Claude's citations already tie the text to its source, so it's skipped there.
+   */
+  checkSupport?(items: SupportItem[]): Promise<Map<string, boolean>>;
+}
+
+export const SUPPORT_SYSTEM_PROMPT = `You check summaries of medical studies against the study's own words.
+
+For each item (marked "### PMID <id>"), decide whether the QUOTE, on its own, supports everything the TAKEAWAY says:
+- the population, the drugs or treatments, and which one did better or worse
+- every number and the direction of every effect (more or less, higher or lower)
+Answer supported = false if the takeaway says anything the quote doesn't state, even if it might be true elsewhere.`;
+
+export const SupportSchema = z.object({
+  checks: z.array(z.object({ pmid: z.string(), supported: z.boolean() })),
+});
+
+export function buildSupportMessage(items: SupportItem[]): string {
+  return items
+    .map((i) => `### PMID ${i.pmid}\nTAKEAWAY: ${i.takeaway}\nQUOTE: ${i.quote}`)
+    .join('\n\n');
 }
 
 export function createOllamaTakeawayProvider(options: OllamaOptions): TakeawayProvider {
@@ -60,6 +88,20 @@ export function createOllamaTakeawayProvider(options: OllamaOptions): TakeawayPr
         inputName: 'abstracts',
       });
       return { raw: data, inputTokens, outputTokens };
+    },
+    async checkSupport(items) {
+      const { data } = await ollama.generateJson({
+        system: SUPPORT_SYSTEM_PROMPT,
+        user: buildSupportMessage(items),
+        schema: SupportSchema,
+        inputName: 'takeaways to check',
+      });
+      const asked = new Set(items.map((i) => i.pmid));
+      return new Map(
+        data.checks
+          .map((c) => [c.pmid.replace(/\D/g, ''), c.supported] as const)
+          .filter(([pmid]) => asked.has(pmid)),
+      );
     },
   };
 }

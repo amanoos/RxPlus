@@ -238,6 +238,32 @@ export function createLiteratureService({
   }
 
   /**
+   * Asks whether each linked takeaway's quote supports it, and records the answer.
+   * A quote from the right abstract can still be misread (e.g. which drug ranked
+   * first), so this is a second, stricter check. A failed check leaves `supported`
+   * null rather than failing the takeaways.
+   */
+  async function checkSupport(
+    byPmid: Map<string, PaperTakeaway>,
+    provider: TakeawayProvider,
+  ): Promise<void> {
+    const items = [...byPmid]
+      .filter(([, t]) => !t.uncited && t.quote)
+      .map(([pmid, t]) => ({ pmid, takeaway: t.text, quote: t.quote! }));
+    if (!provider.checkSupport || !items.length) return;
+    try {
+      const answers = await provider.checkSupport(items);
+      for (const { pmid } of items) {
+        const takeaway = byPmid.get(pmid)!;
+        takeaway.supported = answers.get(pmid) ?? null;
+      }
+    } catch (error) {
+      console.warn(`[literature] support check failed: ${(error as Error).message}`);
+      for (const { pmid } of items) byPmid.get(pmid)!.supported = null;
+    }
+  }
+
+  /**
    * One model call for an ingredient's papers without a takeaway. Papers the model
    * skipped (or whose takeaway was advice) get an empty takeaway, so they aren't
    * asked for again and again.
@@ -251,6 +277,7 @@ export function createLiteratureService({
       const input = papers.map((p) => ({ pmid: p.pmid, abstract: p.abstract }));
       const { raw, inputTokens, outputTokens } = await provider.generate(input);
       const { byPmid } = verifyTakeaways(raw, input, { ignoreWords: [ingredient.name] });
+      await checkSupport(byPmid, provider);
       for (const p of papers) {
         if (!byPmid.has(p.pmid)) byPmid.set(p.pmid, { text: '', quote: null, uncited: true });
       }

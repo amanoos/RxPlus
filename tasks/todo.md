@@ -71,8 +71,8 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
+- [x] Unit and integration tests pass; migration applies
+- [x] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b` (2026-09-27: lists 2.5 s first, 11 ms stored; takeaways 4:38, 8/10 linked; one linked takeaway misread its quote → support check added, rerun 5:00, 3 supported / 5 not / 2 not linked)
 
 ## Phase 2: Client
 
@@ -83,7 +83,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Depends on: 7
 
 - [ ] **Task 9: Research section: papers** (M)
-  - Acceptance: on `/drugs/:rxcui` below the summary, one block per ingredient; each paper: type badge, title → PubMed, journal · year, "Free full text" when PMC; takeaway with a source marker and popover (abstract quote, "Read on PubMed"); unverified takeaways marked; pending (elapsed), failed (retry), unavailable (reason) states; loading and error states that never block the page
+  - Acceptance: on `/drugs/:rxcui` below the summary, one block per ingredient; each paper: type badge, title → PubMed, journal · year, "Free full text" when PMC; takeaway with its quote shown inline below it ("In the study: '…'"); a note when the quote doesn't back up all of it (`supported: false`); unverified takeaways marked; pending (elapsed), failed (retry), unavailable (reason) states; loading and error states that never block the page
   - Verify: component tests; browser check
   - Files: `src/app/features/literature/research-section.component.ts`, `paper-list.component.ts` (+ specs), drug page
   - Depends on: 8
@@ -93,6 +93,12 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Verify: component tests; browser check
   - Files: `trial-list.component.ts`, `paper-list.component.ts`, `research-section.component.ts` (+ specs)
   - Depends on: 9
+
+- [ ] **Task 10b: Summary panel "Show quotes" toggle** (S)
+  - Acceptance: a toggle on the drug summary panel shows every sentence's quote inline below it (markers and popovers stay); remembered per session
+  - Verify: component tests; browser check
+  - Files: `src/app/features/drug-info/summary-panel.component.ts` (+ spec)
+  - Depends on: none
 
 ### Checkpoint B
 

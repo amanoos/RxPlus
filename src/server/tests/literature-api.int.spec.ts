@@ -354,6 +354,63 @@ describe('literature API (integration)', () => {
       expect(generate).not.toHaveBeenCalled();
     });
 
+    it('checks that each linked quote supports its takeaway, without failing on a bad check', async () => {
+      const takeaways = {
+        raw: {
+          takeaways: [
+            {
+              pmid: '100',
+              text: 'It lowered systolic pressure in adults.',
+              quote: 'lisinopril reduced systolic blood pressure in adults',
+            },
+            {
+              pmid: '101',
+              text: 'It lowered systolic pressure by half.',
+              quote: 'lisinopril reduced systolic blood pressure in adults',
+            },
+            { pmid: '102', text: 'Unlinked.', quote: 'not in the abstract' },
+          ],
+        },
+      };
+      const checkSupport = vi.fn<NonNullable<TakeawayProvider['checkSupport']>>();
+      useTakeawayProvider({ provider: { ...provider(), checkSupport } });
+      generate.mockResolvedValue(takeaways);
+      checkSupport.mockResolvedValue(
+        new Map([
+          ['100', true],
+          ['101', false],
+        ]),
+      );
+      await call('POST', '/api/drugs/314076/literature/takeaways');
+      await settleLiteratureJobs();
+
+      // Only linked takeaways are checked.
+      expect(checkSupport.mock.calls[0][0].map((i) => i.pmid)).toEqual(['100', '101']);
+      const byPmid = Object.fromEntries(
+        (await lit()).papers.map((p: { pmid: string; takeaway: unknown }) => [p.pmid, p.takeaway]),
+      );
+      expect(byPmid['100']).toMatchObject({ uncited: false, supported: true });
+      expect(byPmid['101']).toMatchObject({
+        uncited: false,
+        supported: false,
+        quote: 'lisinopril reduced systolic blood pressure in adults',
+      });
+      expect(byPmid['102']).toMatchObject({ uncited: true });
+      expect(byPmid['102'].supported).toBeUndefined();
+
+      // A failing check still stores the takeaways, unchecked.
+      await db.execute(sql`update literature_papers set takeaway = null`);
+      checkSupport.mockRejectedValue(new ProviderUnavailableError('Ollama timed out.'));
+      await call('POST', '/api/drugs/314076/literature/takeaways');
+      await settleLiteratureJobs();
+      const after = await lit();
+      expect(after.takeaways.status).toBe('ready');
+      expect(after.papers.find((p: { pmid: string }) => p.pmid === '100').takeaway).toMatchObject({
+        uncited: false,
+        supported: null,
+      });
+    });
+
     it('explains a missing provider', async () => {
       useTakeawayProvider({ unavailable: 'No local model configured (OLLAMA_MODEL).' });
       const res = await call('POST', '/api/drugs/314076/literature/takeaways');

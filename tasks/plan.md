@@ -45,7 +45,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
+- [x] Unit and integration tests pass; migration applies
 - [ ] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
 
 ### Phase 2: Client
@@ -53,6 +53,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 - [ ] Task 8: NgRx `literature` feature and API service
 - [ ] Task 9: Research section: papers with takeaways and source popovers
 - [ ] Task 10: Hide and undo, trials list, footer and "Check for new research"
+- [ ] Task 10b: Summary panel "Show quotes" toggle
 
 ### Checkpoint B
 

@@ -5,9 +5,11 @@ import type { ClaudeClient } from '../ai/claude';
 import { ProviderOutputError } from '../ai/errors';
 import {
   buildAbstractsMessage,
+  buildSupportMessage,
   createClaudeTakeawayProvider,
   createOllamaTakeawayProvider,
   parseCitedTakeaways,
+  SUPPORT_SYSTEM_PROMPT,
   TAKEAWAY_SYSTEM_PROMPT,
   verifyTakeaways,
   type PaperInput,
@@ -182,5 +184,59 @@ describe('Claude takeaways', () => {
 
     create.mockResolvedValue(message('Here are some thoughts.'));
     await expect(provider.generate(papers)).rejects.toBeInstanceOf(ProviderOutputError);
+  });
+});
+
+describe('support check', () => {
+  const items = [
+    {
+      pmid: '222',
+      takeaway: 'Lisinopril caused more cough than other ACE inhibitors.',
+      quote: 'Moexipril ranked as number one for inducing cough',
+    },
+  ];
+
+  it('sends each takeaway with its quote and keeps answers for asked PMIDs only', async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            message: {
+              content: JSON.stringify({
+                checks: [
+                  { pmid: 'PMID 222', supported: false },
+                  { pmid: '999', supported: true },
+                ],
+              }),
+            },
+          }),
+        ),
+    );
+    const provider = createOllamaTakeawayProvider({
+      baseUrl: 'http://ollama.test',
+      model: 'qwen2.5:7b',
+      numCtx: 16384,
+      timeoutMs: 1000,
+      fetch: fetchFn,
+    });
+    const answers = await provider.checkSupport!(items);
+    expect([...answers]).toEqual([['222', false]]);
+
+    const body = JSON.parse(
+      String((fetchFn.mock.calls[0] as unknown as [string, RequestInit])[1].body),
+    );
+    expect(body.messages).toEqual([
+      { role: 'system', content: SUPPORT_SYSTEM_PROMPT },
+      { role: 'user', content: buildSupportMessage(items) },
+    ]);
+    expect(buildSupportMessage(items)).toBe(
+      '### PMID 222\nTAKEAWAY: Lisinopril caused more cough than other ACE inhibitors.\nQUOTE: Moexipril ranked as number one for inducing cough',
+    );
+    expect(SUPPORT_SYSTEM_PROMPT).toMatch(/every number and the direction/i);
+  });
+
+  it('is not offered for Claude, whose citations already tie text to sources', () => {
+    const provider = createClaudeTakeawayProvider({ apiKey: 'test', client: {} as ClaudeClient });
+    expect(provider.checkSupport).toBeUndefined();
   });
 });

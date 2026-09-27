@@ -22,6 +22,11 @@ export interface PaperTakeaway {
   /** Abstract words the takeaway is based on; null when none could be verified. */
   quote: string | null;
   uncited: boolean;
+  /**
+   * Second check: does the quote on its own support the takeaway? null when not
+   * checked (no quote, Claude, or the check failed).
+   */
+  supported?: boolean | null;
 }
 
 /** Candidate papers per ingredient (up to 20 per tier); the page shows the first 10 not hidden. */

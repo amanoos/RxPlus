@@ -62,6 +62,8 @@ Fields: NCT ID, brief title, status, phase(s), has results, start date, last upd
 - **Background generation**, like drug summaries: opening Research starts it when papers lack takeaways; the page polls every 2 s while pending (up to 12 minutes). A restart marks pending work as failed. Failed → "Try again".
 - The generic part of the providers is extracted for reuse: `generate({ system, user, schema })` (Ollama) and documents-with-citations (Claude). The drug-info summary keeps its behavior and tests.
 - **Only abstract text** (plus PMIDs) goes to the model: no notes, no medication list.
+- **Support check (added 2026-09-27, after Checkpoint A):** the quote check only proves the quote is in the abstract and on topic. In the first live run, qwen2.5:7b wrote "lisinopril caused more coughing than other ACE inhibitors" while its quote said moexipril ranked first, and it passed. So a second local-model call receives each linked takeaway with its quote (small input) and answers whether the quote alone supports everything the takeaway says (population, drugs, direction of effects, numbers). The answer is stored as `supported` (true / false; null when not checked, when the check fails, or with Claude, whose citations already tie text to sources). A failed check never fails the takeaways.
+- **Measured (lisinopril, 10 papers, 2026-09-27):** 5:00 in all (the check adds about 20–30 s); 8 linked, 2 not linked; of the 8, 3 supported and 5 not, including the moexipril case. The check is strict: most "not supported" takeaways add details (sample size, a second finding) that the quote doesn't contain.
 
 ## Data model (Drizzle, `src/server/db/schema/literature.ts`, migration `0003_*`)
 
@@ -132,7 +134,7 @@ The GET fetches and stores the lists on first use (a few seconds: esearch ×2, e
 ## UI
 
 - **"Research" section** on `/drugs/:rxcui`, below the summary panel; for combination products, one sub-section per ingredient.
-- **Papers:** type badge (Meta-analysis, Systematic review, Randomized trial), title (links to `https://pubmed.ncbi.nlm.nih.gov/<pmid>/`), journal and year, "Free full text" link when there is a PMC id; the takeaway with a source marker opening the quoted abstract sentence (same popover as the summary); "not linked to the abstract" styling for unverified ones; a **Hide** button (with "Show hidden (n)" to undo).
+- **Papers:** type badge (Meta-analysis, Systematic review, Randomized trial), title (links to `https://pubmed.ncbi.nlm.nih.gov/<pmid>/`), journal and year, "Free full text" link when there is a PMC id; the takeaway with its quote **always shown right below it** ("In the study: '…'"), not behind a marker; a note when the quote doesn't back up all of the takeaway (`supported: false`); "not linked to the abstract" styling for unverified ones; a **Hide** button (with "Show hidden (n)" to undo).
 - **Takeaway states:** "Writing takeaways… m:ss" while pending, failed with Try again, unavailable with the reason.
 - **Trials:** NCT ID, title (links to ClinicalTrials.gov), status tag (Completed · results posted / Recruiting), phase.
 - **Footer:** "Papers from PubMed, trials from ClinicalTrials.gov, found <date>. Takeaways written by AI (<model>, <local | Claude>) from the abstracts. Check anything important with your pharmacist." and **"Check for new research"**.
@@ -182,6 +184,8 @@ The GET fetches and stores the lists on first use (a few seconds: esearch ×2, e
 8. Lint, unit, integration and e2e tests pass; coverage targets are met; the drug-info summary behaves as before.
 
 ## Resolved decisions (2026-09-27)
+
+0. After Checkpoint A: show each takeaway's quote inline and add the support check (both). The drug summary panel gets a "Show quotes" toggle that shows every sentence's quote inline.
 
 1. Strongest evidence first: reviews (≤ 4), then randomized trials, to 10.
 2. Trials as a separate list of up to 5 (completed with results, then recruiting).
