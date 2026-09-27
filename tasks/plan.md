@@ -58,7 +58,7 @@ Check a new prescription, or the current list, for drug–drug interactions:
 
 ### Phase 3: Verification
 
-- [ ] Task 11: E2E with stub DDInter, RxNav and openFDA
+- [x] Task 11: E2E with stub DDInter, RxNav and openFDA
 - [ ] Task 12: Docker import run, coverage, docs
 
 ### Checkpoint C: interactions complete

@@ -4,7 +4,7 @@ import { E2E_DATABASE_URL, E2E_PASSWORD } from './e2e/helpers';
 import { hashPassword } from './src/server/utils/password';
 
 const PORT = 4300;
-const STUB_RXNAV_PORT = 4399;
+const STUB_UPSTREAM_PORT = 4399;
 
 export default defineConfig({
   testDir: './e2e',
@@ -28,10 +28,10 @@ export default defineConfig({
   ],
   webServer: [
     {
-      // Recorded RxNav responses, so e2e never depends on NLM being up.
-      command: 'node e2e/stub-rxnav.ts',
-      url: `http://localhost:${STUB_RXNAV_PORT}/health`,
-      env: { STUB_RXNAV_PORT: String(STUB_RXNAV_PORT) },
+      // Recorded RxNav and openFDA responses, so e2e never depends on NLM or FDA.
+      command: 'node e2e/stub-upstream.ts',
+      url: `http://localhost:${STUB_UPSTREAM_PORT}/health`,
+      env: { STUB_UPSTREAM_PORT: String(STUB_UPSTREAM_PORT) },
       reuseExistingServer: false,
     },
     {
@@ -47,7 +47,8 @@ export default defineConfig({
         APP_PASSWORD_HASH: await hashPassword(E2E_PASSWORD),
         SESSION_SECRET: 'e2e-session-secret-not-for-real-use-0123456789',
         COOKIE_SECURE: 'false',
-        RXNAV_BASE_URL: `http://localhost:${STUB_RXNAV_PORT}/REST`,
+        RXNAV_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/REST`,
+        OPENFDA_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/openfda/drug`,
       },
     },
   ],

@@ -1,0 +1,100 @@
+{
+  "drugGroup": {
+    "name": null,
+    "conceptGroup": [
+      { "tty": "BPCK" },
+      { "tty": "GPCK" },
+      {
+        "tty": "SBD",
+        "conceptProperties": [
+          {
+            "rxcui": "1943345",
+            "name": "spironolactone 5 MG/ML Oral Suspension [Carospir]",
+            "synonym": "Carospir 5 MG/ML Oral Suspension",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "200817",
+            "name": "spironolactone 50 MG Oral Tablet [Aldactone]",
+            "synonym": "Aldactone 50 MG Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "200820",
+            "name": "spironolactone 25 MG Oral Tablet [Aldactone]",
+            "synonym": "Aldactone 25 MG Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "200825",
+            "name": "spironolactone 100 MG Oral Tablet [Aldactone]",
+            "synonym": "Aldactone 100 MG Oral Tablet",
+            "tty": "SBD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      },
+      {
+        "tty": "SCD",
+        "conceptProperties": [
+          {
+            "rxcui": "104232",
+            "name": "spironolactone 5 MG/ML Oral Suspension",
+            "synonym": "spironolactone 25 MG per 5 ML Oral Suspension",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "198222",
+            "name": "spironolactone 100 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "198223",
+            "name": "spironolactone 50 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "198224",
+            "name": "hydrochlorothiazide 25 MG / spironolactone 25 MG Oral Tablet",
+            "synonym": "HCTZ 25 MG / spironolactone 25 MG Oral Tablet",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "313096",
+            "name": "spironolactone 25 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}

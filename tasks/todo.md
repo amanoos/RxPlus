@@ -99,7 +99,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Verification
 
-- [ ] **Task 11: E2E with stub DDInter, RxNav and openFDA** (M)
+- [x] **Task 11: E2E with stub DDInter, RxNav and openFDA** (M)
   - Acceptance:
     - The stub server serves small DDInter CSVs and openFDA label fixtures; global setup runs the importer against the stub
     - Specs: check spironolactone vs active lisinopril (Major + label sentence); add-dialog warning; current pairs

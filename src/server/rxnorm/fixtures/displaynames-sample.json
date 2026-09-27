@@ -1,6 +1,7 @@
 {
   "displayTermsList": {
     "term": [
+      "aldactone",
       "alogliptin / metFORMIN",
       "amLODIPine",
       "amLODIPine / atorvastatin",
@@ -27,6 +28,7 @@
       "glipiZIDE / metFORMIN",
       "glyBURIDE / metFORMIN",
       "hydroCHLOROthiazide / lisinopril",
+      "hydroCHLOROthiazide / spironolactone",
       "levamlodipine",
       "levamlodipine maleate",
       "linagliptin / metFORMIN",
@@ -39,6 +41,7 @@
       "metFORMIN / sAXagliptin",
       "metFORMIN / SITagliptin",
       "metFORMIN hydrochloride",
+      "spironolactone",
       "zestril"
     ]
   }

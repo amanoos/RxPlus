@@ -1,19 +1,8 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import { resetMedications, signIn } from './helpers';
+import { addMedication, resetMedications, signIn } from './helpers';
 
 const LISINOPRIL = 'lisinopril 10 MG Oral Tablet';
-
-async function addMedication(page: Page, drug: string, product: string, notes?: string) {
-  await page.getByRole('button', { name: 'Add medication' }).first().click();
-  const dialog = page.getByRole('dialog', { name: 'Add medication' });
-  await dialog.locator('#drug-search').pressSequentially(drug.slice(0, 5));
-  await page.getByRole('option', { name: drug, exact: true }).click();
-  await dialog.getByLabel(product, { exact: true }).check();
-  if (notes) await dialog.getByLabel('Notes (optional)').fill(notes);
-  await dialog.getByRole('button', { name: 'Add', exact: true }).click();
-  return dialog;
-}
 
 test.beforeEach(async ({ page }) => {
   await resetMedications();

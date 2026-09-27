@@ -1,0 +1,49 @@
+{
+  "relatedGroup": {
+    "rxcui": null,
+    "conceptGroup": [
+      {
+        "tty": "BN",
+        "conceptProperties": [
+          {
+            "rxcui": "151317",
+            "name": "Aldactone",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      },
+      {
+        "tty": "DF",
+        "conceptProperties": [
+          {
+            "rxcui": "317541",
+            "name": "Oral Tablet",
+            "synonym": "",
+            "tty": "DF",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      },
+      {
+        "tty": "IN",
+        "conceptProperties": [
+          {
+            "rxcui": "9997",
+            "name": "spironolactone",
+            "synonym": "",
+            "tty": "IN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}
