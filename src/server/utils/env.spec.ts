@@ -15,6 +15,7 @@ describe('parseEnv', () => {
       PORT: 3000,
       TZ: 'America/New_York',
       RXNAV_BASE_URL: 'https://rxnav.nlm.nih.gov/REST',
+      OPENFDA_BASE_URL: 'https://api.fda.gov/drug',
     });
   });
 

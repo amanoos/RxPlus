@@ -28,6 +28,11 @@ const envSchema = z.object({
   RXNAV_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://rxnav.nlm.nih.gov/REST'),
+  OPENFDA_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    .default('https://api.fda.gov/drug'),
+  // Optional; raises openFDA's daily limit. Sent as a query parameter, never logged.
+  OPENFDA_API_KEY: z.string().trim().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

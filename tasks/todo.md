@@ -6,7 +6,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Data and server
 
-- [ ] **Task 1: openFDA label client** (M)
+- [x] **Task 1: openFDA label client** (M)
   - Acceptance:
     - `createOpenFdaClient({ baseUrl, apiKey?, fetch, now })` with `interactionLabel(rxcui)`, which returns `{ setId, manufacturer, effectiveDate, sentences source text (drug_interactions + table, HTML stripped) }` or `null`
     - Queries `openfda.rxcui:<rxcui> AND _exists_:drug_interactions`, sorted `effective_time:desc`, `limit=1`; 404 "no matches" → `null`

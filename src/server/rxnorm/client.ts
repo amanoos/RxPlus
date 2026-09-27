@@ -4,6 +4,8 @@
  * API docs: https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html
  */
 
+import { createTtlCache, getJson } from '../utils/upstream';
+
 export type ProductTty = 'SCD' | 'SBD';
 
 export interface RxProduct {
@@ -55,66 +57,24 @@ interface ConceptGroup {
   conceptProperties?: ConceptProperties[];
 }
 
-class NetworkError extends Error {}
-
 export function createRxNavClient({
   baseUrl,
   fetch: fetchFn = fetch,
   now = Date.now,
   timeoutMs = 5000,
 }: RxNavClientOptions): RxNavClient {
-  const cache = new Map<string, { expires: number; value: Promise<unknown> }>();
+  const cached = createTtlCache(now);
+  const unavailable = (message: string) => new RxNavUnavailableError(`RxNav ${message}`);
 
-  function cached<T>(key: string, ttl: number, load: () => Promise<T>): Promise<T> {
-    const hit = cache.get(key);
-    if (hit && hit.expires > now()) return hit.value as Promise<T>;
-    const value = load();
-    cache.set(key, { expires: now() + ttl, value });
-    // Never cache failures.
-    value.catch(() => cache.delete(key));
-    return value;
-  }
-
-  async function attempt(url: string): Promise<unknown> {
-    const controller = new AbortController();
-    let timedOut = false;
-    const timer = setTimeout(() => {
-      timedOut = true;
-      controller.abort();
-    }, timeoutMs);
-    try {
-      const response = await Promise.race([
-        fetchFn(url, { signal: controller.signal, headers: { accept: 'application/json' } }),
-        new Promise<never>((_, reject) =>
-          controller.signal.addEventListener('abort', () => reject(new Error('aborted'))),
-        ),
-      ]);
-      if (response.status >= 500) throw new NetworkError(`RxNav responded ${response.status}`);
-      if (!response.ok) throw new RxNavUnavailableError(`RxNav responded ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      if (timedOut) throw new RxNavUnavailableError('RxNav timed out');
-      if (error instanceof RxNavUnavailableError) throw error;
-      throw new NetworkError(error instanceof Error ? error.message : String(error));
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-  /** GET with one retry on network errors and 5xx (not on timeouts or 4xx). */
+  /** GET JSON; any non-2xx response counts as RxNav being unavailable. */
   async function get(path: string): Promise<unknown> {
-    const url = `${baseUrl}${path}`;
-    try {
-      return await attempt(url);
-    } catch (error) {
-      if (!(error instanceof NetworkError)) throw error;
-      try {
-        return await attempt(url);
-      } catch (retryError) {
-        if (retryError instanceof RxNavUnavailableError) throw retryError;
-        throw new RxNavUnavailableError(`RxNav unreachable: ${(retryError as Error).message}`);
-      }
-    }
+    const { status, body } = await getJson(`${baseUrl}${path}`, {
+      fetch: fetchFn,
+      timeoutMs,
+      unavailable,
+    });
+    if (status < 200 || status >= 300) throw unavailable(`responded ${status}`);
+    return body;
   }
 
   const displayNames = () =>
