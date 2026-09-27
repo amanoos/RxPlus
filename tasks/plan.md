@@ -52,7 +52,7 @@ Let the owner add, list, stop, restart and delete prescriptions, each resolved t
 
 ### Phase 3: Verification
 
-- [ ] Task 9: E2E against a stub RxNav
+- [x] Task 9: E2E against a stub RxNav
 - [ ] Task 10: Migration in Docker, coverage targets, docs
 
 ### Checkpoint C: medications complete

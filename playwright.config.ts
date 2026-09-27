@@ -1,13 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { E2E_DATABASE_URL, E2E_PASSWORD } from './e2e/helpers';
 import { hashPassword } from './src/server/utils/password';
 
-// Test-only credentials for the throwaway e2e server; never used anywhere else.
-export const E2E_PASSWORD = 'e2e-test-password';
 const PORT = 4300;
+const STUB_RXNAV_PORT = 4399;
 
 export default defineConfig({
   testDir: './e2e',
+  testMatch: '**/*.spec.ts',
+  globalSetup: './e2e/global-setup.ts',
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env['CI'],
@@ -24,19 +26,29 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: process.env['PW_CHANNEL'] ?? 'chrome' },
     },
   ],
-  // Runs the production build; `npm run e2e` builds first.
-  webServer: {
-    command: 'node dist/analog/server/index.mjs',
-    url: `http://localhost:${PORT}/login`,
-    reuseExistingServer: false,
-    timeout: 30_000,
-    env: {
-      PORT: String(PORT),
-      DATABASE_URL:
-        process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test',
-      APP_PASSWORD_HASH: await hashPassword(E2E_PASSWORD),
-      SESSION_SECRET: 'e2e-session-secret-not-for-real-use-0123456789',
-      COOKIE_SECURE: 'false',
+  webServer: [
+    {
+      // Recorded RxNav responses, so e2e never depends on NLM being up.
+      command: 'node e2e/stub-rxnav.ts',
+      url: `http://localhost:${STUB_RXNAV_PORT}/health`,
+      env: { STUB_RXNAV_PORT: String(STUB_RXNAV_PORT) },
+      reuseExistingServer: false,
     },
-  },
+    {
+      // The production build; `npm run e2e` builds first.
+      command: 'node dist/analog/server/index.mjs',
+      url: `http://localhost:${PORT}/login`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: {
+        PORT: String(PORT),
+        DATABASE_URL: E2E_DATABASE_URL,
+        // Test-only credentials for this throwaway server; never used anywhere else.
+        APP_PASSWORD_HASH: await hashPassword(E2E_PASSWORD),
+        SESSION_SECRET: 'e2e-session-secret-not-for-real-use-0123456789',
+        COOKIE_SECURE: 'false',
+        RXNAV_BASE_URL: `http://localhost:${STUB_RXNAV_PORT}/REST`,
+      },
+    },
+  ],
 });

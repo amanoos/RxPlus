@@ -1,13 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-import { E2E_PASSWORD } from '../playwright.config';
-
-async function signIn(page: Page, password: string) {
-  // Wait for the client app to take over (it redirects to /login) before typing.
-  await expect(page).toHaveURL(/\/login/);
-  await page.locator('#password').fill(password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-}
+import { E2E_PASSWORD, signIn } from './helpers';
 
 test('redirects to login when not signed in', async ({ page }) => {
   await page.goto('/medications');
@@ -24,17 +17,17 @@ test('rejects a wrong password, then signs in and survives a hard refresh', asyn
 
   await signIn(page, E2E_PASSWORD);
   await expect(page).toHaveURL('/medications');
-  await expect(page.getByRole('heading', { name: 'Medications' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Medications', exact: true })).toBeVisible();
 
   await page.reload();
   await expect(page).toHaveURL('/medications');
-  await expect(page.getByRole('heading', { name: 'Medications' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Medications', exact: true })).toBeVisible();
 });
 
 test('logs out back to the login page', async ({ page }) => {
   await page.goto('/');
   await signIn(page, E2E_PASSWORD);
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Log out' }).click();
   await expect(page).toHaveURL('/login');

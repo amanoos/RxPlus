@@ -86,7 +86,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Verification
 
-- [ ] **Task 9: E2E against a stub RxNav** (M)
+- [x] **Task 9: E2E against a stub RxNav** (M)
   - Acceptance:
     - Playwright starts a fixture server serving the recorded RxNav responses; the app's `RXNAV_BASE_URL` points at it
     - Specs: add a medication via search → product; duplicate shows the message; stop → appears under Stopped → restart; delete with confirmation; reload keeps the data
