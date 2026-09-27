@@ -3,6 +3,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { ConfirmationService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { EMPTY } from 'rxjs';
 
@@ -71,5 +72,56 @@ describe('MedicationsPage', () => {
   it('shows the load error', async () => {
     const { el } = await setup({ ...initialMedicationsState, error: 'Something went wrong.' });
     expect(el.textContent).toContain('Something went wrong.');
+  });
+
+  describe('per-medication actions', () => {
+    const active = medicationFixture({ id: 'a', name: 'lisinopril 10 MG Oral Tablet' });
+    const stopped = medicationFixture({
+      id: 'b',
+      rxcui: '2',
+      name: 'atorvastatin 20 MG Oral Tablet',
+      stoppedOn: '2026-05-01',
+    });
+    const button = (el: HTMLElement, label: string) =>
+      el.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`);
+
+    it('offers edit, stop and delete for active and restart and delete for stopped', async () => {
+      const { el } = await setup(loadedWith(active, stopped));
+      expect(button(el, 'Edit lisinopril 10 MG Oral Tablet')).not.toBeNull();
+      expect(button(el, 'Stop taking lisinopril 10 MG Oral Tablet')).not.toBeNull();
+      expect(button(el, 'Delete lisinopril 10 MG Oral Tablet')).not.toBeNull();
+      expect(button(el, 'Restart atorvastatin 20 MG Oral Tablet')).not.toBeNull();
+      expect(button(el, 'Delete atorvastatin 20 MG Oral Tablet')).not.toBeNull();
+      expect(button(el, 'Stop taking atorvastatin 20 MG Oral Tablet')).toBeNull();
+    });
+
+    it('opens the edit dialog in the right mode', async () => {
+      const { el, fixture } = await setup(loadedWith(active));
+      button(el, 'Stop taking lisinopril 10 MG Oral Tablet')?.click();
+      await fixture.whenStable();
+      expect(fixture.componentInstance.editing()).toEqual({ medication: active, mode: 'stop' });
+    });
+
+    it('restarts a stopped medication', async () => {
+      const { el, store } = await setup(loadedWith(stopped));
+      button(el, 'Restart atorvastatin 20 MG Oral Tablet')?.click();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        MedicationsActions.update({ id: 'b', changes: { stoppedOn: null } }),
+      );
+    });
+
+    it('deletes only after confirmation', async () => {
+      const { el, store, fixture } = await setup(loadedWith(active));
+      const confirmation = fixture.debugElement.injector.get(ConfirmationService);
+      const confirm = vi.spyOn(confirmation, 'confirm');
+
+      button(el, 'Delete lisinopril 10 MG Oral Tablet')?.click();
+      expect(store.dispatch).not.toHaveBeenCalledWith(MedicationsActions.remove({ id: 'a' }));
+
+      const options = confirm.mock.calls[0][0];
+      expect(options.message).toContain('lisinopril 10 MG Oral Tablet');
+      options.accept?.();
+      expect(store.dispatch).toHaveBeenCalledWith(MedicationsActions.remove({ id: 'a' }));
+    });
   });
 });

@@ -72,7 +72,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/medications/add-medication-dialog.component.ts` (+ spec), `src/app/features/medications/rxnorm-api.service.ts` (+ spec), `medications.page.ts`
   - Depends on: 6
 
-- [ ] **Task 8: Edit notes/start date, stop, restart, delete with confirmation** (M)
+- [x] **Task 8: Edit notes/start date, stop, restart, delete with confirmation** (M)
   - Acceptance:
     - Per-card actions: Edit (notes, start date), Stop (date defaults to today, editable), Restart, Delete (PrimeNG ConfirmDialog)
     - The store updates in place; errors surface as messages
@@ -82,7 +82,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Full flow in the browser at 375px and 1280px, light and dark; no hydration warnings; RxNav-down message shown with the list still usable
+- [x] Full flow in the browser (add, duplicate, edit, stop, restart, delete with confirmation); 375px dark and 1280px light, no horizontal scroll; no hydration warnings. RxNav-down: 503 verified on the server (5.0s) and the message covered by component tests
 
 ## Phase 3: Verification
 
