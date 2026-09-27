@@ -29,3 +29,6 @@ Thumbs.db
 .env.*
 !.env.example
 !.env.test.example
+
+# Local Claude Code skills/settings (not part of RxPlus)
+.claude/
