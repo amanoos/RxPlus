@@ -71,8 +71,8 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 8: NgRx `drugInfo` feature and API service** (M)
-  - Acceptance: entities keyed by rxcui with facts, reactions and summary states; effects for load and start generation; polling every 2 s while pending (≤ 6 min, stops on route leave)
+- [x] **Task 8: NgRx `drugInfo` feature and API service** (M)
+  - Acceptance: entities keyed by rxcui with facts, reactions and summary states; effects for load and start generation; polling every 2 s while pending (≤ 12 min, stops on route leave)
   - Verify: reducer, selector and effect tests (with fake timers for polling)
   - Files: `src/app/features/drug-info/**`, `src/app/store/app.store.ts`
   - Depends on: 7
