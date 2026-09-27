@@ -173,10 +173,10 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 5: Deploy
 
-- [ ] **Task 11: Production Dockerfile, Compose app service and migrate-on-start** (M)
+- [x] **Task 11: Production Dockerfile, Compose app service and migrate-on-start** (M)
   - Acceptance:
     - Multi-stage `Dockerfile` (node:24 build, node:24-slim runtime), runs as non-root, `TZ` set, `VITE_PRIMEUI_LICENSE` passed as a build arg (Compose `build.args` from `.env`); the `app` service `depends_on: db: service_healthy`, exposes `3000`, uses `.env`
-    - The entrypoint runs `scripts/migrate.ts` (compiled; runtime migrator; exits 0 with "no migrations" if there's no journal; non-zero on failure) and then starts the server
+    - The entrypoint runs `scripts/migrate.ts` (bundled with esbuild to `dist/migrate.cjs`; runtime migrator; always checks the DB connection, so a bad `DATABASE_URL` fails startup; exits 0 with "no migrations" if there's no journal; non-zero on failure) and then starts the server
     - A README "Deploy" section explains setup: `cp .env.example .env`, `npm run hash-password`, `docker compose up -d --build`
   - Verify: `docker compose up -d --build` locally serves login on `:3000`; logs are clean; a broken `DATABASE_URL` makes the container exit non-zero; then repeat on the Ubuntu server (Success Criterion 1)
   - Files: `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `scripts/migrate.ts`, `README.md`

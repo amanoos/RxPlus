@@ -1,6 +1,24 @@
 name: rxplus
 
 services:
+  app:
+    build:
+      context: .
+      args:
+        VITE_PRIMEUI_LICENSE: ${VITE_PRIMEUI_LICENSE:-}
+    restart: unless-stopped
+    env_file: ${APP_ENV_FILE:-.env}
+    environment:
+      # Inside Compose the database host is `db`, whatever .env says for local dev.
+      DATABASE_URL: postgres://rxplus:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/rxplus
+      PORT: '3000'
+      TZ: ${TZ:-America/New_York}
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:18
     restart: unless-stopped

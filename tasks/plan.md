@@ -67,7 +67,7 @@ Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwin
 
 ### Phase 5: Deploy
 
-- [ ] Task 11: Production Dockerfile, Compose app service and migrate-on-start
+- [x] Task 11: Production Dockerfile, Compose app service and migrate-on-start
 
 ### Checkpoint C: complete
 
