@@ -31,6 +31,17 @@ const envSchema = z.object({
   OPENFDA_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://api.fda.gov/drug'),
+  // AI summaries: a local Ollama model by default, Claude optional.
+  SUMMARY_PROVIDER: z.enum(['ollama', 'claude'], 'must be "ollama" or "claude"').default('ollama'),
+  OLLAMA_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    // 127.0.0.1, not localhost: Node may resolve localhost to ::1 while Ollama listens on IPv4.
+    .default('http://127.0.0.1:11434'),
+  OLLAMA_MODEL: z.string().trim().min(1).optional(),
+  OLLAMA_NUM_CTX: z.coerce.number().int().min(2048).max(262144).default(16384),
+  OLLAMA_TIMEOUT_MS: z.coerce.number().int().min(10_000).default(600_000),
+  ANTHROPIC_API_KEY: z.string().trim().min(1).optional(),
+  AI_DAILY_LIMIT: z.coerce.number().int().min(0).default(20),
   // Optional; raises openFDA's daily limit. Sent as a query parameter, never logged.
   OPENFDA_API_KEY: z.string().trim().min(1).optional(),
 });

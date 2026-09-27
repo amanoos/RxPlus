@@ -175,6 +175,142 @@ describe('verifySummary', () => {
     expect(verified.uncitedRatio <= MAX_UNCITED_RATIO).toBe(true);
   });
 
+  it('rejects a real quote that shares no meaningful words with the sentence', () => {
+    const offTopic = verifySummary(
+      summary({
+        'Serious warnings': [
+          {
+            text: 'Get help if your face or throat swells.',
+            // Real label text, but about something else entirely.
+            quotes: [
+              {
+                labelSection: 'adverse_reactions',
+                text: 'most common adverse reactions (incidence >5%)',
+              },
+            ],
+          },
+        ],
+      }),
+      label,
+      { ignoreWords: ['lisinopril'] },
+    );
+    expect(offTopic.sections[3].sentences[0].uncited).toBe(true);
+  });
+
+  it("ignores the drug's own name when judging relevance", () => {
+    const labelWithName = {
+      ...label,
+      sections: [
+        ...label.sections,
+        {
+          name: 'boxed_warning' as const,
+          text: 'When pregnancy is detected, discontinue lisinopril tablets as soon as possible.',
+        },
+      ],
+    };
+    const verified = verifySummary(
+      summary({
+        'Serious warnings': [
+          {
+            text: 'Lisinopril can cause swelling of the lips.',
+            quotes: [
+              {
+                labelSection: 'boxed_warning',
+                text: 'discontinue lisinopril tablets as soon as possible',
+              },
+            ],
+          },
+        ],
+      }),
+      labelWithName,
+      { ignoreWords: ['lisinopril'] },
+    );
+    expect(verified.sections[3].sentences[0].uncited).toBe(true);
+  });
+
+  it('accepts related word forms (headaches ~ headache, dizzy ~ dizziness)', () => {
+    const verified = verifySummary(
+      summary({
+        'Common side effects': [
+          {
+            text: 'Headaches and feeling dizzy are common.',
+            quotes: [{ labelSection: 'adverse_reactions', text: 'headache, dizziness and cough' }],
+          },
+        ],
+      }),
+      label,
+    );
+    expect(verified.sections[2].sentences[0].uncited).toBe(false);
+  });
+
+  it('connects plain words to the medical terms they translate', () => {
+    const medicalLabel = {
+      ...label,
+      sections: [
+        {
+          name: 'indications_and_usage' as const,
+          text: 'Reduction of Mortality in Acute Myocardial Infarction: indicated for the reduction of mortality.',
+        },
+        {
+          name: 'warnings_and_cautions' as const,
+          text: 'Angioedema of the face, extremities, lips, tongue, glottis and/or larynx has been reported. Hyperkalemia may occur.',
+        },
+      ],
+    };
+    const verified = verifySummary(
+      summary({
+        "What it's for": [
+          {
+            text: 'It lowers the chance of death after a heart attack.',
+            quotes: [
+              {
+                labelSection: 'indications_and_usage',
+                text: 'Reduction of Mortality in Acute Myocardial Infarction',
+              },
+            ],
+          },
+        ],
+        'Serious warnings': [
+          {
+            text: 'It can cause serious swelling.',
+            quotes: [
+              {
+                labelSection: 'warnings_and_cautions',
+                text: 'Angioedema of the face, extremities',
+              },
+            ],
+          },
+          {
+            // "high potassium" must not match an unrelated "hyper-" term like hypertension.
+            text: 'It can raise blood pressure.',
+            quotes: [{ labelSection: 'warnings_and_cautions', text: 'Hyperkalemia may occur' }],
+          },
+        ],
+      }),
+      medicalLabel,
+    );
+    expect(verified.sections[0].sentences[0].uncited).toBe(false);
+    expect(verified.sections[3].sentences.map((s) => s.uncited)).toEqual([false, true]);
+  });
+
+  it('removes advice to start, stop or change a medication', () => {
+    const verified = verifySummary(
+      summary({
+        'Serious warnings': [
+          { text: 'Stop taking it right away if your throat swells.', quotes: [] },
+          { text: 'Do not take this medicine if you are pregnant.', quotes: [] },
+          {
+            text: 'It can cause a cough.',
+            quotes: [{ labelSection: 'adverse_reactions', text: 'headache, dizziness and cough' }],
+          },
+        ],
+      }),
+      label,
+    );
+    expect(verified.sections[3].sentences.map((s) => s.text)).toEqual(['It can cause a cough.']);
+    expect(verified.removedAdvice).toBe(2);
+  });
+
   it('rejects missing or reordered headings', () => {
     const bad = summary();
     bad.sections.reverse();

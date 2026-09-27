@@ -38,7 +38,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/drug-info/summary.ts` (+ spec)
   - Depends on: 1
 
-- [ ] **Task 5: Ollama provider** (M)
+- [x] **Task 5: Ollama provider** (M)
   - Acceptance:
     - `POST {OLLAMA_BASE_URL}/api/chat` with `model`, `messages`, `stream: false`, `format` (JSON schema), `options: { num_ctx, temperature: 0.2 }`, timeout from env; validates the JSON reply; clear errors for unreachable, timeout, invalid JSON, model missing (404)
     - Prompt-size estimate (≈ chars / 3.5) refuses a label that won't fit `num_ctx`

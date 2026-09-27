@@ -49,7 +49,13 @@ Five sections, in order:
 4. Serious warnings
 5. How well it works
 
-Each section is a list of **sentences**, and each sentence carries one or more **quotes**, each `{ labelSection, text }`. The server **verifies every quote**: after normalizing whitespace, case and quote marks, the quote must appear in the named label section. Verified quotes become citations. A sentence with no verified quote is marked _uncited_ and shown with a visible "not linked to the label" note, never silently. If more than 20% of sentences are uncited, the summary is regenerated once, then stored with a warning.
+Each section is a list of **sentences**, and each sentence carries one or more **quotes**, each `{ labelSection, text }`. The server **verifies every quote**, and also filters advice: after normalizing whitespace, case and quote marks, the quote must appear in the named label section. Verified quotes become citations. A sentence with no verified quote is marked _uncited_ and shown with a visible "not linked to the label" note, never silently. If more than 20% of sentences are uncited, the summary is regenerated once, then stored with a warning.
+
+Refinements from the first live run with `qwen2.5:7b` (2026-09-27):
+
+- **Relevance:** a real quote only counts if it shares a meaningful word stem with the sentence, ignoring filler words and the drug's own name. The 7B model once cited the fetal-toxicity boxed warning for a sentence about swelling. A short list of plain-word/medical-term pairs (heart attack ~ myocardial infarction, death ~ mortality, swelling ~ angioedema, …) keeps faithful translations cited. This checks the quote is on topic, not that it supports every word; the quote popover lets the reader judge.
+- **Advice filter:** sentences telling the reader to start, stop or change a medication are removed on the server, whatever the model wrote, and counted (`removedAdvice`). The model produced two such sentences despite the prompt.
+- **Timing:** a lisinopril summary took 209–272 s on the development PC, so the Ollama timeout defaults to 10 minutes and the page polls for up to 12.
 
 ### Prompt rules (shared, stable system prompt)
 
@@ -69,7 +75,7 @@ Each section is a list of **sentences**, and each sentence carries one or more *
 - **Request:** Ollama's HTTP API `POST /api/chat` with `stream: false` and `format` = the JSON schema of the output above (structured outputs), so the reply is validated JSON. Each label section is sent in the user message under a `### <section>` header.
 - **Context window:** `options.num_ctx` is set explicitly (default 16384, `OLLAMA_NUM_CTX`). Ollama's small default window would otherwise silently cut off the label. Before sending, the server estimates the prompt size and refuses with a clear error rather than truncating.
 - **Settings:** `options.temperature: 0.2`, for faithful rather than creative wording.
-- **Timeout:** 5 minutes (`OLLAMA_TIMEOUT_MS`). The response is validated with zod; invalid JSON counts as a failed attempt.
+- **Timeout:** 10 minutes (`OLLAMA_TIMEOUT_MS`). The response is validated with zod; invalid JSON counts as a failed attempt.
 - **Cost:** none; no daily cap.
 
 ### Provider: Claude (optional)
@@ -133,7 +139,7 @@ drugSummaries = pgTable(
 | `GET /api/drugs/:rxcui/summary`            | Stored summary for the product's **current** label                                                                           | 200 `ready`/`pending`/`failed`; 404 `none`                               |
 | `POST /api/drugs/:rxcui/summary`           | Start generation; idempotent for the current label                                                                           | 202 `pending`; 429 over the Claude daily limit; 503 provider unavailable |
 
-Generation runs **in the server process after the 202**, so page loads never wait on the model. The client polls `GET …/summary` every 2 s while `pending` (at most 6 minutes, to allow for the local model).
+Generation runs **in the server process after the 202**, so page loads never wait on the model. The client polls `GET …/summary` every 2 s while `pending` (at most 12 minutes, to allow for the local model).
 
 ## UI
 

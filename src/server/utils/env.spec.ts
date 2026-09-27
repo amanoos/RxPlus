@@ -16,6 +16,11 @@ describe('parseEnv', () => {
       TZ: 'America/New_York',
       RXNAV_BASE_URL: 'https://rxnav.nlm.nih.gov/REST',
       OPENFDA_BASE_URL: 'https://api.fda.gov/drug',
+      SUMMARY_PROVIDER: 'ollama',
+      OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
+      OLLAMA_NUM_CTX: 16384,
+      OLLAMA_TIMEOUT_MS: 600000,
+      AI_DAILY_LIMIT: 20,
     });
   });
 
@@ -51,5 +56,7 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...valid, PORT: '0' })).toThrowError(/PORT/);
     expect(() => parseEnv({ ...valid, TZ: 'Mars/Olympus' })).toThrowError(/TZ/);
     expect(() => parseEnv({ ...valid, RXNAV_BASE_URL: 'ftp://x' })).toThrowError(/RXNAV_BASE_URL/);
+    expect(() => parseEnv({ ...valid, SUMMARY_PROVIDER: 'gpt' })).toThrowError(/SUMMARY_PROVIDER/);
+    expect(() => parseEnv({ ...valid, OLLAMA_NUM_CTX: '512' })).toThrowError(/OLLAMA_NUM_CTX/);
   });
 });
