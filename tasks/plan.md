@@ -43,7 +43,7 @@ Check a new prescription, or the current list, for drug–drug interactions:
 ### Checkpoint A
 
 - [x] Real import against live DDInter + RxNav (≥ 95% mapped, idempotent)
-- [ ] curl: spironolactone vs active lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered case
+- [x] curl: spironolactone vs active lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered case
 
 ### Phase 2: Client
 

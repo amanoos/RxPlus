@@ -60,7 +60,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 ### Checkpoint A
 
 - [x] Real `npm run ddi:import` against the live DDInter + RxNav into the test DB: 234,981 pairs, 1,933/1,971 drugs mapped (98.1%) in 320 s; second run identical counts in 78 s (only the 38 unmapped names retried)
-- [ ] curl on the built server: spironolactone vs lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered example
+- [x] curl on the built server (live RxNav + openFDA): spironolactone vs lisinopril → Major in 347 ms, label quotes from both labels in 738 ms uncached; atorvastatin → Unknown; pancrelipase → notCovered (lipase, amylase, protease)
 
 ## Phase 2: Client
 
