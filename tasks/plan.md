@@ -33,7 +33,7 @@ Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwin
 ### Phase 1: Scaffold
 
 - [x] Task 1: Scaffold the Analog app, add tooling and set LF line endings
-- [ ] Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode
+- [x] Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode
 - [ ] Task 3: Validate env config and fail fast
 
 ### Checkpoint A: after Tasks 1–3

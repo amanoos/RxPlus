@@ -15,7 +15,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: scaffold output, `package.json`, `.gitattributes`, `.nvmrc`, `eslint.config.js`, `.prettierrc`, `SPEC-foundation.md`
   - Depends on: none
 
-- [ ] **Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode** (S)
+- [x] **Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode** (S)
   - Acceptance:
     - `providePrimeNG` uses the Aura preset, CSS layers are ordered so Tailwind utilities can override PrimeNG, and `tailwindcss-primeui` is loaded
     - Dark mode follows `prefers-color-scheme` for both PrimeNG and Tailwind
@@ -117,7 +117,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 - [ ] **Task 11: Production Dockerfile, Compose app service and migrate-on-start** (M)
   - Acceptance:
-    - Multi-stage `Dockerfile` (node:24 build, node:24-slim runtime), runs as non-root, `TZ` set; the `app` service `depends_on: db: service_healthy`, exposes `3000`, uses `.env`
+    - Multi-stage `Dockerfile` (node:24 build, node:24-slim runtime), runs as non-root, `TZ` set, `VITE_PRIMEUI_LICENSE` passed as a build arg (Compose `build.args` from `.env`); the `app` service `depends_on: db: service_healthy`, exposes `3000`, uses `.env`
     - The entrypoint runs `scripts/migrate.ts` (compiled; runtime migrator; exits 0 with "no migrations" if there's no journal; non-zero on failure) and then starts the server
     - A README "Deploy" section explains setup: `cp .env.example .env`, `npm run hash-password`, `docker compose up -d --build`
   - Verify: `docker compose up -d --build` locally serves login on `:3000`; logs are clean; a broken `DATABASE_URL` makes the container exit non-zero; then repeat on the Ubuntu server (Success Criterion 1)

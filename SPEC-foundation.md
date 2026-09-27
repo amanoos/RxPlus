@@ -23,7 +23,7 @@ Scaffolded with `create-analog@2.7.5` (template `latest`). All versions are pinn
 | Runtime        | Node.js 24 LTS (dev: 24.19.0)                                                           |
 | Meta-framework | AnalogJS 2.7.5 on Vite 8 (file-based routing, SSR, Nitro server routes)                 |
 | UI framework   | Angular 22.2 (standalone components, signals, zoneless by default), TypeScript 6.0      |
-| Components     | PrimeNG with the Aura theme preset (`@primeuix/themes`)                                 |
+| Components     | PrimeNG 22.1 with the Aura theme preset (`@primeuix/themes`); PrimeUI Community License |
 | Styling        | Tailwind CSS 4.3 (`@tailwindcss/vite`) + `tailwindcss-primeui`                          |
 | State          | `@ngrx/store`, `@ngrx/effects`, `@ngrx/store-devtools` (dev only)                       |
 | Database       | PostgreSQL 18 (Docker), `drizzle-orm` + `pg`, `drizzle-kit`                             |
@@ -36,14 +36,15 @@ Scaffolded with `create-analog@2.7.5` (template `latest`). All versions are pinn
 
 `.env.example` is committed. `.env` is gitignored.
 
-| Var                 | Purpose                                                              |
-| ------------------- | -------------------------------------------------------------------- |
-| `DATABASE_URL`      | `postgres://rxplus:***@db:5432/rxplus`                               |
-| `APP_PASSWORD_HASH` | scrypt hash, created with `npm run hash-password`                    |
-| `SESSION_SECRET`    | at least 32 random characters; signs and encrypts the session cookie |
-| `COOKIE_SECURE`     | `false` on plain-HTTP LAN; `true` behind TLS                         |
-| `PORT`              | default `3000`                                                       |
-| `TZ`                | `America/New_York`                                                   |
+| Var                    | Purpose                                                                                                                                                                    |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`         | `postgres://rxplus:***@db:5432/rxplus`                                                                                                                                     |
+| `APP_PASSWORD_HASH`    | scrypt hash, created with `npm run hash-password`                                                                                                                          |
+| `SESSION_SECRET`       | at least 32 random characters; signs and encrypts the session cookie                                                                                                       |
+| `COOKIE_SECURE`        | `false` on plain-HTTP LAN; `true` behind TLS                                                                                                                               |
+| `PORT`                 | default `3000`                                                                                                                                                             |
+| `TZ`                   | `America/New_York`                                                                                                                                                         |
+| `VITE_PRIMEUI_LICENSE` | PrimeUI Community License key. **Build-time**: Vite inlines it into the client bundle, so it's not a secret and must be present when `npm run build` / `docker build` runs |
 
 The server refuses to start, with a clear error, if `DATABASE_URL`, `APP_PASSWORD_HASH` or `SESSION_SECRET` is missing or invalid.
 
