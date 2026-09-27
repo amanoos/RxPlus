@@ -32,7 +32,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/interactions/importer.ts` (+ int spec, fixtures), `scripts/ddi-import.ts`, `src/server/rxnorm/client.ts`, `package.json`, `Dockerfile`
   - Depends on: 2
 
-- [ ] **Task 4: Interaction report builder and queries** (M)
+- [x] **Task 4: Interaction report builder and queries** (M)
   - Acceptance:
     - `buildReport(pairsFromDb, meds, candidate?)` implements the spec's matching rules: per ingredient; route filter by dose form; shared ingredients ignored; max level per pair; sorted Major → Unknown; notCovered
     - The repository fetches DDInter drugs by ingredient RXCUIs and the pairs among them in two queries; `source.importedAt` comes from the latest import
