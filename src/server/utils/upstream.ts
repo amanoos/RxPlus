@@ -71,9 +71,14 @@ async function attempt(
 /** Promise cache with per-entry TTL; failed loads are never cached. */
 export function createTtlCache(now: () => number) {
   const entries = new Map<string, { expires: number; value: Promise<unknown> }>();
-  return function cached<T>(key: string, ttlMs: number, load: () => Promise<T>): Promise<T> {
+  return function cached<T>(
+    key: string,
+    ttlMs: number,
+    load: () => Promise<T>,
+    { refresh = false }: { refresh?: boolean } = {},
+  ): Promise<T> {
     const hit = entries.get(key);
-    if (hit && hit.expires > now()) return hit.value as Promise<T>;
+    if (!refresh && hit && hit.expires > now()) return hit.value as Promise<T>;
     const value = load();
     entries.set(key, { expires: now() + ttlMs, value });
     value.catch(() => entries.delete(key));

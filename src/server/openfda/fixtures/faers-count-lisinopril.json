@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-07-30"
+  },
+  "results": [
+    {
+      "term": "FATIGUE",
+      "count": 19914
+    },
+    {
+      "term": "NAUSEA",
+      "count": 18503
+    },
+    {
+      "term": "DRUG INEFFECTIVE",
+      "count": 17623
+    },
+    {
+      "term": "DIARRHOEA",
+      "count": 17312
+    },
+    {
+      "term": "DYSPNOEA",
+      "count": 13985
+    },
+    {
+      "term": "PAIN",
+      "count": 13636
+    },
+    {
+      "term": "DIZZINESS",
+      "count": 13530
+    },
+    {
+      "term": "HEADACHE",
+      "count": 13016
+    },
+    {
+      "term": "OFF LABEL USE",
+      "count": 11051
+    },
+    {
+      "term": "VOMITING",
+      "count": 11048
+    }
+  ]
+}

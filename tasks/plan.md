@@ -38,7 +38,7 @@ A drug page (`/drugs/:rxcui`) with:
 
 ### Phase 1: Server
 
-- [ ] Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`
+- [x] Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`
 - [ ] Task 2: RxClass facts (uses, avoid with, classes) and MedlinePlus link
 - [ ] Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`
 - [ ] Task 4: Summary core: prompt, output schema, quote verification

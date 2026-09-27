@@ -6,7 +6,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Server
 
-- [ ] **Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`** (M)
+- [x] **Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`** (M)
   - Acceptance:
     - `summaryLabel`: newest label with `indications_and_usage`; returns set_id, version, effective date, manufacturer, DailyMed URL and the spec's sections as plain text (HTML stripped, `warnings` used when `warnings_and_cautions` is missing); `null` when none; 7-day cache with a `fresh` option that bypasses it
     - `reportedReactions`: top 10 `{ term, count }` and total reports for an ingredient (exact generic name, upper-cased); 404 → empty; 7-day cache

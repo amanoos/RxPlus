@@ -1,6 +1,6 @@
 /**
- * openFDA drug label client: the only place the app talks to openFDA.
- * Docs: https://open.fda.gov/apis/drug/label/
+ * openFDA client: the only place the app talks to openFDA (drug labels and
+ * adverse event reports). Docs: https://open.fda.gov/apis/drug/
  */
 import { createTtlCache, getJson } from '../utils/upstream';
 
@@ -15,9 +15,46 @@ export interface InteractionLabel {
   dailyMedUrl: string;
 }
 
+/** Label sections the drug summary is written from, in reading order. */
+export const SUMMARY_SECTIONS = [
+  'indications_and_usage',
+  'boxed_warning',
+  'contraindications',
+  'warnings_and_cautions',
+  'warnings',
+  'adverse_reactions',
+  'clinical_studies',
+  'mechanism_of_action',
+  'information_for_patients',
+] as const;
+export type SummarySectionName = (typeof SUMMARY_SECTIONS)[number];
+
+export interface SummaryLabel {
+  rxcui: string;
+  setId: string;
+  version: string;
+  manufacturer: string | null;
+  /** YYYY-MM-DD */
+  effectiveDate: string | null;
+  dailyMedUrl: string;
+  /** Plain-text sections present on this label, in SUMMARY_SECTIONS order. */
+  sections: { name: SummarySectionName; text: string }[];
+}
+
+export interface ReportedReactions {
+  /** All FAERS reports that list the ingredient. */
+  total: number;
+  /** Most reported reactions (MedDRA preferred terms), most frequent first. */
+  reactions: { term: string; count: number }[];
+}
+
 export interface OpenFdaClient {
   /** Newest label for an RxNorm product that has a drug interactions section, or null. */
   interactionLabel(rxcui: string): Promise<InteractionLabel | null>;
+  /** Newest label for an RxNorm product that has indications, or null. */
+  summaryLabel(rxcui: string, options?: { refresh?: boolean }): Promise<SummaryLabel | null>;
+  /** FAERS report counts for an ingredient (e.g. "lisinopril"). */
+  reportedReactions(ingredient: string): Promise<ReportedReactions>;
 }
 
 export class OpenFdaUnavailableError extends Error {
@@ -33,10 +70,12 @@ export interface OpenFdaClientOptions {
   timeoutMs?: number;
 }
 
-const LABEL_TTL = 7 * 24 * 60 * 60 * 1000;
+const WEEK = 7 * 24 * 60 * 60 * 1000;
+const TOP_REACTIONS = 10;
 
-interface LabelResult {
+interface LabelResult extends Partial<Record<SummarySectionName, string[]>> {
   set_id?: string;
+  version?: string;
   effective_time?: string;
   openfda?: { manufacturer_name?: string[] };
   drug_interactions?: string[];
@@ -63,6 +102,11 @@ const isoDate = (yyyymmdd?: string) =>
     ? `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}`
     : null;
 
+const dailyMedUrl = (setId: string) =>
+  `https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=${setId}`;
+
+const isRxcui = (value: string) => /^\d{1,10}$/.test(value);
+
 export function createOpenFdaClient({
   baseUrl,
   apiKey,
@@ -73,25 +117,34 @@ export function createOpenFdaClient({
   const cached = createTtlCache(now);
   const unavailable = (message: string) => new OpenFdaUnavailableError(`openFDA ${message}`);
 
+  /** GET an openFDA endpoint; 404 ("No matches found!") becomes null. */
+  async function query(path: string, params: Record<string, string>): Promise<unknown> {
+    const search = new URLSearchParams(params);
+    if (apiKey) search.set('api_key', apiKey);
+    const { status, body } = await getJson(`${baseUrl}${path}?${search}`, {
+      fetch: fetchFn,
+      timeoutMs,
+      unavailable,
+    });
+    if (status === 404) return null;
+    if (status !== 200) throw unavailable(`responded ${status}`);
+    return body;
+  }
+
+  const firstLabel = async (rxcui: string, mustHave: string) =>
+    (
+      (await query('/label.json', {
+        search: `openfda.rxcui:${rxcui} AND _exists_:${mustHave}`,
+        sort: 'effective_time:desc',
+        limit: '1',
+      })) as { results?: LabelResult[] } | null
+    )?.results?.[0] ?? null;
+
   return {
     interactionLabel(rxcui) {
-      if (!/^\d{1,10}$/.test(rxcui)) return Promise.resolve(null);
-      return cached(`label:${rxcui}`, LABEL_TTL, async () => {
-        const params = new URLSearchParams({
-          search: `openfda.rxcui:${rxcui} AND _exists_:drug_interactions`,
-          sort: 'effective_time:desc',
-          limit: '1',
-        });
-        if (apiKey) params.set('api_key', apiKey);
-        const { status, body } = await getJson(`${baseUrl}/label.json?${params}`, {
-          fetch: fetchFn,
-          timeoutMs,
-          unavailable,
-        });
-        if (status === 404) return null; // openFDA's "No matches found!"
-        if (status !== 200) throw unavailable(`responded ${status}`);
-
-        const label = (body as { results?: LabelResult[] }).results?.[0];
+      if (!isRxcui(rxcui)) return Promise.resolve(null);
+      return cached(`label:${rxcui}`, WEEK, async () => {
+        const label = await firstLabel(rxcui, 'drug_interactions');
         if (!label?.set_id) return null;
         const text = [...(label.drug_interactions ?? []), ...(label.drug_interactions_table ?? [])]
           .map(htmlToText)
@@ -102,7 +155,60 @@ export function createOpenFdaClient({
           manufacturer: label.openfda?.manufacturer_name?.[0] ?? null,
           effectiveDate: isoDate(label.effective_time),
           text,
-          dailyMedUrl: `https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=${label.set_id}`,
+          dailyMedUrl: dailyMedUrl(label.set_id),
+        };
+      });
+    },
+
+    summaryLabel(rxcui, { refresh = false } = {}) {
+      if (!isRxcui(rxcui)) return Promise.resolve(null);
+      return cached(
+        `summary-label:${rxcui}`,
+        WEEK,
+        async () => {
+          const label = await firstLabel(rxcui, 'indications_and_usage');
+          if (!label?.set_id) return null;
+          const sections = SUMMARY_SECTIONS.filter(
+            // Older labels use "warnings" instead of "warnings and cautions".
+            (name) => !(name === 'warnings' && label.warnings_and_cautions?.length),
+          ).flatMap((name) => {
+            const text = (label[name] ?? []).map(htmlToText).join(' ').trim();
+            return text ? [{ name, text }] : [];
+          });
+          return {
+            rxcui,
+            setId: label.set_id,
+            version: label.version ?? '1',
+            manufacturer: label.openfda?.manufacturer_name?.[0] ?? null,
+            effectiveDate: isoDate(label.effective_time),
+            dailyMedUrl: dailyMedUrl(label.set_id),
+            sections,
+          };
+        },
+        { refresh },
+      );
+    },
+
+    reportedReactions(ingredient) {
+      const name = ingredient.trim().toUpperCase().replace(/"/g, '');
+      if (!name) return Promise.resolve({ total: 0, reactions: [] });
+      return cached(`faers:${name}`, WEEK, async () => {
+        const search = `patient.drug.openfda.generic_name.exact:"${name}"`;
+        const [counts, totals] = await Promise.all([
+          query('/event.json', {
+            search,
+            count: 'patient.reaction.reactionmeddrapt.exact',
+            limit: String(TOP_REACTIONS),
+          }) as Promise<{ results?: { term: string; count: number }[] } | null>,
+          query('/event.json', { search, limit: '1' }) as Promise<{
+            meta?: { results?: { total?: number } };
+          } | null>,
+        ]);
+        return {
+          total: totals?.meta?.results?.total ?? 0,
+          reactions: (counts?.results ?? [])
+            .slice(0, TOP_REACTIONS)
+            .map(({ term, count }) => ({ term, count })),
         };
       });
     },

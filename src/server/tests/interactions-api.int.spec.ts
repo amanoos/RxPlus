@@ -51,7 +51,11 @@ describe('interactions API (integration)', () => {
     classNames: vi.fn<RxNavClient['classNames']>(),
     brandNames: vi.fn<RxNavClient['brandNames']>(),
   };
-  const openFda = { interactionLabel: vi.fn<OpenFdaClient['interactionLabel']>() };
+  const openFda = {
+    interactionLabel: vi.fn<OpenFdaClient['interactionLabel']>(),
+    summaryLabel: vi.fn<OpenFdaClient['summaryLabel']>(),
+    reportedReactions: vi.fn<OpenFdaClient['reportedReactions']>(),
+  };
   let handle: (req: Request) => Promise<Response>;
   const get = (path: string) => handle(new Request(`http://localhost${path}`));
 
