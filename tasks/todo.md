@@ -22,7 +22,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/rxnorm/client.ts` (+ spec, fixtures), `src/server/medlineplus/client.ts` (+ spec, fixtures)
   - Depends on: none
 
-- [ ] **Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`** (S)
+- [x] **Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`** (S)
   - Acceptance:
     - Facts for an SCD/SBD product: name, strength, form, brand, ingredients, classes, uses, avoid-with, label reference, MedlinePlus link; 422 non-product; 503 upstream down; saved medications don't need RxNav for name/ingredients
     - Reported reactions per ingredient, plus the disclaimer text in the response
