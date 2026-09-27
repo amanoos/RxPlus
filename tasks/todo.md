@@ -31,7 +31,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/db/schema/literature.ts`, `drizzle/0003_*`, `src/server/literature/repository.ts` (+ int spec)
   - Depends on: none
 
-- [ ] **Task 4: Literature service and routes** (M)
+- [x] **Task 4: Literature service and routes** (M)
   - Acceptance:
     - `GET /api/drugs/:rxcui/literature`: per ingredient, first use fetches and stores (PubMed + CT.gov), stored lists served immediately, lists older than 30 days served then refreshed in the background; PubMed down with nothing stored → 503; stored + down → served with a `stale` note
     - `POST /api/drugs/:rxcui/literature/refresh`: re-search now, keeping takeaways and hidden state

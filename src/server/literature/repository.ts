@@ -26,7 +26,8 @@ export interface FetchedLiterature {
   ingredientRxcui: string;
   ingredientName: string;
   papers: FetchedPaper[];
-  trials: FetchedTrial[];
+  /** Omitted when trials couldn't be fetched: the stored ones are kept. */
+  trials?: FetchedTrial[];
 }
 
 /** Reviews first (by rank, at most MAX_REVIEWS), then randomized trials, MAX_PAPERS in all. */
@@ -84,11 +85,15 @@ export function createLiteratureRepository(db: Db) {
             });
         }
 
-        await tx
-          .delete(literatureTrials)
-          .where(eq(literatureTrials.ingredientRxcui, ingredientRxcui));
-        if (trials.length) {
-          await tx.insert(literatureTrials).values(trials.map((t) => ({ ...t, ingredientRxcui })));
+        if (trials) {
+          await tx
+            .delete(literatureTrials)
+            .where(eq(literatureTrials.ingredientRxcui, ingredientRxcui));
+          if (trials.length) {
+            await tx
+              .insert(literatureTrials)
+              .values(trials.map((t) => ({ ...t, ingredientRxcui })));
+          }
         }
       });
     },

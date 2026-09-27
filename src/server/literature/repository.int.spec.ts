@@ -129,6 +129,10 @@ describe('literature repository (integration)', () => {
     });
     expect((await repo.hiddenPapers(ING)).map((p) => p.pmid)).toEqual(['r1']);
     expect((await repo.trials(ING)).map((t) => t.nctId)).toEqual(['NCT9']);
+
+    // Trials unavailable this time: the stored ones stay.
+    await repo.saveFetched({ ingredientRxcui: ING, ingredientName: 'lisinopril', papers: rcts(1) });
+    expect((await repo.trials(ING)).map((t) => t.nctId)).toEqual(['NCT9']);
   });
 
   it('promotes the next candidate when a paper is hidden, and restores it when unhidden', async () => {
