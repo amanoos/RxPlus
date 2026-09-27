@@ -1,6 +1,10 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
+import { EMPTY } from 'rxjs';
 
 import { medicationFixture } from '../../features/medications/medication.fixture';
 import { MedicationsActions } from '../../features/medications/store/medications.actions';
@@ -14,7 +18,13 @@ describe('MedicationsPage', () => {
   const setup = async (medications = initialMedicationsState) => {
     await TestBed.configureTestingModule({
       imports: [MedicationsPage],
-      providers: [providePrimeNG(), provideMockStore({ initialState: { medications } })],
+      providers: [
+        providePrimeNG(),
+        provideMockStore({ initialState: { medications } }),
+        provideMockActions(() => EMPTY),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     const store = TestBed.inject(MockStore);
     vi.spyOn(store, 'dispatch');

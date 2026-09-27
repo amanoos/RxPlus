@@ -1,9 +1,17 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { RouteMeta } from '@analogjs/router';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 
+import { AddMedicationDialogComponent } from '../../features/medications/add-medication-dialog.component';
 import { MedicationCardComponent } from '../../features/medications/medication-card.component';
 import { MedicationsActions } from '../../features/medications/store/medications.actions';
 import {
@@ -17,7 +25,7 @@ export const routeMeta: RouteMeta = { title: 'Medications · RxPlus' };
 
 @Component({
   selector: 'app-medications-page',
-  imports: [ButtonModule, MessageModule, MedicationCardComponent],
+  imports: [ButtonModule, MessageModule, MedicationCardComponent, AddMedicationDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-center justify-between gap-3">
@@ -66,6 +74,8 @@ export const routeMeta: RouteMeta = { title: 'Medications · RxPlus' };
         </ul>
       </details>
     }
+
+    <app-add-medication-dialog [(visible)]="addOpen" />
   `,
 })
 export default class MedicationsPage implements OnInit {
@@ -75,6 +85,7 @@ export default class MedicationsPage implements OnInit {
   readonly stopped = this.store.selectSignal(selectStoppedMedications);
   readonly loaded = this.store.selectSignal(selectMedicationsLoaded);
   readonly error = this.store.selectSignal(selectMedicationsError);
+  readonly addOpen = signal(false);
   readonly isEmpty = computed(
     () => this.loaded() && !this.active().length && !this.stopped().length,
   );
@@ -84,6 +95,6 @@ export default class MedicationsPage implements OnInit {
   }
 
   openAdd(): void {
-    // Add dialog: Task 7.
+    this.addOpen.set(true);
   }
 }

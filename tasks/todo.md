@@ -64,9 +64,9 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/pages/(app)/medications.page.ts`, `src/app/features/medications/medication-card.component.ts` (+ specs)
   - Depends on: 5
 
-- [ ] **Task 7: Add-medication dialog** (M)
+- [x] **Task 7: Add-medication dialog** (M)
   - Acceptance:
-    - A PrimeNG Dialog with AutoComplete (300 ms debounce, 2+ characters) → product list (generics first) → optional start date and notes → Save dispatches `add`; closes on success, shows the 409/503 message on failure
+    - A PrimeNG Dialog with AutoComplete (300 ms debounce, 2+ characters) → product list (single-ingredient first, then generics before brands, then by strength) → optional start date and notes → Save dispatches `add`; closes on success, shows the 409/503 message on failure
     - RxNav-down message "Drug lookup is unavailable right now"; keyboard-operable
   - Verify: component tests with a stubbed API; manual browser run
   - Files: `src/app/features/medications/add-medication-dialog.component.ts` (+ spec), `src/app/features/medications/rxnorm-api.service.ts` (+ spec), `medications.page.ts`
