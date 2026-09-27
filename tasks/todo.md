@@ -14,7 +14,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/openfda/client.ts` (+ spec, fixtures)
   - Depends on: none
 
-- [ ] **Task 2: RxClass facts and MedlinePlus link** (M)
+- [x] **Task 2: RxClass facts and MedlinePlus link** (M)
   - Acceptance:
     - RxNav client `drugFacts(ingredientRxcui)` → `{ classes (EPC, ATC), mayTreat, mayPrevent, avoidWith }`, de-duplicated and cached 7 days
     - `medlinePlusLink(ingredientRxcui)` from MedlinePlus Connect → `{ title, url }` or `null` (the drug page, not topic pages, preferred), cached 7 days

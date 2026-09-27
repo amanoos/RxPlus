@@ -50,6 +50,7 @@ describe('interactions API (integration)', () => {
     ingredientByName: vi.fn(),
     classNames: vi.fn<RxNavClient['classNames']>(),
     brandNames: vi.fn<RxNavClient['brandNames']>(),
+    drugFacts: vi.fn<RxNavClient['drugFacts']>(),
   };
   const openFda = {
     interactionLabel: vi.fn<OpenFdaClient['interactionLabel']>(),

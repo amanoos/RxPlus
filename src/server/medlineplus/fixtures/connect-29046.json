@@ -1,0 +1,93 @@
+{
+  "feed": {
+    "base": "https://medlineplus.gov/",
+    "lang": "en",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "title": {
+      "type": "text",
+      "_value": "MedlinePlus Connect"
+    },
+    "updated": {
+      "_value": "2026-09-27T17:08:53Z"
+    },
+    "id": {
+      "_value": ""
+    },
+    "author": {
+      "name": {
+        "_value": "U.S. National Library of Medicine"
+      },
+      "uri": {
+        "_value": "https://www.nlm.nih.gov"
+      }
+    },
+    "subtitle": {
+      "type": "text",
+      "_value": "MedlinePlus Connect results for RXCUI 29046"
+    },
+    "category": [
+      {
+        "scheme": "mainSearchCriteria.v.c",
+        "term": "29046"
+      },
+      {
+        "scheme": "mainSearchCriteria.v.cs",
+        "term": "RXNORM"
+      },
+      {
+        "scheme": "mainSearchCriteria.v.dn",
+        "term": ""
+      },
+      {
+        "scheme": "informationRecipient",
+        "term": "PAT"
+      }
+    ],
+    "entry": [
+      {
+        "title": {
+          "_value": "Lisinopril",
+          "type": "text"
+        },
+        "link": [
+          {
+            "href": "https://medlineplus.gov/druginfo/meds/a692051.html?utm_source=mplusconnect&utm_medium=service",
+            "rel": "alternate"
+          }
+        ],
+        "id": {
+          "_value": "tag: medlineplus.gov, 2026-27-09:/druginfo/meds/a692051.html?utm_source=mplusconnect&utm_medium=application"
+        },
+        "summary": {
+          "type": "html",
+          "_value": "Lisinopril is used alone or in combination with other medications to treat high blood pressure in adults and children 6 years of age and older. It is used in combination with other medications to treat heart failure. Lisinopril is also used to improve survival after a heart attack. Lisinopril is in a class of medications called angiotensin-converting enzyme (ACE) inhibitors. It works by decreasing certain chemicals that tighten the blood vessels, so blood flows more smoothly and the heart can pump blood more efficiently. High blood pressure is a common condition and when not treated, can cause damage to the brain, heart, blood vessels, kidneys, and other parts of the body. Damage to these organs may cause heart disease, a heart attack, heart failure, stroke, kidney failure, loss of vision, and other problems. In addition to taking medication, making lifestyle changes will also help to control your blood pressure. These changes include eating a diet that is low in fat and salt, maintaining a healthy weight, exercising at least 30 minutes most days, not smoking, and using alcohol in moderation."
+        },
+        "updated": {
+          "_value": "2026-09-27T17:08:53Z"
+        }
+      },
+      {
+        "title": {
+          "_value": "Blood Pressure Medicines",
+          "type": "text"
+        },
+        "link": [
+          {
+            "href": "https://medlineplus.gov/bloodpressuremedicines.html?utm_source=mplusconnect&utm_medium=service",
+            "rel": "alternate"
+          }
+        ],
+        "id": {
+          "_value": "tag: medlineplus.gov, 2026-27-09:/bloodpressuremedicines.html?utm_source=mplusconnect&utm_medium=application"
+        },
+        "summary": {
+          "type": "html",
+          "_value": "<h3>What is high blood pressure?</h3>\n<p><a href=\"https://medlineplus.gov/highbloodpressure.html?utm_source=mplusconnect\">High blood pressure</a>, also called hypertension, is when blood puts too much pressure against the walls of your arteries. Almost half of American adults have high blood pressure, usually with no symptoms. But it can cause serious problems such as <a href=\"https://medlineplus.gov/stroke.html?utm_source=mplusconnect\">stroke</a>, <a href=\"https://medlineplus.gov/heartfailure.html?utm_source=mplusconnect\">heart failure</a>, <a href=\"https://medlineplus.gov/heartattack.html?utm_source=mplusconnect\">heart attack</a>, and <a href=\"https://medlineplus.gov/kidneydiseases.html?utm_source=mplusconnect\">kidney disease</a>.</p>\n\n<h3>What lifestyle changes can help lower high blood pressure?</h3>\n<p><a href=\"https://medlineplus.gov/howtopreventhighbloodpressure.html?utm_source=mplusconnect\">Healthy lifestyle changes</a> can help reduce high blood pressure:</p>\n<ul>\n<li><a href=\"https://medlineplus.gov/weightcontrol.html?utm_source=mplusconnect\">Losing weight</a></li>\n<li><a href=\"https://medlineplus.gov/howmuchexercisedoineed.html?utm_source=mplusconnect\">Being physically active</a></li>\n<li>Managing <a href=\"https://medlineplus.gov/stress.html?utm_source=mplusconnect\">stress</a></li>\n<li>Reducing <a href=\"https://medlineplus.gov/sodium.html?utm_source=mplusconnect\">sodium</a> in your diet</li>\n<li>Avoiding <a href=\"https://medlineplus.gov/alcohol.html?utm_source=mplusconnect\">alcohol</a>, <a href=\"https://medlineplus.gov/quittingsmoking.html?utm_source=mplusconnect\">tobacco</a>, and <a href=\"https://medlineplus.gov/druguseandaddiction.html?utm_source=mplusconnect\">illegal drugs</a></li>\n<li><a href=\"https://medlineplus.gov/healthysleep.html?utm_source=mplusconnect\">Getting enough sleep</a></li>\t\n</ul>\n\n<h3>What if lifestyle changes alone cannot lower blood pressure?</h3>\n<p>Sometimes lifestyle changes alone cannot control or lower your high blood pressure. In that case, your health care provider may prescribe blood pressure medicines.</p>\n\n<h3>How do blood pressure medicines work?</h3>\n<p>The most commonly used blood pressure medicines work in different ways to lower blood pressure:</p>\n<ul>\n<li><strong>Angiotensin-converting enzyme (ACE) inhibitors and angiotensin II receptor blockers (ARBs)</strong> keep your blood vessels from narrowing as much and allows blood to move through them with less pressure.</li>\n<li><strong>Beta blockers</strong> help your heart beat slower and with less force. This means that your heart pumps less blood through your blood vessels. Beta blockers are typically used only as a backup option or if you also have certain other conditions.</li>\n<li><strong>Calcium channel blockers</strong> prevent calcium from entering the muscle cells of your heart and blood vessels. This allows the blood vessels to relax.</li>\n<li><strong>Diuretics</strong> remove extra water and sodium (salt) from your body. This lowers the amount of fluid in your blood. Diuretics are often used with other high blood pressure medicines, sometimes in one combined pill.</li>\n</ul>\n<p>Often, two or more medicines work better than one. If these medicines do not lower your blood pressure enough, your provider may suggest that you take another type of blood pressure medicine.</p>\n\n<p>While taking the medicines, it is still important to keep up with your healthy lifestyle changes. Doing both helps keep blood pressure lower than lifestyle changes or medicines alone.</p>\n\n<p class=\"attribution\">NIH: National Heart, Lung, and Blood Institute</p>"
+        },
+        "updated": {
+          "_value": "2026-09-27T17:08:53Z"
+        }
+      }
+    ]
+  }
+}

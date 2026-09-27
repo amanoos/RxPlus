@@ -14,6 +14,7 @@ describe('RxNorm proxy API', () => {
     ingredientByName: vi.fn<RxNavClient['ingredientByName']>(),
     classNames: vi.fn<RxNavClient['classNames']>(),
     brandNames: vi.fn<RxNavClient['brandNames']>(),
+    drugFacts: vi.fn<RxNavClient['drugFacts']>(),
   };
   const handle = toWebHandler(
     createApp().use(

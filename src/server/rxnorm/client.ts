@@ -34,6 +34,19 @@ export interface RxNavClient {
   classNames(ingredientRxcui: string): Promise<string[]>;
   /** Brand names related to an ingredient. */
   brandNames(ingredientRxcui: string): Promise<string[]>;
+  /** Classes, uses and conditions to avoid, from RxClass (MED-RT, FDA EPC, ATC). */
+  drugFacts(ingredientRxcui: string): Promise<DrugFacts>;
+}
+
+export interface DrugFacts {
+  /** FDA established pharmacologic classes, e.g. "Angiotensin Converting Enzyme Inhibitor". */
+  epcClasses: string[];
+  atcClasses: string[];
+  /** MED-RT may_treat (MeSH disease names). */
+  mayTreat: string[];
+  mayPrevent: string[];
+  /** MED-RT ci_with: conditions the drug is contraindicated with. */
+  avoidWith: string[];
 }
 
 export class RxNavUnavailableError extends Error {
@@ -184,6 +197,58 @@ export function createRxNavClient({
           (c) => c.name,
         ),
       );
+    },
+
+    drugFacts(ingredientRxcui) {
+      const empty: DrugFacts = {
+        epcClasses: [],
+        atcClasses: [],
+        mayTreat: [],
+        mayPrevent: [],
+        avoidWith: [],
+      };
+      if (!/^\d{1,10}$/.test(ingredientRxcui)) return Promise.resolve(empty);
+      return cached(`facts:${ingredientRxcui}`, DETAILS_TTL, async () => {
+        const body = (await get(`/rxclass/class/byRxcui.json?rxcui=${ingredientRxcui}`)) as {
+          rxclassDrugInfoList?: {
+            rxclassDrugInfo?: {
+              rela?: string;
+              relaSource?: string;
+              rxclassMinConceptItem: { className: string };
+            }[];
+          };
+        };
+        const facts: Record<keyof DrugFacts, Set<string>> = {
+          epcClasses: new Set(),
+          atcClasses: new Set(),
+          mayTreat: new Set(),
+          mayPrevent: new Set(),
+          avoidWith: new Set(),
+        };
+        for (const info of body.rxclassDrugInfoList?.rxclassDrugInfo ?? []) {
+          const name = info.rxclassMinConceptItem.className;
+          const { rela, relaSource } = info;
+          if (rela === 'has_epc' && (relaSource === 'DAILYMED' || relaSource === 'FDASPL')) {
+            facts.epcClasses.add(name);
+          } else if (relaSource === 'ATC') {
+            facts.atcClasses.add(name);
+          } else if (relaSource === 'MEDRT' && rela === 'may_treat') {
+            facts.mayTreat.add(name);
+          } else if (relaSource === 'MEDRT' && rela === 'may_prevent') {
+            facts.mayPrevent.add(name);
+          } else if (relaSource === 'MEDRT' && rela === 'ci_with') {
+            facts.avoidWith.add(name);
+          }
+        }
+        const sorted = (set: Set<string>) => [...set].sort((a, b) => a.localeCompare(b));
+        return {
+          epcClasses: sorted(facts.epcClasses),
+          atcClasses: sorted(facts.atcClasses),
+          mayTreat: sorted(facts.mayTreat),
+          mayPrevent: sorted(facts.mayPrevent),
+          avoidWith: sorted(facts.avoidWith),
+        };
+      });
     },
 
     product(rxcui) {

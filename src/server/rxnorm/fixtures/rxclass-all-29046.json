@@ -1,0 +1,1076 @@
+{
+  "rxclassDrugInfoList": {
+    "rxclassDrugInfo": [
+      {
+        "minConcept": {
+          "rxcui": "104375",
+          "name": "lisinopril 2.5 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104375",
+          "name": "lisinopril 2.5 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104376",
+          "name": "lisinopril 5 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104376",
+          "name": "lisinopril 5 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104377",
+          "name": "lisinopril 10 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104377",
+          "name": "lisinopril 10 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104378",
+          "name": "lisinopril 20 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "104378",
+          "name": "lisinopril 20 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D000799",
+          "className": "Angioedema",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D003928",
+          "className": "Diabetic Nephropathies",
+          "classType": "DISEASE"
+        },
+        "rela": "may_prevent",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D003928",
+          "className": "Diabetic Nephropathies",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D004342",
+          "className": "Drug Hypersensitivity",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D006333",
+          "className": "Heart Failure",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D006929",
+          "className": "Hyperaldosteronism",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D006973",
+          "className": "Hypertension",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D007022",
+          "className": "Hypotension",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D009203",
+          "className": "Myocardial Infarction",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D011247",
+          "className": "Pregnancy",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D017379",
+          "className": "Hypertrophy, Left Ventricular",
+          "classType": "DISEASE"
+        },
+        "rela": "may_prevent",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D018487",
+          "className": "Ventricular Dysfunction, Left",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "D018487",
+          "className": "Ventricular Dysfunction, Left",
+          "classType": "DISEASE"
+        },
+        "rela": "may_prevent",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000000181",
+          "className": "Angiotensin-converting Enzyme Inhibitors",
+          "classType": "MOA"
+        },
+        "rela": "has_moa",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000000181",
+          "className": "Angiotensin-converting Enzyme Inhibitors",
+          "classType": "MOA"
+        },
+        "rela": "has_moa",
+        "relaSource": "FDASPL"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000000181",
+          "className": "Angiotensin-converting Enzyme Inhibitors",
+          "classType": "MOA"
+        },
+        "rela": "has_moa",
+        "relaSource": "DAILYMED"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008423",
+          "className": "Decreased Bradykinin Degradation",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008669",
+          "className": "Decreased Intravascular Volume",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008731",
+          "className": "Decreased Mineralocorticoid Secretion",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008859",
+          "className": "Decreased Renal K+ Excretion",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000009553",
+          "className": "Increased Renal Na+ Excretion",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000009826",
+          "className": "Renal Arterial Vasodilation",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000175562",
+          "className": "Angiotensin Converting Enzyme Inhibitor",
+          "classType": "EPC"
+        },
+        "rela": "has_epc",
+        "relaSource": "FDASPL"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000175562",
+          "className": "Angiotensin Converting Enzyme Inhibitor",
+          "classType": "EPC"
+        },
+        "rela": "has_epc",
+        "relaSource": "DAILYMED"
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000178477",
+          "className": "Decreased Blood Pressure",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": {
+          "rxcui": "1806884",
+          "name": "lisinopril 1 MG/ML Oral Solution",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "1806884",
+          "name": "lisinopril 1 MG/ML Oral Solution",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "1806890",
+          "name": "lisinopril 1 MG/ML Oral Solution [Qbrelis]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "1806890",
+          "name": "lisinopril 1 MG/ML Oral Solution [Qbrelis]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "197884", "name": "lisinopril 40 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": { "rxcui": "197884", "name": "lisinopril 40 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "197885",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09BA",
+          "className": "ACE inhibitors and diuretics",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "197885",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV400",
+          "className": "ANTIHYPERTENSIVE COMBINATIONS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "197886",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09BA",
+          "className": "ACE inhibitors and diuretics",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "197886",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV400",
+          "className": "ANTIHYPERTENSIVE COMBINATIONS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "197887",
+          "name": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09BA",
+          "className": "ACE inhibitors and diuretics",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "197887",
+          "name": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet",
+          "tty": "SCD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV400",
+          "className": "ANTIHYPERTENSIVE COMBINATIONS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "205326", "name": "lisinopril 30 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": { "rxcui": "205326", "name": "lisinopril 30 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "206765",
+          "name": "lisinopril 10 MG Oral Tablet [Prinivil]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "206765",
+          "name": "lisinopril 10 MG Oral Tablet [Prinivil]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "206766",
+          "name": "lisinopril 20 MG Oral Tablet [Prinivil]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "206766",
+          "name": "lisinopril 20 MG Oral Tablet [Prinivil]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "206771",
+          "name": "lisinopril 40 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "206771",
+          "name": "lisinopril 40 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "213482",
+          "name": "lisinopril 30 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "213482",
+          "name": "lisinopril 30 MG Oral Tablet [Zestril]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "41549009",
+          "className": "Angiotensin-converting enzyme inhibitor-containing product",
+          "classType": "DISPOS",
+          "classUrl": "http://snomed.info/id/41549009"
+        },
+        "rela": "isa_disposition",
+        "relaSource": "SNOMEDCT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "768599000",
+          "className": "Peptide-containing product",
+          "classType": "STRUCT",
+          "classUrl": "http://snomed.info/id/768599000"
+        },
+        "rela": "isa_structure",
+        "relaSource": "SNOMEDCT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATC"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D000799",
+          "className": "Angioedema",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D003928",
+          "className": "Diabetic Nephropathies",
+          "classType": "DISEASE"
+        },
+        "rela": "may_prevent",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D003928",
+          "className": "Diabetic Nephropathies",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D004342",
+          "className": "Drug Hypersensitivity",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D006333",
+          "className": "Heart Failure",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D006929",
+          "className": "Hyperaldosteronism",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D006973",
+          "className": "Hypertension",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D007022",
+          "className": "Hypotension",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D009203",
+          "className": "Myocardial Infarction",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D011247",
+          "className": "Pregnancy",
+          "classType": "DISEASE"
+        },
+        "rela": "ci_with",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D017379",
+          "className": "Hypertrophy, Left Ventricular",
+          "classType": "DISEASE"
+        },
+        "rela": "may_prevent",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D017706",
+          "className": "Lisinopril",
+          "classType": "CHEM"
+        },
+        "rela": "has_ingredient",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D018487",
+          "className": "Ventricular Dysfunction, Left",
+          "classType": "DISEASE"
+        },
+        "rela": "may_prevent",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "D018487",
+          "className": "Ventricular Dysfunction, Left",
+          "classType": "DISEASE"
+        },
+        "rela": "may_treat",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000000181",
+          "className": "Angiotensin-converting Enzyme Inhibitors",
+          "classType": "MOA"
+        },
+        "rela": "has_moa",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008423",
+          "className": "Decreased Bradykinin Degradation",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008669",
+          "className": "Decreased Intravascular Volume",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008731",
+          "className": "Decreased Mineralocorticoid Secretion",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000008859",
+          "className": "Decreased Renal K+ Excretion",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000009553",
+          "className": "Increased Renal Na+ Excretion",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000009826",
+          "className": "Renal Arterial Vasodilation",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "29046", "name": "lisinopril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000178477",
+          "className": "Decreased Blood Pressure",
+          "classType": "PE"
+        },
+        "rela": "has_pe",
+        "relaSource": "MEDRT"
+      },
+      {
+        "minConcept": { "rxcui": "311353", "name": "lisinopril 2.5 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": { "rxcui": "311353", "name": "lisinopril 2.5 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "311354", "name": "lisinopril 5 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": { "rxcui": "311354", "name": "lisinopril 5 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "314076", "name": "lisinopril 10 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": { "rxcui": "314076", "name": "lisinopril 10 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": { "rxcui": "314077", "name": "lisinopril 20 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "C09AA",
+          "className": "ACE inhibitors, plain",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": { "rxcui": "314077", "name": "lisinopril 20 MG Oral Tablet", "tty": "SCD" },
+        "rxclassMinConceptItem": {
+          "classId": "CV800",
+          "className": "ACE INHIBITORS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "823971",
+          "name": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet [Zestoretic]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09BA",
+          "className": "ACE inhibitors and diuretics",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "823971",
+          "name": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet [Zestoretic]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV400",
+          "className": "ANTIHYPERTENSIVE COMBINATIONS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "823982",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet [Zestoretic]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09BA",
+          "className": "ACE inhibitors and diuretics",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "823982",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet [Zestoretic]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV400",
+          "className": "ANTIHYPERTENSIVE COMBINATIONS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      },
+      {
+        "minConcept": {
+          "rxcui": "823986",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet [Zestoretic]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "C09BA",
+          "className": "ACE inhibitors and diuretics",
+          "classType": "ATC1-4"
+        },
+        "rela": "",
+        "relaSource": "ATCPROD"
+      },
+      {
+        "minConcept": {
+          "rxcui": "823986",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet [Zestoretic]",
+          "tty": "SBD"
+        },
+        "rxclassMinConceptItem": {
+          "classId": "CV400",
+          "className": "ANTIHYPERTENSIVE COMBINATIONS",
+          "classType": "VA"
+        },
+        "rela": "has_VAClass_extended",
+        "relaSource": "VA"
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "feed": {
+    "base": "https://medlineplus.gov/",
+    "lang": "en",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "title": {
+      "type": "text",
+      "_value": "MedlinePlus Connect"
+    },
+    "updated": {
+      "_value": "2026-09-27T17:08:54Z"
+    },
+    "id": {
+      "_value": ""
+    },
+    "author": {
+      "name": {
+        "_value": "U.S. National Library of Medicine"
+      },
+      "uri": {
+        "_value": "https://www.nlm.nih.gov"
+      }
+    },
+    "subtitle": {
+      "type": "text",
+      "_value": "MedlinePlus Connect results for RXCUI 1"
+    },
+    "category": [
+      {
+        "scheme": "mainSearchCriteria.v.c",
+        "term": "1"
+      },
+      {
+        "scheme": "mainSearchCriteria.v.cs",
+        "term": "RXNORM"
+      },
+      {
+        "scheme": "mainSearchCriteria.v.dn",
+        "term": ""
+      },
+      {
+        "scheme": "informationRecipient",
+        "term": "PAT"
+      }
+    ],
+    "entry": []
+  }
+}

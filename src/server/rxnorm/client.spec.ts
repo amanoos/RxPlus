@@ -24,6 +24,7 @@ function fixtureFetch(overrides: Record<string, () => Promise<Response>> = {}) {
   routes['/rxcui.json?name=Zzqqxx&search=2'] = 'rxcui-name-none';
   routes['/rxcui/83366/related.json?tty=IN'] = 'related-in-83366';
   routes['/rxcui/29046/related.json?tty=IN'] = 'related-in-29046';
+  routes['/rxclass/class/byRxcui.json?rxcui=29046'] = 'rxclass-all-29046';
   for (const id of ['29046', '9997']) {
     routes[`/rxclass/class/byRxcui.json?rxcui=${id}&relaSource=DAILYMED&relas=has_epc`] =
       `epc-${id}`;
@@ -179,6 +180,29 @@ describe('RxNav client', () => {
       const client = create(fixtureFetch().fetchFn);
       expect(await client.classNames('1')).toEqual([]);
       expect(await client.brandNames('1')).toEqual([]);
+    });
+  });
+
+  describe('drugFacts', () => {
+    it('collects classes, uses and conditions to avoid from RxClass', async () => {
+      const facts = await create(fixtureFetch().fetchFn).drugFacts('29046');
+      expect(facts.epcClasses).toEqual(['Angiotensin Converting Enzyme Inhibitor']);
+      expect(facts.atcClasses).toContain('ACE inhibitors, plain');
+      expect(facts.mayTreat).toEqual(expect.arrayContaining(['Hypertension', 'Heart Failure']));
+      expect(facts.mayPrevent).toEqual(expect.arrayContaining(['Diabetic Nephropathies']));
+      expect(facts.avoidWith).toEqual(expect.arrayContaining(['Angioedema']));
+      // De-duplicated.
+      expect(new Set(facts.mayTreat).size).toBe(facts.mayTreat.length);
+    });
+
+    it('returns empty lists for an unknown ingredient', async () => {
+      expect(await create(fixtureFetch().fetchFn).drugFacts('1')).toEqual({
+        epcClasses: [],
+        atcClasses: [],
+        mayTreat: [],
+        mayPrevent: [],
+        avoidWith: [],
+      });
     });
   });
 
