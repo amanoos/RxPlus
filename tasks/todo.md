@@ -116,13 +116,13 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/utils/password.ts`, `src/server/utils/password.spec.ts`, `scripts/hash-password.ts`, `package.json`
   - Depends on: 3
 
-- [ ] **Task 6: Auth API routes, session, rate limiter and middleware** (M)
+- [x] **Task 6: Auth API routes, session, rate limiter and middleware** (M)
   - Acceptance:
-    - `POST /api/auth/login` (zod body) returns 204 and sets a sealed `httpOnly`, `sameSite=lax` cookie with a 30-day max age and `secure` from env; 401 with a generic message on failure; 429 on the sixth failure within 15 minutes
+    - `POST /api/auth/login` (zod body) returns 204 and sets a sealed `httpOnly`, `sameSite=lax` cookie expiring in 30 days (h3 emits `Expires` and enforces the TTL in the seal) and `secure` from env; 401 with a generic message on failure; 429 on the sixth failure within 15 minutes
     - `POST /api/auth/logout` returns 204 and clears the session; `GET /api/auth/me` returns 200 or 401
     - The middleware returns 401 for every `/api/*` except `auth/login` and `health`
   - Verify: integration tests for each status code and the cookie flags; the rate limiter unit-tested with a fake clock
-  - Files: `src/server/utils/session.ts`, `src/server/utils/rate-limit.ts` (+ spec), `src/server/routes/api/auth/{login.post,logout.post,me.get}.ts`, `src/server/middleware/auth.ts`
+  - Files: `src/server/utils/session.ts`, `src/server/utils/rate-limit.ts` (+ spec), `src/server/routes/api/auth/{login.post,logout.post,me.get}.ts`, `src/server/middleware/auth.ts`, `src/server/tests/auth-api.spec.ts` (tests must not live under `routes/` or `middleware/`: Nitro registers every file there)
   - Depends on: 4, 5
 
 - [ ] **Task 7: NgRx root store and `auth` feature** (M)

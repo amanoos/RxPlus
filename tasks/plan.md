@@ -49,7 +49,7 @@ Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwin
 ### Phase 3: Auth slice
 
 - [x] Task 5: Password hashing util and `hash-password` script
-- [ ] Task 6: Auth API routes, session, rate limiter and middleware
+- [x] Task 6: Auth API routes, session, rate limiter and middleware
 - [ ] Task 7: NgRx root store and `auth` feature
 - [ ] Task 8: Login page (prerendered) and auth guard
 

@@ -35,6 +35,7 @@ export default defineConfig(() => ({
           environment: 'node',
           include: ['src/**/*.int.spec.ts'],
           fileParallelism: false,
+          sequence: { groupOrder: 1 },
         },
       },
     ],
