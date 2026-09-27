@@ -1,119 +1,118 @@
-# Tasks: drug-info
+# Tasks: literature
 
-Plan: [plan.md](plan.md) · Spec: [SPEC-drug-info.md](../SPEC-drug-info.md)
+Plan: [plan.md](plan.md) · Spec: [SPEC-literature.md](../SPEC-literature.md)
 
 Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
 
 ## Phase 1: Server
 
-- [x] **Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`** (M)
+- [ ] **Task 1: PubMed client** (M)
   - Acceptance:
-    - `summaryLabel`: newest label with `indications_and_usage`; returns set_id, version, effective date, manufacturer, DailyMed URL and the spec's sections as plain text (HTML stripped, `warnings` used when `warnings_and_cautions` is missing); `null` when none; 7-day cache with a `fresh` option that bypasses it
-    - `reportedReactions`: top 10 `{ term, count }` and total reports for an ingredient (exact generic name, upper-cased); 404 → empty; 7-day cache
-  - Verify: unit tests with recorded fixtures (lisinopril label, lisinopril FAERS counts and total, no-match)
-  - Files: `src/server/openfda/client.ts` (+ spec, fixtures)
+    - `searchPapers(ingredient)` runs both tiers (exact `term` strings from the spec, `hasabstract`, relevance order, 20 each) and returns PMIDs per tier, de-duplicated (a PMID in both tiers stays a review)
+    - `paperDetails(pmids)` from esummary: title, journal, year (from `pubdate`), pub types, DOI, PMC id
+    - `abstracts(pmids)` from efetch XML: labeled sections joined as "LABEL: text", entities decoded, missing → skipped
+    - requests serialized with ≥ 350 ms spacing (110 ms with `NCBI_API_KEY`); `tool=rxplus`, optional `email`; key redacted from logs; `PUBMED_BASE_URL`, `NCBI_API_KEY`, `NCBI_EMAIL` in env
+    - `upstream.ts` gains a text fetch helper with the same timeout/retry rules
+  - Verify: unit tests with recorded fixtures (lisinopril esearch ×2, esummary, efetch with structured and plain abstracts, no results)
+  - Files: `src/server/pubmed/{client,index}.ts` (+ spec, fixtures), `src/server/utils/upstream.ts`, `src/server/utils/env.ts` (+ specs)
   - Depends on: none
 
-- [x] **Task 2: RxClass facts and MedlinePlus link** (M)
-  - Acceptance:
-    - RxNav client `drugFacts(ingredientRxcui)` → `{ classes (EPC, ATC), mayTreat, mayPrevent, avoidWith }`, de-duplicated and cached 7 days
-    - `medlinePlusLink(ingredientRxcui)` from MedlinePlus Connect → `{ title, url }` or `null` (the drug page, not topic pages, preferred), cached 7 days
-  - Verify: unit tests with recorded fixtures (lisinopril)
-  - Files: `src/server/rxnorm/client.ts` (+ spec, fixtures), `src/server/medlineplus/client.ts` (+ spec, fixtures)
+- [ ] **Task 2: ClinicalTrials.gov client** (S)
+  - Acceptance: `trials(ingredient)` → up to 3 completed with results, then recruiting, up to 5 total; mapped `{ nctId, title, status, phases, hasResults, startDate, lastUpdate }`; `CTGOV_BASE_URL` in env; 7-day cache
+  - Verify: unit tests with recorded fixtures (lisinopril completed-with-results, recruiting, none)
+  - Files: `src/server/ctgov/{client,index}.ts` (+ spec, fixtures), `src/server/utils/env.ts`
   - Depends on: none
 
-- [x] **Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`** (S)
+- [ ] **Task 3: Schema, migration 0003 and repository** (M)
   - Acceptance:
-    - Facts for an SCD/SBD product: name, strength, form, brand, ingredients, classes, uses, avoid-with, label reference, MedlinePlus link; 422 non-product; 503 upstream down; saved medications don't need RxNav for name/ingredients
-    - Reported reactions per ingredient, plus the disclaimer text in the response
-  - Verify: route integration tests with stubbed clients
-  - Files: `src/server/drug-info/facts.ts`, `src/server/routes/api/drugs/[rxcui]/index.get.ts`, `…/reported-reactions.get.ts`, `src/server/tests/drug-info-api.int.spec.ts`
-  - Depends on: 1, 2
+    - `literature_lists`, `literature_papers`, `literature_trials` as in the spec; migration `0003_create_literature`
+    - repository: save a fetched list (upsert papers keeping `takeaway` and `hiddenAt`; replace trials), shown papers (first 10 not hidden, ≤ 4 reviews, by tier and rank), hidden papers, hide/unhide, takeaway state (claim/complete/fail), `failInterrupted`
+  - Verify: integration tests (upsert keeps takeaways and hidden state, selection rules, hide promotes the next candidate)
+  - Files: `src/server/db/schema/literature.ts`, `drizzle/0003_*`, `src/server/literature/repository.ts` (+ int spec)
+  - Depends on: none
 
-- [x] **Task 4: Summary core: prompt, output schema, quote verification** (M)
+- [ ] **Task 4: Literature service and routes** (M)
   - Acceptance:
-    - `buildPrompt(label)` (system rules + sections; only label text), the output zod schema (5 headings → sentences → quotes)
-    - `verifySummary(raw, label)`: normalized substring match within the named section → citations; uncited flags; `uncitedRatio`; rejects wrong headings or order
-  - Verify: unit tests (exact, whitespace/case/quote-mark variants, wrong section, invented quote, empty sections, the 20% threshold)
-  - Files: `src/server/drug-info/summary.ts` (+ spec)
-  - Depends on: 1
+    - `GET /api/drugs/:rxcui/literature`: per ingredient, first use fetches and stores (PubMed + CT.gov), stored lists served immediately, lists older than 30 days served then refreshed in the background; PubMed down with nothing stored → 503; stored + down → served with a `stale` note
+    - `POST /api/drugs/:rxcui/literature/refresh`: re-search now, keeping takeaways and hidden state
+    - `POST|DELETE /api/literature/:ingredient/papers/:pmid/hide` → 204
+    - response: per ingredient `{ ingredient, papers[≤10], hiddenCount, trials[≤5], fetchedAt, takeaways: { status, provider, model, error } }`; abstracts never included
+  - Verify: route integration tests with stubbed clients (first fetch, reuse, stale refresh, outage, hide/unhide, combination product)
+  - Files: `src/server/literature/service.ts`, `src/server/routes/api/drugs/[rxcui]/literature/*.ts`, `src/server/routes/api/literature/[ingredient]/papers/[pmid]/hide.{post,delete}.ts`, `src/server/tests/literature-api.int.spec.ts`
+  - Depends on: 1, 2, 3
 
-- [x] **Task 5: Ollama provider** (M)
+- [ ] **Task 5: Provider refactor** (M)
   - Acceptance:
-    - `POST {OLLAMA_BASE_URL}/api/chat` with `model`, `messages`, `stream: false`, `format` (JSON schema), `options: { num_ctx, temperature: 0.2 }`, timeout from env; validates the JSON reply; clear errors for unreachable, timeout, invalid JSON, model missing (404)
-    - Prompt-size estimate (≈ chars / 3.5) refuses a label that won't fit `num_ctx`
-    - Env: `SUMMARY_PROVIDER` (default `ollama`), `OLLAMA_BASE_URL`, `OLLAMA_MODEL` (required when provider is `ollama`), `OLLAMA_NUM_CTX` (16384), `OLLAMA_TIMEOUT_MS` (300000)
-  - Verify: unit tests with a mocked fetch; a live smoke test if Ollama is reachable
-  - Files: `src/server/drug-info/providers/ollama.ts` (+ spec), `src/server/utils/env.ts` (+ spec), `.env.example`
-  - Depends on: 4
+    - Ollama: generic `generateJson({ system, user, schema, zod })` with the same size check, timeout and error mapping; the summary provider uses it
+    - Claude: generic `generateCited({ system, documents, instruction })` returning text blocks with citations; the summary parser uses it
+    - quote-verification helpers (normalize, stems, synonyms, relevance, advice filter) moved to `src/server/ai/verify.ts`
+    - drug-info unit, integration and e2e tests pass without changes to their assertions
+  - Verify: `npm test`, `npm run test:int`, drug-info e2e spec
+  - Files: `src/server/ai/{verify,ollama,claude}.ts` (+ specs), `src/server/drug-info/providers/*`, `src/server/drug-info/summary.ts`
+  - Depends on: none
 
-- [x] **Task 6: Claude provider** (M)
+- [ ] **Task 6: Takeaway core** (M)
   - Acceptance:
-    - `@anthropic-ai/sdk`; `claude-opus-5`, adaptive thinking, effort `high`, `max_tokens` 16000; sections as plain-text documents with citations; beta `server-side-fallback-2026-07-01` + `fallbacks: "default"`; `stop_reason` checked; text split at the fixed headings, `cited_text` → quotes
-    - Only active when `SUMMARY_PROVIDER=claude` and `ANTHROPIC_API_KEY` are set; `AI_DAILY_LIMIT` (default 20) counted from stored rows (enforced in Task 7, where the rows live)
-  - Verify: unit tests with a mocked SDK client (request shape, citation mapping, refusal, `max_tokens`)
-  - Files: `src/server/drug-info/providers/claude.ts` (+ spec), `package.json`
-  - Depends on: 4
+    - prompt rules from the spec; the user message has only `### PMID <id>` + abstract per paper
+    - zod schema `{ takeaways: [{ pmid, text, quote }] }`; Claude variant parsed from `## PMID <id>` blocks with citations mapped by document index
+    - verification per paper: quote found in that paper's abstract and relevant, else uncited; unknown PMIDs and duplicates dropped; advice removed
+  - Verify: unit tests (request contains only abstracts and PMIDs; cross-paper quote → uncited; unknown PMID dropped; advice removed; Claude parsing)
+  - Files: `src/server/literature/takeaways.ts` (+ spec)
+  - Depends on: 5
 
-- [x] **Task 7: Summary storage, background generation and summary routes** (M)
+- [ ] **Task 7: Takeaway generation** (M)
   - Acceptance:
-    - `drug_summaries` table + migration `0002_*`; the repository finds by (rxcui, set_id, version)
-    - `POST /api/drugs/:rxcui/summary` → 202 (a `pending` row, then generation in the background with one retry when uncited > 20%); idempotent; 429 over the Claude limit; 503 provider not configured
-    - `GET …/summary` → none/pending/ready/failed for the current label; stale `pending` rows (> 10 min) marked failed at startup
-  - Verify: integration tests with a stub provider (happy path, retry-then-warning, failure, idempotence, limit)
-  - Files: `src/server/db/schema/drug-info.ts`, `drizzle/0002_*`, `src/server/drug-info/{repository,service}.ts`, routes, `src/server/plugins/summaries.ts`, tests
-  - Depends on: 3, 5, 6
+    - `POST /api/drugs/:rxcui/literature/takeaways` → 202; one background call per ingredient for shown papers lacking a takeaway; results stored per paper; status on the list row; idempotent while pending
+    - Claude daily limit counts starts in `drug_summaries` and `literature_lists` together (429); no provider → 503
+    - startup plugin also marks pending takeaway work failed
+  - Verify: integration tests with a stub provider (happy path, partial verification, failure and retry, idempotence, shared limit)
+  - Files: `src/server/literature/service.ts`, route, `src/server/plugins/summaries.ts`, `src/server/drug-info/repository.ts` (shared count), tests
+  - Depends on: 4, 6
 
 ### Checkpoint A
 
-- [x] Unit and integration tests pass; migration applies
-- [x] curl: facts, FAERS and summary generation with the stub provider; live `qwen2.5:7b` if reachable (2026-09-27: 10 claims, 1 uncited, 2 advice sentences removed, ~7.5 min with a retry)
+- [ ] Unit and integration tests pass; migration applies
+- [ ] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
 
 ## Phase 2: Client
 
-- [x] **Task 8: NgRx `drugInfo` feature and API service** (M)
-  - Acceptance: entities keyed by rxcui with facts, reactions and summary states; effects for load and start generation; polling every 2 s while pending (≤ 12 min, stops on route leave)
-  - Verify: reducer, selector and effect tests (with fake timers for polling)
-  - Files: `src/app/features/drug-info/**`, `src/app/store/app.store.ts`
+- [ ] **Task 8: NgRx `literature` feature and API service** (M)
+  - Acceptance: entries keyed by product RXCUI (lists per ingredient, takeaway state); effects: load, refresh, start takeaways automatically when missing (browser only), poll every 2 s while pending (≤ 12 min, stops on leave), hide/unhide optimistic with rollback
+  - Verify: reducer, selector and effect tests (fake timers for polling, rollback on error)
+  - Files: `src/app/features/literature/**`, `src/app/store/app.store.ts`
   - Depends on: 7
 
-- [x] **Task 9: `/drugs/:rxcui` page: facts, FAERS, links** (M)
-  - Acceptance: SSR facts (class tags, "Used for" chips, "Avoid if you have"), a FAERS bar list with an always-visible disclaimer, DailyMed and MedlinePlus links; error and loading states
-  - Verify: component tests; SSR curl
-  - Files: `src/app/pages/(app)/drugs/[rxcui].page.ts` (+ spec), `src/app/features/drug-info/reported-reactions.component.ts` (+ spec)
+- [ ] **Task 9: Research section: papers** (M)
+  - Acceptance: on `/drugs/:rxcui` below the summary, one block per ingredient; each paper: type badge, title → PubMed, journal · year, "Free full text" when PMC; takeaway with a source marker and popover (abstract quote, "Read on PubMed"); unverified takeaways marked; pending (elapsed), failed (retry), unavailable (reason) states; loading and error states that never block the page
+  - Verify: component tests; browser check
+  - Files: `src/app/features/literature/research-section.component.ts`, `paper-list.component.ts` (+ specs), drug page
   - Depends on: 8
 
-- [x] **Task 10: Summary panel** (M)
-  - Acceptance: five sections; citation markers with a popover (quote + label section); uncited sentences with a dotted underline and note; pending (elapsed time), failed (retry), unavailable (reason) states; "Check for a newer label"; footer with model, provider and label date
+- [ ] **Task 10: Hide, trials, footer and refresh** (S)
+  - Acceptance: Hide button per paper and "Show hidden (n)" with Unhide; trials list (NCT id, title → ClinicalTrials.gov, status tag, phase); footer with sources, date, AI model; "Check for new research"
   - Verify: component tests; browser check
-  - Files: `src/app/features/drug-info/summary-panel.component.ts` (+ spec), page
-  - Depends on: 9
-
-- [x] **Task 11: Links from medication cards and interaction results** (S)
-  - Acceptance: "About this drug" on each medication card; product names in interaction results link to `/drugs/:rxcui`
-  - Verify: component tests; e2e navigation
-  - Files: `medication-card.component.ts`, `interaction-list.component.ts` (+ specs)
+  - Files: `trial-list.component.ts`, `paper-list.component.ts`, `research-section.component.ts` (+ specs)
   - Depends on: 9
 
 ### Checkpoint B
 
-- [x] Browser: page, FAERS disclaimer, summary states, citation popover; 375px and desktop
+- [ ] Browser: Research section states, takeaways, hide/undo, trials; 375px and desktop
 
 ## Phase 3: Verification
 
-- [x] **Task 12: E2E with stub Ollama and FAERS** (M)
-  - Acceptance: the stub server serves `/api/chat` (a recorded, quote-accurate JSON summary for lisinopril) and FAERS counts; the spec opens a drug page from a medication card, sees the facts, FAERS and disclaimer, generates a summary, and opens a citation
+- [ ] **Task 11: E2E with stub PubMed, ClinicalTrials.gov and Ollama** (M)
+  - Acceptance: the stub serves esearch (by tier), esummary, efetch, CT.gov studies and an Ollama takeaway reply (chosen by the request's system prompt); the spec opens Research, sees papers and trials, a verified takeaway with its source, hides a paper and sees the next one, and undoes it
   - Verify: `npm run e2e` (3 repeats stable)
-  - Files: `e2e/stub-upstream.ts`, `e2e/drug-info.spec.ts`, fixtures, `playwright.config.ts`
+  - Files: `e2e/stub-upstream.ts`, `e2e/literature.spec.ts`, fixtures, `playwright.config.ts`
+  - Depends on: 10
+
+- [ ] **Task 12: Coverage, README, `.env.example`** (S)
+  - Acceptance: coverage ≥ 80% on `src/server/literature`, `src/server/pubmed`, `src/server/ctgov`, `src/app/features/literature`; README section on Research (sources, how papers are chosen, takeaways, NCBI key); env table and `.env.example` updated
+  - Verify: `npm run test:coverage`; production build
+  - Files: `vite.config.ts`, `README.md`, `.env.example`
   - Depends on: 11
 
-- [x] **Task 13: Docker, coverage, README** (S)
-  - Acceptance: Compose `extra_hosts: host.docker.internal:host-gateway` and the `OLLAMA_*` env; coverage ≥ 80% on drug-info (server + client); README section on Ollama setup (`OLLAMA_HOST=0.0.0.0`, the model pull, provider switch, the Claude option)
-  - Verify: `rxplus-verify` Docker run; `npm run test:coverage`
-  - Files: `docker-compose.yml`, `vite.config.ts`, `README.md`, `.env.example`
-  - Depends on: 12
+### Checkpoint C: literature complete
 
-### Checkpoint C: drug-info complete
-
-- [ ] Spec success criteria 1–8; live `qwen2.5:7b` summary on the home server with the uncited rate reported
-- [ ] Human review, then `SPEC-literature.md`
+- [ ] Spec success criteria 1–8; live takeaways with the verified rate reported
+- [ ] Human review, then `SPEC-alternatives.md`

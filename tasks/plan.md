@@ -1,88 +1,84 @@
-# Implementation Plan: drug-info
+# Implementation Plan: literature
 
-Spec: [SPEC-drug-info.md](../SPEC-drug-info.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
+Spec: [SPEC-literature.md](../SPEC-literature.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [drug-info](drug-info/plan.md), [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
 
 ## Overview
 
-A drug page (`/drugs/:rxcui`) with:
+A **Research** section on `/drugs/:rxcui`, per ingredient:
 
-- **Structured facts from RxClass:** class, what it's used for, conditions to avoid it with.
-- **FAERS reported reactions:** shown with a disclaimer.
-- **Links:** DailyMed and MedlinePlus.
-- **AI summary of the FDA label:** local `qwen2.5:7b` via Ollama by default, optional Claude Opus 5. Every sentence is tied to a verified label quote; summaries are stored per label version.
+- **Papers:** up to 10 from PubMed, strongest evidence first (≤ 4 meta-analyses and systematic reviews, then randomized trials).
+- **Takeaways:** one plain-language line per paper, written by AI from its abstract and checked against it.
+- **Trials:** up to 5 from ClinicalTrials.gov (completed with results, then recruiting).
+- **Curation:** Hide (with undo) promotes the next candidate from a stored pool.
 
 ## Architecture Decisions
 
-- **One summary pipeline, two providers.** `SummaryProvider.generate(label) → RawSummary` (sections → sentences → quotes). Everything else is provider-neutral and pure:
-  - prompt rules
-  - label section selection
-  - quote verification (normalize whitespace, case and quote marks, then substring-match within the named section)
-  - the 20% uncited rule
-- **Ollama via its HTTP API** (`POST /api/chat`, `format` = JSON schema, `num_ctx`, `temperature`, timeout) through the existing `getJson`-style helper, extended for POST. No new dependency.
-- **Claude via `@anthropic-ai/sdk`** (the only new dependency; approved in the spec). Citations enabled on document blocks; `cited_text` become quotes; refusal fallback on.
-- **Background generation** in the server process after `POST` returns 202. A row with status `pending` is inserted first (the unique index prevents duplicates), then updated to `ready` or `failed`. On startup, stale `pending` rows (> 10 min) are marked failed.
-- **Label freshness:** the openFDA client caches the label for 7 days; "Check for a newer label" bypasses the cache for one call. The summary lookup uses the current label's set_id and version.
-- **E2E stays offline:** the stub server gains `/api/chat` (Ollama) and FAERS routes.
+- **Lists are per ingredient**, keyed by ingredient RXCUI; the drug page resolves its ingredients through drug-info's `product()` (saved medications skip RxNav).
+- **Search once, store the pool.** Up to 20 candidates per tier are stored with their abstracts; Hide and the "first 10 not hidden" selection are database work, with no new search. Refresh (30 days, or on request) upserts candidates, keeping takeaways and hidden state.
+- **PubMed via E-utilities with our own HTTP helpers.** `esearch`/`esummary` are JSON; `efetch` is XML, so `upstream.ts` gains a text variant of `getJson`. Abstract XML is parsed with a small, tested extractor (`<AbstractText>` sections, entities decoded), with no new dependency. Requests are serialized with a minimum spacing (350 ms, or 110 ms with `NCBI_API_KEY`).
+- **ClinicalTrials.gov v2** with a `fields=` subset, two calls (completed with results, recruiting).
+- **One AI call per ingredient list.** The provider layer is refactored into a generic core (Ollama: `system + user + JSON schema`; Claude: documents with citations and headed output) used by both drug-info summaries and literature takeaways. Drug-info's tests must pass unchanged, which guards the refactor.
+- **Verification is shared.** The normalization, stem relevance, synonyms and advice filter move from `drug-info/summary.ts` into a shared module; takeaways verify each quote against that paper's abstract.
+- **Background generation** follows drug-info: `POST` → 202, status on the list row, poll every 2 s, startup cleanup. The Claude daily limit counts starts across both tables.
+- **E2E stays offline:** the stub server gains PubMed, ClinicalTrials.gov and an Ollama takeaway reply, routed by request content.
 
 ## Dependency Graph
 
 ```
-1 openFDA label + FAERS ─┐
-2 RxClass facts ─────────┼─ 3 Facts & FAERS routes ─────────────┐
-4 Summary core (pure) ───┼─ 5 Ollama provider ─┐                ├─ 7 NgRx ── 8 Page (facts, FAERS) ── 9 Summary panel ── 10 Links in
-                         └─ 6 Claude provider ─┴─ 7a Storage, generation, routes ┘
-                                                        11 E2E ── 12 Docker/README/coverage
+1 PubMed client ──────┐
+2 CT.gov client ──────┼─ 3 Schema + repository ── 4 Service + routes ──┐
+5 Provider refactor ──┴─ 6 Takeaway core ── 7 Takeaway generation ─────┴─ 8 NgRx ── 9 Papers UI ── 10 Hide, trials, refresh
+                                                                            11 E2E ── 12 Coverage, README
 ```
 
 ## Task List
 
 ### Phase 1: Server
 
-- [x] Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`
-- [x] Task 2: RxClass facts (uses, avoid with, classes) and MedlinePlus link
-- [x] Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`
-- [x] Task 4: Summary core: prompt, output schema, quote verification
-- [x] Task 5: Ollama provider
-- [x] Task 6: Claude provider (optional, citations, refusal fallback)
-- [x] Task 7: Summary storage, background generation and summary routes
+- [ ] Task 1: PubMed client (search tiers, summaries, abstracts, spacing)
+- [ ] Task 2: ClinicalTrials.gov client
+- [ ] Task 3: Schema, migration 0003 and repository
+- [ ] Task 4: Literature service and routes (lists, refresh, hide)
+- [ ] Task 5: Provider refactor (generic structured generation), drug-info unchanged
+- [ ] Task 6: Takeaway core: prompt, schema, per-abstract verification
+- [ ] Task 7: Takeaway generation in the background, route, shared Claude limit
 
 ### Checkpoint A
 
 - [ ] Unit and integration tests pass; migration applies
-- [ ] curl: facts, FAERS, summary generation with a stub provider; and live with `qwen2.5:7b` if Ollama is reachable from this machine
+- [ ] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
 
 ### Phase 2: Client
 
-- [x] Task 8: NgRx `drugInfo` feature and API service (with polling)
-- [x] Task 9: `/drugs/:rxcui` page: facts, FAERS panel, links (SSR)
-- [x] Task 10: Summary panel: citations, uncited styling, states, refresh
-- [x] Task 11: Links from medication cards and interaction results
+- [ ] Task 8: NgRx `literature` feature and API service
+- [ ] Task 9: Research section: papers with takeaways and source popovers
+- [ ] Task 10: Hide and undo, trials list, footer and "Check for new research"
 
 ### Checkpoint B
 
-- [ ] Browser: page, FAERS disclaimer, summary states, citation popover; 375px and desktop
+- [ ] Browser: Research section states, takeaways, hide/undo, trials; 375px and desktop
 
 ### Phase 3: Verification
 
-- [x] Task 12: E2E with stub Ollama and FAERS
-- [x] Task 13: Docker `extra_hosts`, coverage, README (Ollama setup)
+- [ ] Task 11: E2E with stub PubMed, ClinicalTrials.gov and Ollama
+- [ ] Task 12: Coverage, README, `.env.example`
 
-### Checkpoint C: drug-info complete
+### Checkpoint C: literature complete
 
-- [ ] Spec success criteria 1–8; live summary with `qwen2.5:7b` on the home server (uncited rate reported)
-- [ ] Human review, then `SPEC-literature.md`
+- [ ] Spec success criteria 1–8; live takeaways with the verified rate reported
+- [ ] Human review, then `SPEC-alternatives.md`
 
 ## Risks and Mitigations
 
-| Risk                                                                 | Impact | Mitigation                                                                                                                                                    |
-| -------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `qwen2.5:7b` paraphrases instead of quoting → many uncited sentences | Med    | Prompt demands exact quotes; verification tolerant to whitespace, case and punctuation; 20% rule with one retry; the uncited rate is measured at Checkpoint C |
-| Local model slow or context overflow                                 | Med    | Explicit `num_ctx` 16384, prompt size estimate before sending, 5-min timeout, background generation                                                           |
-| Ollama not reachable from the container (listens on localhost only)  | Med    | README: `OLLAMA_HOST=0.0.0.0` + `extra_hosts`; a clear "provider unavailable" message                                                                         |
-| Background generation lost on restart                                | Low    | Stale `pending` rows marked failed on startup; retry button                                                                                                   |
-| FAERS counts misread as frequencies                                  | Med    | Disclaimer always visible; never mixed into the AI summary                                                                                                    |
-| No Ollama in dev/CI                                                  | Low    | Stub provider in unit/integration tests; stub `/api/chat` in e2e                                                                                              |
+| Risk                                                    | Impact | Mitigation                                                                                             |
+| ------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| Provider refactor breaks drug-info summaries            | High   | Do it as its own task with drug-info tests unchanged; e2e summary flow re-run                          |
+| NCBI rate limits (3/s) or slow E-utilities              | Med    | Serialized, spaced calls; stored pools; stale lists served while refreshing                            |
+| Relevance order surfaces off-topic reviews              | Med    | Hide with promotion; cap reviews at 4; measured queries in the spec                                    |
+| qwen2.5:7b mis-attributes takeaways across papers       | Med    | Verify each quote against that PMID's abstract only; unknown PMIDs dropped; live check at Checkpoint A |
+| Abstract XML variations (structured, entities, missing) | Low    | `hasabstract` filter; extractor tests with recorded XML (structured and plain)                         |
+| Several ingredients multiply calls on first load        | Low    | Ingredients fetched one after another; lists cached 30 days                                            |
 
 ## Open Questions
 
-None.
+- None blocking.

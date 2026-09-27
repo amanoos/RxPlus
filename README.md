@@ -4,8 +4,8 @@ A personal, single-user medication watchlist. Built with [Analog](https://analog
 
 - What and why: [docs/intent/rx-tracker.md](docs/intent/rx-tracker.md)
 - Modules and build order: [CAPABILITY-MAP.md](CAPABILITY-MAP.md)
-- Current spec: [SPEC-drug-info.md](SPEC-drug-info.md) · Tasks: [tasks/todo.md](tasks/todo.md)
-- Done: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md)) · [medications](SPEC-medications.md) ([tasks](tasks/medications/todo.md)) · [interactions](SPEC-interactions.md) ([tasks](tasks/interactions/todo.md))
+- Current spec: [SPEC-literature.md](SPEC-literature.md) · Tasks: [tasks/todo.md](tasks/todo.md)
+- Done: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md)) · [medications](SPEC-medications.md) ([tasks](tasks/medications/todo.md)) · [interactions](SPEC-interactions.md) ([tasks](tasks/interactions/todo.md)) · [drug-info](SPEC-drug-info.md) ([tasks](tasks/drug-info/todo.md))
 
 ## Configuration
 
