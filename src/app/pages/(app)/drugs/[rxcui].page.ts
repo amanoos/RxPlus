@@ -1,14 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { RouteMeta } from '@analogjs/router';
+import { distinctUntilChanged, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
@@ -144,11 +138,15 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
     }
   `,
 })
-export default class DrugPage implements OnChanges, OnDestroy {
+export default class DrugPage {
   private readonly store = inject(Store);
+  private readonly rxcui$ = inject(ActivatedRoute).paramMap.pipe(
+    map((params) => params.get('rxcui') ?? ''),
+    distinctUntilChanged(),
+  );
 
-  /** Route parameter (component input binding). */
-  readonly rxcui = input.required<string>();
+  /** Route parameter; the component is reused when navigating between drugs. */
+  readonly rxcui = toSignal(this.rxcui$, { initialValue: '' });
 
   private readonly entities = this.store.selectSignal(drugInfoFeature.selectEntities);
   readonly entry = computed(() => this.entities()[this.rxcui()] ?? null);
@@ -163,16 +161,16 @@ export default class DrugPage implements OnChanges, OnDestroy {
     return f ? [f.strength, f.doseForm, f.brandName].filter(Boolean).join(' · ') : '';
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const change = changes['rxcui'];
-    if (!change) return;
-    if (change.previousValue) {
-      this.store.dispatch(DrugInfoActions.leaveDrug({ rxcui: change.previousValue as string }));
-    }
-    this.store.dispatch(DrugInfoActions.openDrug({ rxcui: change.currentValue as string }));
-  }
-
-  ngOnDestroy(): void {
-    this.store.dispatch(DrugInfoActions.leaveDrug({ rxcui: this.rxcui() }));
+  constructor() {
+    // Open each drug as the route changes; leaving one (or the page) stops its polling.
+    let current: string | null = null;
+    this.rxcui$.pipe(takeUntilDestroyed()).subscribe((rxcui) => {
+      if (current) this.store.dispatch(DrugInfoActions.leaveDrug({ rxcui: current }));
+      current = rxcui;
+      this.store.dispatch(DrugInfoActions.openDrug({ rxcui }));
+    });
+    inject(DestroyRef).onDestroy(() => {
+      if (current) this.store.dispatch(DrugInfoActions.leaveDrug({ rxcui: current }));
+    });
   }
 }

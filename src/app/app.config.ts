@@ -1,7 +1,6 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { withComponentInputBinding } from '@angular/router';
 import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
@@ -12,8 +11,7 @@ import { provideAppStore } from './store/app.store';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    // Route params (e.g. /drugs/:rxcui) arrive as component inputs.
-    provideFileRouter(withComponentInputBinding()),
+    provideFileRouter(),
     provideHttpClient(withInterceptors([forwardCookieInterceptor, requestContextInterceptor])),
     provideClientHydration(withEventReplay()),
     provideAppStore(),

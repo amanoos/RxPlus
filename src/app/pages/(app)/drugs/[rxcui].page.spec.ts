@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
+import { BehaviorSubject } from 'rxjs';
 
 import { factsFixture, reactionsFixture } from '../../../features/drug-info/drug-info.fixture';
 import type { DrugFacts } from '../../../features/drug-info/drug-info';
@@ -34,22 +36,26 @@ function stateWith(facts: DrugFacts | null, extra: Partial<Record<'factsError', 
 
 describe('DrugPage', () => {
   const setup = async (drugInfo: DrugInfoState) => {
+    const params = new BehaviorSubject(convertToParamMap({ rxcui }));
     await TestBed.configureTestingModule({
       imports: [DrugPage],
-      providers: [providePrimeNG(), provideMockStore({ initialState: { drugInfo } })],
+      providers: [
+        providePrimeNG(),
+        provideMockStore({ initialState: { drugInfo } }),
+        { provide: ActivatedRoute, useValue: { paramMap: params } },
+      ],
     }).compileComponents();
     const store = TestBed.inject(MockStore);
     vi.spyOn(store, 'dispatch');
     const fixture = TestBed.createComponent(DrugPage);
-    fixture.componentRef.setInput('rxcui', rxcui);
     await fixture.whenStable();
-    return { store, fixture, el: fixture.nativeElement as HTMLElement };
+    return { store, fixture, params, el: fixture.nativeElement as HTMLElement };
   };
 
   it('opens the drug, and leaves it when the route changes or the page closes', async () => {
-    const { store, fixture } = await setup(stateWith(null));
+    const { store, fixture, params } = await setup(stateWith(null));
     expect(store.dispatch).toHaveBeenCalledWith(DrugInfoActions.openDrug({ rxcui }));
-    fixture.componentRef.setInput('rxcui', '197885');
+    params.next(convertToParamMap({ rxcui: '197885' }));
     await fixture.whenStable();
     expect(store.dispatch).toHaveBeenCalledWith(DrugInfoActions.leaveDrug({ rxcui }));
     expect(store.dispatch).toHaveBeenCalledWith(DrugInfoActions.openDrug({ rxcui: '197885' }));
