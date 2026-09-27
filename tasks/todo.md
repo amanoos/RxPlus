@@ -95,7 +95,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Browser: check flow, current pairs, evidence, add-dialog warning, dashboard; 375px and 1280px; openFDA-down message
+- [x] Browser (real DDInter, live RxNav/openFDA): check flow, current pairs, evidence (quotes; "not mentioned" case), add-dialog warning (Major, error style, Add enabled), dashboard line; 375px light and 1280px dark without horizontal scroll; openFDA down → "FDA label text is unavailable right now."; SSR no-data message
 
 ## Phase 3: Verification
 

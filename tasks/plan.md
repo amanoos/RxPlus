@@ -54,7 +54,7 @@ Check a new prescription, or the current list, for drug–drug interactions:
 
 ### Checkpoint B
 
-- [ ] Browser: check flow, current pairs, evidence expand, add-dialog warning, dashboard line; 375px and 1280px; openFDA-down message
+- [x] Browser: check flow, current pairs, evidence expand, add-dialog warning, dashboard line; 375px and 1280px; openFDA-down message
 
 ### Phase 3: Verification
 
