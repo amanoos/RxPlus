@@ -52,7 +52,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Auth slice
 
-- [ ] **Task 5: Password hashing util and `hash-password` script** (S)
+- [x] **Task 5: Password hashing util and `hash-password` script** (S)
   - Acceptance:
     - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, stored as `scrypt:<N>:<salt>:<hash>` (base64url; colons, not `# Tasks: foundation
 
@@ -108,7 +108,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Auth slice
 
-- [ ] **Task 5: Password hashing util and `hash-password` script** (S)
+- [x] **Task 5: Password hashing util and `hash-password` script** (S)
   - Acceptance:
     - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, , so Compose/dotenv don't interpolate it; format already enforced by `env.ts`); verification uses `timingSafeEqual`
     - `npm run hash-password` prompts without echoing the password and prints the hash to paste into `.env`
