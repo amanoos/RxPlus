@@ -15,6 +15,13 @@
       "when": 1790520720571,
       "tag": "0001_create_ddinter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790531138224,
+      "tag": "0002_create_drug_summaries",
+      "breakpoints": true
     }
   ]
 }

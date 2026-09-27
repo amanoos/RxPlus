@@ -77,6 +77,8 @@ export function createDrugFactsService({ medications, rxnav, openFda, medlinePlu
   }
 
   return {
+    product,
+
     async facts(rxcui: string): Promise<DrugFactsResponse> {
       const p = await product(rxcui);
       const unavailable: DrugFactsResponse['unavailable'] = [];

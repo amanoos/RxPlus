@@ -55,7 +55,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/drug-info/providers/claude.ts` (+ spec), `package.json`
   - Depends on: 4
 
-- [ ] **Task 7: Summary storage, background generation and summary routes** (M)
+- [x] **Task 7: Summary storage, background generation and summary routes** (M)
   - Acceptance:
     - `drug_summaries` table + migration `0002_*`; the repository finds by (rxcui, set_id, version)
     - `POST /api/drugs/:rxcui/summary` → 202 (a `pending` row, then generation in the background with one retry when uncited > 20%); idempotent; 429 over the Claude limit; 503 provider not configured

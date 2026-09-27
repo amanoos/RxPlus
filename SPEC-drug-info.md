@@ -130,6 +130,8 @@ drugSummaries = pgTable(
 );
 ```
 
+As built (migration `0002_create_drug_summaries`): also `sentenceCount` and `removedAdvice` (for the low-citation warning), and `startedAt`/`completedAt`. `startedAt` is reset when a failed summary is retried, and the Claude daily limit counts rows started since midnight in `TZ`. At startup, `pending` rows are marked failed ("Interrupted by a server restart."), since generation runs in the server process. `POST` answers 202 while pending and 200 once ready.
+
 ## API (session required)
 
 | Method and path                            | Purpose                                                                                                                      | Response                                                                 |
