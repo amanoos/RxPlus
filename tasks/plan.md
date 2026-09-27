@@ -31,7 +31,7 @@ Let the owner add, list, stop, restart and delete prescriptions, each resolved t
 
 - [x] Task 1: RxNav client with timeout, retry, cache and fixtures
 - [x] Task 2: RxNorm search and products proxy routes
-- [ ] Task 3: Medications schema, first migration and repository
+- [x] Task 3: Medications schema, first migration and repository
 - [ ] Task 4: Medications API (list, create with re-verify, update, delete)
 
 ### Checkpoint A

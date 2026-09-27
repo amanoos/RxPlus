@@ -23,7 +23,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/routes/api/rxnorm/search.get.ts`, `src/server/routes/api/rxnorm/products.get.ts`, `src/server/rxnorm/index.ts` (shared instance), `src/server/tests/rxnorm-api.spec.ts`
   - Depends on: 1
 
-- [ ] **Task 3: Medications schema, first migration and repository** (M)
+- [x] **Task 3: Medications schema, first migration and repository** (M)
   - Acceptance:
     - `medications` table per spec, with a partial unique index on `rxcui` where `stopped_on is null`
     - `drizzle/0000_*.sql` generated and committed; the drizzle config points at the schema index

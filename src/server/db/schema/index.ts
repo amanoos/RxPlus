@@ -1,2 +1,2 @@
-// One file per module (e.g. medications.ts), re-exported here.
-export {};
+// One file per module, re-exported here.
+export * from './medications';
