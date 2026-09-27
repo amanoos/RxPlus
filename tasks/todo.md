@@ -60,7 +60,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/literature/takeaways.ts` (+ spec)
   - Depends on: 5
 
-- [ ] **Task 7: Takeaway generation** (M)
+- [x] **Task 7: Takeaway generation** (M)
   - Acceptance:
     - `POST /api/drugs/:rxcui/literature/takeaways` → 202; one background call per ingredient for shown papers lacking a takeaway; results stored per paper; status on the list row; idempotent while pending
     - Claude daily limit counts starts in `drug_summaries` and `literature_lists` together (429); no provider → 503

@@ -4,6 +4,7 @@
  */
 import { createError } from 'h3';
 
+import { claudeStartsToday } from '../ai/daily-limit';
 import { db } from '../db/client';
 import { openFda, OpenFdaUnavailableError, type OpenFdaClient } from '../openfda';
 import type { SummaryLabel } from '../openfda/client';
@@ -48,7 +49,8 @@ interface Deps {
   /** The product's ingredient names, ignored when judging quote relevance. */
   drugNames: (rxcui: string) => Promise<string[]>;
   dailyLimit: number;
-  timeZone: string;
+  /** Claude generations started today, summaries and takeaways together. */
+  claudeStartsToday: () => Promise<number>;
 }
 
 /** In-flight generations; tests await them via settleSummaryJobs(). */
@@ -170,11 +172,8 @@ export function createSummaryService(deps: Deps) {
       const choice = deps.provider();
       if (!choice.provider) throw fail(503, `AI summary unavailable: ${choice.unavailable}`);
       const { provider } = choice;
-      if (
-        provider.name === 'claude' &&
-        (await deps.repo.startedToday('claude', deps.timeZone)) >= deps.dailyLimit
-      ) {
-        throw fail(429, `The daily limit of ${deps.dailyLimit} Claude summaries has been reached.`);
+      if (provider.name === 'claude' && (await deps.claudeStartsToday()) >= deps.dailyLimit) {
+        throw fail(429, `The daily limit of ${deps.dailyLimit} Claude requests has been reached.`);
       }
 
       const ignoreWords = await deps.drugNames(rxcui);
@@ -212,6 +211,6 @@ export function summaryService() {
       return [product.brandName ?? '', ...product.ingredients.map((i) => i.name)];
     },
     dailyLimit: config.AI_DAILY_LIMIT,
-    timeZone: config.TZ,
+    claudeStartsToday: () => claudeStartsToday(db(), config.TZ),
   });
 }

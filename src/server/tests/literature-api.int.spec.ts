@@ -6,7 +6,10 @@ import { createApp, createRouter, toWebHandler } from 'h3';
 import { CtGovUnavailableError, useCtGovClient, type CtGovClient, type Trial } from '../ctgov';
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
+import { ProviderUnavailableError } from '../ai/errors';
+import { useTakeawayProvider } from '../literature/providers';
 import { settleLiteratureJobs } from '../literature/service';
+import type { TakeawayProvider } from '../literature/takeaways';
 import {
   PubMedUnavailableError,
   usePubMedClient,
@@ -15,9 +18,11 @@ import {
 } from '../pubmed';
 import listRoute from '../routes/api/drugs/[rxcui]/literature/index.get';
 import refreshRoute from '../routes/api/drugs/[rxcui]/literature/refresh.post';
+import takeawaysRoute from '../routes/api/drugs/[rxcui]/literature/takeaways.post';
 import unhideRoute from '../routes/api/literature/[ingredient]/papers/[pmid]/hide.delete';
 import hideRoute from '../routes/api/literature/[ingredient]/papers/[pmid]/hide.post';
 import { useRxNavClient, type RxNavClient, type RxProductDetails } from '../rxnorm';
+import { env } from '../utils/env';
 import { hashPassword } from '../utils/password';
 
 const TEST_DB =
@@ -91,7 +96,8 @@ describe('literature API (integration)', () => {
           .get('/api/drugs/:rxcui/literature', listRoute)
           .post('/api/drugs/:rxcui/literature/refresh', refreshRoute)
           .post('/api/literature/:ingredient/papers/:pmid/hide', hideRoute)
-          .delete('/api/literature/:ingredient/papers/:pmid/hide', unhideRoute),
+          .delete('/api/literature/:ingredient/papers/:pmid/hide', unhideRoute)
+          .post('/api/drugs/:rxcui/literature/takeaways', takeawaysRoute),
       ),
     );
   });
@@ -108,14 +114,22 @@ describe('literature API (integration)', () => {
     // 207 has no abstract: it can't be summarized, so it isn't stored.
     pubmed.abstracts.mockImplementation(
       async (pmids) =>
-        new Map(pmids.filter((p) => p !== '207').map((p) => [p, `Abstract of ${p}.`])),
+        new Map(
+          pmids
+            .filter((p) => p !== '207')
+            .map((p) => [
+              p,
+              `Abstract of ${p}: lisinopril reduced systolic blood pressure in adults.`,
+            ]),
+        ),
     );
     ctgov.trials.mockResolvedValue([trial('NCT1'), trial('NCT2')]);
     await db.execute(
-      sql`truncate literature_lists, literature_papers, literature_trials, medications`,
+      sql`truncate literature_lists, literature_papers, literature_trials, medications, drug_summaries`,
     );
   });
   afterAll(async () => {
+    useTakeawayProvider(undefined);
     useRxNavClient(undefined);
     usePubMedClient(undefined);
     useCtGovClient(undefined);
@@ -228,5 +242,125 @@ describe('literature API (integration)', () => {
   it('rejects non-products and bad ids', async () => {
     expect((await call('GET', '/api/drugs/29046/literature')).status).toBe(422);
     expect((await call('GET', '/api/drugs/abc/literature')).status).toBe(400);
+  });
+
+  describe('takeaways', () => {
+    const generate = vi.fn<TakeawayProvider['generate']>();
+    const provider = (name: TakeawayProvider['name'] = 'ollama'): TakeawayProvider => ({
+      name,
+      model: name === 'claude' ? 'claude-opus-5' : 'qwen2.5:7b',
+      generate,
+    });
+    const lit = async () =>
+      (await (await call('GET', '/api/drugs/314076/literature')).json()).ingredients[0];
+
+    beforeEach(() => useTakeawayProvider({ provider: provider() }));
+
+    it('writes takeaways for the shown papers in one background call', async () => {
+      generate.mockResolvedValue({
+        raw: {
+          takeaways: [
+            {
+              pmid: '100',
+              text: 'It lowered systolic pressure in adults.',
+              quote: 'lisinopril reduced systolic blood pressure in adults',
+            },
+            { pmid: '101', text: 'It helped everyone a lot.', quote: 'made up words here' },
+          ],
+        },
+        inputTokens: 5000,
+        outputTokens: 900,
+      });
+      const started = await call('POST', '/api/drugs/314076/literature/takeaways');
+      expect(started.status).toBe(202);
+      expect((await started.json()).ingredients[0].takeaways).toMatchObject({
+        status: 'pending',
+        provider: 'ollama',
+        model: 'qwen2.5:7b',
+      });
+      await settleLiteratureJobs();
+
+      expect(generate).toHaveBeenCalledTimes(1);
+      const input = generate.mock.calls[0][0];
+      expect(input.map((p) => p.pmid)).toHaveLength(10);
+      expect(input[0].abstract).toContain('lisinopril reduced systolic');
+
+      const after = await lit();
+      expect(after.takeaways.status).toBe('ready');
+      const byPmid = Object.fromEntries(
+        after.papers.map((p: { pmid: string; takeaway: unknown }) => [p.pmid, p.takeaway]),
+      );
+      expect(byPmid['100']).toEqual({
+        text: 'It lowered systolic pressure in adults.',
+        quote: 'lisinopril reduced systolic blood pressure in adults',
+        uncited: false,
+      });
+      expect(byPmid['101']).toMatchObject({ quote: null, uncited: true });
+      // Skipped by the model: marked empty so it isn't requested again and again.
+      expect(byPmid['102']).toEqual({ text: '', quote: null, uncited: true });
+
+      // Nothing left to write: no new call.
+      expect((await call('POST', '/api/drugs/314076/literature/takeaways')).status).toBe(200);
+      expect(generate).toHaveBeenCalledTimes(1);
+    });
+
+    it('asks only for papers that lack one, e.g. after hiding', async () => {
+      generate.mockResolvedValue({ raw: { takeaways: [] } });
+      await call('POST', '/api/drugs/314076/literature/takeaways');
+      await settleLiteratureJobs();
+      await call('POST', '/api/literature/29046/papers/100/hide');
+      await call('POST', '/api/drugs/314076/literature/takeaways');
+      await settleLiteratureJobs();
+      expect(generate.mock.calls[1][0].map((p) => p.pmid)).toEqual(['104']);
+    });
+
+    it('runs one job at a time, records failures and retries', async () => {
+      let finish!: () => void;
+      generate.mockReturnValueOnce(
+        new Promise((resolve) => (finish = () => resolve({ raw: { takeaways: [] } }))),
+      );
+      await call('POST', '/api/drugs/314076/literature/takeaways');
+      expect((await call('POST', '/api/drugs/314076/literature/takeaways')).status).toBe(202);
+      expect(generate).toHaveBeenCalledTimes(1);
+      finish();
+      await settleLiteratureJobs();
+
+      await db.execute(sql`update literature_papers set takeaway = null`);
+      generate.mockRejectedValueOnce(new ProviderUnavailableError('Ollama timed out after 600s.'));
+      await call('POST', '/api/drugs/314076/literature/takeaways');
+      await settleLiteratureJobs();
+      expect((await lit()).takeaways).toMatchObject({
+        status: 'failed',
+        error: 'Ollama timed out after 600s.',
+      });
+
+      generate.mockResolvedValueOnce({ raw: { takeaways: [] } });
+      expect((await call('POST', '/api/drugs/314076/literature/takeaways')).status).toBe(202);
+      await settleLiteratureJobs();
+      expect((await lit()).takeaways.status).toBe('ready');
+    });
+
+    it('shares the Claude daily limit with summaries', async () => {
+      useTakeawayProvider({ provider: provider('claude') });
+      const limit = env().AI_DAILY_LIMIT;
+      for (let i = 0; i < limit; i++) {
+        await db.execute(sql`
+          insert into drug_summaries (rxcui, label_set_id, label_version, status, provider, model)
+          values (${String(i)}, 's', '1', 'ready', 'claude', 'claude-opus-5')`);
+      }
+      const res = await call('POST', '/api/drugs/314076/literature/takeaways');
+      expect(res.status).toBe(429);
+      expect((await res.json()).statusMessage).toContain(`daily limit of ${limit} Claude requests`);
+      expect(generate).not.toHaveBeenCalled();
+    });
+
+    it('explains a missing provider', async () => {
+      useTakeawayProvider({ unavailable: 'No local model configured (OLLAMA_MODEL).' });
+      const res = await call('POST', '/api/drugs/314076/literature/takeaways');
+      expect(res.status).toBe(503);
+      expect((await res.json()).statusMessage).toBe(
+        'AI takeaways unavailable: No local model configured (OLLAMA_MODEL).',
+      );
+    });
   });
 });

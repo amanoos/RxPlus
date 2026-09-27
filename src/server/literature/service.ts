@@ -5,11 +5,15 @@
 import { createError } from 'h3';
 import { z } from 'zod';
 
+import { claudeStartsToday } from '../ai/daily-limit';
+import { InputTooLargeError, ProviderOutputError, ProviderUnavailableError } from '../ai/errors';
 import { ctGov, CtGovUnavailableError, type CtGovClient } from '../ctgov';
 import { db } from '../db/client';
 import type { PaperTakeaway } from '../db/schema';
 import { drugFactsService } from '../drug-info/facts';
 import { pubMed, PubMedUnavailableError, type PubMedClient } from '../pubmed';
+import { env } from '../utils/env';
+import { takeawayProvider, type TakeawayChoice } from './providers';
 import {
   createLiteratureRepository,
   type FetchedPaper,
@@ -18,6 +22,7 @@ import {
   type LiteratureRepository,
   type LiteratureTrial,
 } from './repository';
+import { verifyTakeaways, type TakeawayProvider } from './takeaways';
 
 export const REFRESH_AFTER_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -80,10 +85,14 @@ interface Deps {
   ctGov: CtGovClient;
   /** The product's ingredients (saved medications skip RxNav). */
   ingredients: (rxcui: string) => Promise<Ingredient[]>;
+  provider: () => TakeawayChoice;
+  dailyLimit: number;
+  /** Claude generations started today, summaries and takeaways together. */
+  claudeStartsToday: () => Promise<number>;
   now?: () => number;
 }
 
-/** Background refreshes; tests await them via settleLiteratureJobs(). */
+/** Background refreshes and takeaway jobs; tests await them via settleLiteratureJobs(). */
 const jobs = new Set<Promise<unknown>>();
 /** One search per ingredient at a time, shared by concurrent requests. */
 const inflight = new Map<string, Promise<void>>();
@@ -126,6 +135,9 @@ export function createLiteratureService({
   pubMed,
   ctGov,
   ingredients,
+  provider: chooseProvider,
+  dailyLimit,
+  claudeStartsToday,
   now = Date.now,
 }: Deps) {
   /** Searches PubMed and ClinicalTrials.gov and stores the result. */
@@ -225,6 +237,40 @@ export function createLiteratureService({
     return view(ingredient, list);
   }
 
+  /**
+   * One model call for an ingredient's papers without a takeaway. Papers the model
+   * skipped (or whose takeaway was advice) get an empty takeaway, so they aren't
+   * asked for again and again.
+   */
+  async function generateTakeaways(
+    ingredient: Ingredient,
+    papers: LiteraturePaper[],
+    provider: TakeawayProvider,
+  ): Promise<void> {
+    try {
+      const input = papers.map((p) => ({ pmid: p.pmid, abstract: p.abstract }));
+      const { raw, inputTokens, outputTokens } = await provider.generate(input);
+      const { byPmid } = verifyTakeaways(raw, input, { ignoreWords: [ingredient.name] });
+      for (const p of papers) {
+        if (!byPmid.has(p.pmid)) byPmid.set(p.pmid, { text: '', quote: null, uncited: true });
+      }
+      await repo.completeTakeaways(ingredient.rxcui, byPmid, {
+        inputTokens: inputTokens ?? null,
+        outputTokens: outputTokens ?? null,
+      });
+    } catch (error) {
+      const known =
+        error instanceof ProviderUnavailableError ||
+        error instanceof ProviderOutputError ||
+        error instanceof InputTooLargeError;
+      if (!known) console.error('[literature] takeaway generation failed:', error);
+      const message = known ? (error as Error).message : 'The takeaways could not be written.';
+      await repo.failTakeaways(ingredient.rxcui, message).catch((e: unknown) => {
+        console.error('[literature] could not record the failure:', e);
+      });
+    }
+  }
+
   return {
     async get(rxcui: string): Promise<LiteratureResponse> {
       const result: IngredientLiterature[] = [];
@@ -245,6 +291,50 @@ export function createLiteratureService({
       return { ingredients: result };
     },
 
+    /**
+     * Starts takeaway generation for each ingredient whose shown papers lack one.
+     * Idempotent while a job runs; returns the lists with their job status.
+     */
+    async startTakeaways(rxcui: string): Promise<LiteratureResponse> {
+      const choice = chooseProvider();
+      if (!choice.provider) {
+        throw createError({
+          statusCode: 503,
+          statusMessage: `AI takeaways unavailable: ${choice.unavailable}`,
+        });
+      }
+      const { provider } = choice;
+      const result: IngredientLiterature[] = [];
+      for (const ingredient of await ingredients(rxcui)) {
+        await ingredientLiterature(ingredient); // searches first if never done
+        const shown = await repo.shownPapers(ingredient.rxcui);
+        const missing = await repo.withoutTakeaway(
+          ingredient.rxcui,
+          shown.map((p) => p.pmid),
+        );
+        if (missing.length) {
+          if (provider.name === 'claude' && (await claudeStartsToday()) >= dailyLimit) {
+            throw createError({
+              statusCode: 429,
+              statusMessage: `The daily limit of ${dailyLimit} Claude requests has been reached.`,
+            });
+          }
+          const claimed = await repo.claimTakeaways(
+            ingredient.rxcui,
+            provider.name,
+            provider.model,
+          );
+          if (claimed) {
+            const job = generateTakeaways(ingredient, missing, provider);
+            jobs.add(job);
+            void job.finally(() => jobs.delete(job));
+          }
+        }
+        result.push(await view(ingredient, (await repo.list(ingredient.rxcui))!));
+      }
+      return { ingredients: result };
+    },
+
     async setHidden(ingredientRxcui: string, pmid: string, hidden: boolean): Promise<void> {
       if (!(await repo.setHidden(ingredientRxcui, pmid, hidden))) {
         throw createError({ statusCode: 404, statusMessage: 'Paper not found.' });
@@ -255,11 +345,15 @@ export function createLiteratureService({
 
 /** Service wired to the app database and upstream clients. */
 export function literatureService() {
+  const config = env();
   const facts = drugFactsService();
   return createLiteratureService({
     repo: createLiteratureRepository(db()),
     pubMed: pubMed(),
     ctGov: ctGov(),
     ingredients: async (rxcui) => (await facts.product(rxcui)).ingredients,
+    provider: takeawayProvider,
+    dailyLimit: config.AI_DAILY_LIMIT,
+    claudeStartsToday: () => claudeStartsToday(db(), config.TZ),
   });
 }

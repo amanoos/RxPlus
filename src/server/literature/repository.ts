@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
+import { and, asc, count, eq, gte, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
 
 import type { Db } from '../db/client';
 import {
@@ -206,6 +206,21 @@ export function createLiteratureRepository(db: Db) {
         .update(literatureLists)
         .set({ takeawayStatus: 'failed', error })
         .where(eq(literatureLists.ingredientRxcui, ingredientRxcui));
+    },
+
+    /** Takeaway generations started today (in `timeZone`) with the given provider. */
+    async startedToday(
+      provider: NonNullable<LiteratureListRow['provider']>,
+      timeZone: string,
+    ): Promise<number> {
+      const startOfDay = sql`(date_trunc('day', now() at time zone ${timeZone}) at time zone ${timeZone})`;
+      const [row] = await db
+        .select({ n: count() })
+        .from(literatureLists)
+        .where(
+          and(eq(literatureLists.provider, provider), gte(literatureLists.startedAt, startOfDay)),
+        );
+      return row?.n ?? 0;
     },
 
     /** At startup nothing is generating, so pending work was cut off by a restart. */

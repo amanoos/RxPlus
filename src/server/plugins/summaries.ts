@@ -2,20 +2,23 @@ import { defineNitroPlugin } from 'nitropack/runtime';
 
 import { db } from '../db/client';
 import { createSummaryRepository } from '../drug-info/repository';
+import { createLiteratureRepository } from '../literature/repository';
 
-// Summaries generate in this process, so pending rows left by a restart will never
-// finish: mark them failed so the page offers "Try again".
+// AI summaries and takeaways generate in this process, so work left pending by a
+// restart will never finish: mark it failed so the page offers "Try again".
 export default defineNitroPlugin(() => {
   if (import.meta.prerender) return;
-  createSummaryRepository(db())
-    .failInterrupted()
-    .then((n) => {
-      if (n) console.warn(`[summary] marked ${n} interrupted summaries as failed`);
-    })
-    .catch((error: unknown) => {
-      console.warn(
-        '[summary] could not check for interrupted summaries:',
-        (error as Error).message,
-      );
-    });
+  const cleanups = [
+    ['summaries', createSummaryRepository(db()).failInterrupted()],
+    ['takeaway jobs', createLiteratureRepository(db()).failInterrupted()],
+  ] as const;
+  for (const [what, cleanup] of cleanups) {
+    cleanup
+      .then((n) => {
+        if (n) console.warn(`[ai] marked ${n} interrupted ${what} as failed`);
+      })
+      .catch((error: unknown) => {
+        console.warn(`[ai] could not check for interrupted ${what}:`, (error as Error).message);
+      });
+  }
 });
