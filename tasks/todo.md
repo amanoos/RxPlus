@@ -78,7 +78,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/medications/product-picker.component.ts` (+ spec), `add-medication-dialog.component.ts` (+ spec)
   - Depends on: none
 
-- [ ] **Task 9: `/interactions` page** (M)
+- [x] **Task 9: `/interactions` page** (M)
   - Acceptance:
     - "Check a new prescription" (picker → report) and "Between your current medications" (SSR); severity tags (Major red, Moderate orange, Minor blue, Unknown gray, "Listed, severity not rated"); expandable evidence with verbatim quotes and DailyMed links; notCovered message; attribution footer with import date and disclaimer; no-data state explaining `ddi:import`
   - Verify: component tests; browser check
