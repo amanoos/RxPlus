@@ -56,10 +56,10 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/medications/store/*`, `src/app/features/medications/medications-api.service.ts` (+ specs), `src/app/store/app.store.ts`
   - Depends on: 4
 
-- [ ] **Task 6: `/medications` list page with SSR, stopped section and empty state** (M)
+- [x] **Task 6: `/medications` list page with SSR, stopped section and empty state** (M)
   - Acceptance:
     - Cards show name, strength, form, brand, started date and notes; "Stopped" is a collapsible section; empty state with an "Add medication" button
-    - The SSR HTML already contains the list; no refetch flash on hydration (transfer cache, or Analog `load` as a fallback)
+    - The SSR HTML already contains the list; no refetch on hydration: Analog's interceptor embeds SSR API responses in `ng-state` and the browser reuses them (verified: no second `/api/medications` request)
   - Verify: component tests; curl the SSR HTML with a session for the medication name; browser check for no double request and no hydration warnings
   - Files: `src/app/pages/(app)/medications.page.ts`, `src/app/features/medications/medication-card.component.ts` (+ specs)
   - Depends on: 5
