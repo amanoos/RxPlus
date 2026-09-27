@@ -12,12 +12,12 @@ Let the owner keep an accurate list of the prescriptions they take: add a drug w
 
 Free, no API key. Base URL `https://rxnav.nlm.nih.gov/REST`, configurable as `RXNAV_BASE_URL`. All four endpoints below were checked on 2026-09-27.
 
-| Use                                      | Endpoint                                                     | Example                                                                  |
-| ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Search as you type (prescribable subset) | `GET /Prescribe/approximateTerm.json?term=<q>&maxEntries=10` | `lisinop` → `lisinopril` (IN 29046)                                      |
-| Products for a drug                      | `GET /Prescribe/drugs.json?name=<ingredient or brand>`       | groups by `tty`: `SCD` (generic product), `SBD` (branded)                |
-| Product details                          | `GET /rxcui/<rxcui>/related.json?tty=IN+BN+DF`               | ingredient `lisinopril`, brands `Zestril`/`Prinivil`, form `Oral Tablet` |
-| Strength                                 | `GET /rxcui/<rxcui>/allProperties.json?prop=attributes`      | `AVAILABLE_STRENGTH` = `10 MG`                                           |
+| Use                                                      | Endpoint                                                                                                                                            | Example                                                                                  |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Search as you type (prescribable names, ~13.6k, ~330 KB) | `GET /Prescribe/displaynames.json`, cached 24 hours and filtered on the server, case-insensitively (names use tall-man lettering, e.g. `metFORMIN`) | `lisin` → `lisinopril`, `hydroCHLOROthiazide / lisinopril`                               |
+| Products for a drug                                      | `GET /Prescribe/drugs.json?name=<name>`                                                                                                             | groups by `tty`: `SCD` (generic product), `SBD` (branded); includes combination products |
+| Product details                                          | `GET /rxcui/<rxcui>/related.json?tty=IN+BN+DF`                                                                                                      | ingredient `lisinopril`, brands `Zestril`/`Prinivil`, form `Oral Tablet`                 |
+| Strength                                                 | `GET /rxcui/<rxcui>/allProperties.json?prop=attributes`                                                                                             | `AVAILABLE_STRENGTH` = `10 MG`                                                           |
 
 Terms: **IN** = ingredient, **BN** = brand name, **SCD** = generic product ("lisinopril 10 MG Oral Tablet"), **SBD** = branded product ("… [Zestril]"), **DF** = dose form.
 
@@ -52,14 +52,14 @@ The first real migration is `drizzle/0000_*.sql`, which also proves the foundati
 
 ## API (all require a session; validated with zod)
 
-| Method and path                  | Purpose                                       | Responses                                                                       |
-| -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------- |
-| `GET /api/rxnorm/search?q=`      | Candidate drugs (IN/BN), `q` 2–100 characters | 200 `[{ rxcui, name, tty }]`, 400, 503 if RxNav is down                         |
-| `GET /api/rxnorm/products?name=` | SCD/SBD products for one drug                 | 200 `[{ rxcui, name, tty, strength, doseForm, brandName }]`, 503                |
-| `GET /api/medications`           | Active medications first, then stopped        | 200 `Medication[]`                                                              |
-| `POST /api/medications`          | `{ rxcui, notes?, startedOn? }`               | 201 `Medication`; 409 if already active; 422 if the rxcui isn't an SCD/SBD; 503 |
-| `PATCH /api/medications/:id`     | `{ notes?, startedOn?, stoppedOn? }`          | 200, 404, 409 (restarting a duplicate)                                          |
-| `DELETE /api/medications/:id`    | Permanently delete                            | 204, 404                                                                        |
+| Method and path                  | Purpose                                                                                                  | Responses                                                                       |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `GET /api/rxnorm/search?q=`      | Matching drug names (exact, then prefix, then word-prefix, then substring; max 20), `q` 2–100 characters | 200 `string[]`, 400, 503 if RxNav is down                                       |
+| `GET /api/rxnorm/products?name=` | SCD/SBD products for one drug; the RxNorm name already states strength and form                          | 200 `[{ rxcui, name, tty, brandName }]`, 503                                    |
+| `GET /api/medications`           | Active medications first, then stopped                                                                   | 200 `Medication[]`                                                              |
+| `POST /api/medications`          | `{ rxcui, notes?, startedOn? }`                                                                          | 201 `Medication`; 409 if already active; 422 if the rxcui isn't an SCD/SBD; 503 |
+| `PATCH /api/medications/:id`     | `{ notes?, startedOn?, stoppedOn? }`                                                                     | 200, 404, 409 (restarting a duplicate)                                          |
+| `DELETE /api/medications/:id`    | Permanently delete                                                                                       | 204, 404                                                                        |
 
 ## UI (`/medications`, SSR)
 

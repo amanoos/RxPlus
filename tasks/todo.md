@@ -6,9 +6,9 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Server
 
-- [ ] **Task 1: RxNav client with timeout, retry, cache and fixtures** (M)
+- [x] **Task 1: RxNav client with timeout, retry, cache and fixtures** (M)
   - Acceptance:
-    - `createRxNavClient({ baseUrl, fetch, now })` exposes `search(q)`, `products(name)`, `product(rxcui)`; defaults from `RXNAV_BASE_URL` (optional env, default `https://rxnav.nlm.nih.gov/REST`)
+    - `createRxNavClient({ baseUrl, fetch, now })` exposes `search(q)` (filters the cached Prescribe display-name list, ~13.6k names, case-insensitive), `products(name)`, `product(rxcui)` (properties first; skips the other calls for non-products); defaults from `RXNAV_BASE_URL` (optional env, default `https://rxnav.nlm.nih.gov/REST`)
     - 5-second timeout, one retry on network error (not on 4xx), TTL cache (search 24 hours, product 7 days); failures throw `RxNavUnavailableError`
     - Mapping handles single-ingredient, combination and branded products; `product()` returns `null` for non-SCD/SBD or unknown RXCUIs
   - Verify: unit tests on recorded fixtures (lisinopril, a combination product, a branded product, empty results), fake timers for the timeout/retry/cache

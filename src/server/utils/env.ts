@@ -25,6 +25,9 @@ const envSchema = z.object({
     .transform((v) => v === 'true'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
   TZ: z.string().refine(isTimeZone, 'must be an IANA time zone').default('America/New_York'),
+  RXNAV_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    .default('https://rxnav.nlm.nih.gov/REST'),
 });
 
 export type Env = z.infer<typeof envSchema>;

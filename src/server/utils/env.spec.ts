@@ -14,6 +14,7 @@ describe('parseEnv', () => {
       COOKIE_SECURE: false,
       PORT: 3000,
       TZ: 'America/New_York',
+      RXNAV_BASE_URL: 'https://rxnav.nlm.nih.gov/REST',
     });
   });
 
@@ -48,5 +49,6 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...valid, COOKIE_SECURE: 'yes' })).toThrowError(/COOKIE_SECURE/);
     expect(() => parseEnv({ ...valid, PORT: '0' })).toThrowError(/PORT/);
     expect(() => parseEnv({ ...valid, TZ: 'Mars/Olympus' })).toThrowError(/TZ/);
+    expect(() => parseEnv({ ...valid, RXNAV_BASE_URL: 'ftp://x' })).toThrowError(/RXNAV_BASE_URL/);
   });
 });
