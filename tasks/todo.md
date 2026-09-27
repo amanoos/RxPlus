@@ -47,10 +47,10 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/drug-info/providers/ollama.ts` (+ spec), `src/server/utils/env.ts` (+ spec), `.env.example`
   - Depends on: 4
 
-- [ ] **Task 6: Claude provider** (M)
+- [x] **Task 6: Claude provider** (M)
   - Acceptance:
     - `@anthropic-ai/sdk`; `claude-opus-5`, adaptive thinking, effort `high`, `max_tokens` 16000; sections as plain-text documents with citations; beta `server-side-fallback-2026-07-01` + `fallbacks: "default"`; `stop_reason` checked; text split at the fixed headings, `cited_text` → quotes
-    - Only active when `SUMMARY_PROVIDER=claude` and `ANTHROPIC_API_KEY` are set; `AI_DAILY_LIMIT` (default 20) counted from stored rows
+    - Only active when `SUMMARY_PROVIDER=claude` and `ANTHROPIC_API_KEY` are set; `AI_DAILY_LIMIT` (default 20) counted from stored rows (enforced in Task 7, where the rows live)
   - Verify: unit tests with a mocked SDK client (request shape, citation mapping, refusal, `max_tokens`)
   - Files: `src/server/drug-info/providers/claude.ts` (+ spec), `package.json`
   - Depends on: 4

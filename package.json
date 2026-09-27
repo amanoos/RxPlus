@@ -40,6 +40,7 @@
     "@angular/platform-browser": "22.2.0",
     "@angular/platform-server": "22.2.0",
     "@angular/router": "22.2.0",
+    "@anthropic-ai/sdk": "0.128.0",
     "@ngrx/effects": "22.0.1",
     "@ngrx/entity": "22.0.1",
     "@ngrx/store": "22.0.1",

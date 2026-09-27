@@ -1,4 +1,5 @@
 import { env } from '../../utils/env';
+import { createClaudeProvider } from './claude';
 import { createOllamaProvider } from './ollama';
 import type { SummaryProvider } from './provider';
 
@@ -25,7 +26,11 @@ export function summaryProvider(): ProviderChoice {
       }),
     };
   }
-  return { unavailable: 'Claude summaries are not set up yet.' };
+  if (!config.ANTHROPIC_API_KEY) {
+    return { unavailable: 'Claude summaries need an API key (ANTHROPIC_API_KEY).' };
+  }
+  // The daily cap (AI_DAILY_LIMIT) is enforced where summaries are stored.
+  return { provider: createClaudeProvider({ apiKey: config.ANTHROPIC_API_KEY }) };
 }
 
 /** Tests only: force a provider choice (pass undefined to restore). */

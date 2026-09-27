@@ -43,7 +43,7 @@ A drug page (`/drugs/:rxcui`) with:
 - [x] Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`
 - [x] Task 4: Summary core: prompt, output schema, quote verification
 - [x] Task 5: Ollama provider
-- [ ] Task 6: Claude provider (optional, citations, refusal fallback)
+- [x] Task 6: Claude provider (optional, citations, refusal fallback)
 - [ ] Task 7: Summary storage, background generation and summary routes
 
 ### Checkpoint A
