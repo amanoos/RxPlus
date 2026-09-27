@@ -32,7 +32,10 @@ const cite = (documentIndex: number, citedText: string) => ({
   file_id: null,
 });
 
-interface Block { text: string; citations?: ReturnType<typeof cite>[] }
+interface Block {
+  text: string;
+  citations?: ReturnType<typeof cite>[];
+}
 
 const response = (blocks: Block[], stopReason = 'end_turn') =>
   ({
