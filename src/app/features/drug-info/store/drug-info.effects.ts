@@ -55,6 +55,20 @@ export const openDrug = createEffect(
   { functional: true },
 );
 
+/**
+ * The first visit to a drug starts its summary (spec: no summary yet → one generation).
+ * Browser only, so server rendering never waits on or duplicates the request.
+ */
+export const startMissingSummary = createEffect(
+  (actions$ = inject(Actions), platformId = inject(PLATFORM_ID)) =>
+    actions$.pipe(
+      ofType(DrugInfoActions.loadSummarySuccess),
+      filter(({ summary }) => summary === null && isPlatformBrowser(platformId)),
+      map(({ rxcui }) => DrugInfoActions.startSummary({ rxcui })),
+    ),
+  { functional: true },
+);
+
 export const startSummary = createEffect(
   (actions$ = inject(Actions), api = inject(DrugInfoApi)) =>
     actions$.pipe(

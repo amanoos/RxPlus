@@ -163,6 +163,23 @@ describe('drugInfo effects', () => {
     ]);
   });
 
+  it('starts a summary on the first visit, in the browser only', () => {
+    setup();
+    let out = collect(effects.startMissingSummary);
+    actions$.next(DrugInfoActions.loadSummarySuccess({ rxcui, summary: null }));
+    actions$.next(DrugInfoActions.loadSummarySuccess({ rxcui, summary: ready }));
+    actions$.next(
+      DrugInfoActions.loadSummarySuccess({ rxcui, summary: summaryFixture({ status: 'failed' }) }),
+    );
+    expect(out).toEqual([DrugInfoActions.startSummary({ rxcui })]);
+
+    TestBed.resetTestingModule();
+    setup('server');
+    out = collect(effects.startMissingSummary);
+    actions$.next(DrugInfoActions.loadSummarySuccess({ rxcui, summary: null }));
+    expect(out).toEqual([]);
+  });
+
   it('polls every 2 s while pending and stops when the summary settles', async () => {
     vi.useFakeTimers();
     setup();

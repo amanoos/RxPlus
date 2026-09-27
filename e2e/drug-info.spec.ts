@@ -42,10 +42,11 @@ test('opens a drug page from a medication card, with facts, FDA reports and link
   );
 });
 
-test('summarizes the FDA label and shows the quoted source of a sentence', async ({ page }) => {
+test('summarizes the FDA label on the first visit and shows the quoted source of a sentence', async ({
+  page,
+}) => {
   await page.goto('/drugs/314076');
   const panel = page.getByTestId('summary-panel');
-  await panel.getByRole('button', { name: 'Summarize the FDA label' }).click();
 
   await expect(panel.getByTestId('summary-pending')).toContainText('Summarizing the FDA label…');
   await expect(panel.getByRole('heading', { name: "What it's for" })).toBeVisible({
