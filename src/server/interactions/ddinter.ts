@@ -59,7 +59,9 @@ function splitCsvLine(line: string): string[] {
 }
 
 export function parseDdinterCsv(text: string): DdinterRow[] {
-  const lines = text.replace(/^﻿/, '').split(/\r?\n/);
+  // Strip a UTF-8 byte-order mark if present.
+  const body = text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
+  const lines = body.split(/\r?\n/);
   const header = splitCsvLine(lines[0] ?? '');
   if (header.join(',') !== HEADER.join(',')) {
     throw new DdinterFormatError(`Unexpected DDInter header: ${lines[0]?.slice(0, 80)}`);

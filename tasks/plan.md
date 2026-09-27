@@ -35,14 +35,14 @@ Check a new prescription, or the current list, for drug–drug interactions:
 
 - [x] Task 1: openFDA label client
 - [x] Task 2: DDInter schema, migration and CSV parsing
-- [ ] Task 3: DDInter importer and `ddi:import` command
+- [x] Task 3: DDInter importer and `ddi:import` command
 - [ ] Task 4: Interaction report builder and queries
 - [ ] Task 5: Label evidence matching (with RxClass class names)
 - [ ] Task 6: Interactions API routes
 
 ### Checkpoint A
 
-- [ ] Real import against live DDInter + RxNav (≥ 95% mapped, idempotent)
+- [x] Real import against live DDInter + RxNav (≥ 95% mapped, idempotent)
 - [ ] curl: spironolactone vs active lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered case
 
 ### Phase 2: Client

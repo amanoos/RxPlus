@@ -25,8 +25,9 @@
     "db:test:down": "docker compose -f docker-compose.test.yml down",
     "hash-password": "node scripts/hash-password.ts",
     "e2e": "npm run db:test:up && npm run build && playwright test",
-    "build:migrate": "esbuild scripts/migrate.ts --bundle --platform=node --target=node24 --format=cjs --external:pg-native --outfile=dist/migrate.cjs",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "build:scripts": "esbuild scripts/migrate.ts scripts/ddi-import.ts --bundle --platform=node --target=node24 --format=cjs --external:pg-native --outdir=dist --out-extension:.js=.cjs",
+    "ddi:import": "npm run -s build:scripts && node --env-file-if-exists=.env dist/ddi-import.cjs"
   },
   "private": true,
   "dependencies": {

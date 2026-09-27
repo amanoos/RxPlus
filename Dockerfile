@@ -8,7 +8,7 @@ COPY . .
 # Build-time only: Vite inlines it into the client bundle (not a secret).
 ARG VITE_PRIMEUI_LICENSE=""
 ENV VITE_PRIMEUI_LICENSE=${VITE_PRIMEUI_LICENSE}
-RUN npm run build && npm run build:migrate
+RUN npm run build && npm run build:scripts
 
 FROM node:24-bookworm-slim AS runtime
 ENV NODE_ENV=production \
@@ -16,7 +16,7 @@ ENV NODE_ENV=production \
     TZ=America/New_York
 WORKDIR /app
 COPY --from=build --chown=node:node /app/dist/analog ./dist/analog
-COPY --from=build --chown=node:node /app/dist/migrate.cjs ./dist/migrate.cjs
+COPY --from=build --chown=node:node /app/dist/migrate.cjs /app/dist/ddi-import.cjs ./dist/
 COPY --from=build --chown=node:node /app/drizzle ./drizzle
 USER node
 EXPOSE 3000

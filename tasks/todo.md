@@ -23,7 +23,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/db/schema/interactions.ts`, `src/server/db/schema/index.ts`, `drizzle/0001_*`, `src/server/interactions/ddinter.ts` (+ spec)
   - Depends on: none
 
-- [ ] **Task 3: DDInter importer and `ddi:import` command** (M)
+- [x] **Task 3: DDInter importer and `ddi:import` command** (M)
   - Acceptance:
     - Downloads the 14 CSVs (base URL configurable for tests); maps names via a new RxNav `ingredientByName(name)` (`rxcui.json?search=2`, IN preferred), throttled ≤ 10/s, reusing prior mappings
     - Replaces all `ddi_*` rows in one transaction with batched inserts; records a `ddi_imports` row; prints a summary; exits non-zero below 90% mapped (old data kept)
@@ -59,7 +59,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint A
 
-- [ ] Real `npm run ddi:import` against the live DDInter + RxNav into the test DB: ≥ 95% mapped; a second run gives the same counts
+- [x] Real `npm run ddi:import` against the live DDInter + RxNav into the test DB: 234,981 pairs, 1,933/1,971 drugs mapped (98.1%) in 320 s; second run identical counts in 78 s (only the 38 unmapped names retried)
 - [ ] curl on the built server: spironolactone vs lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered example
 
 ## Phase 2: Client

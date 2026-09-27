@@ -19,6 +19,11 @@ function fixtureFetch(overrides: Record<string, () => Promise<Response>> = {}) {
     routes[`/rxcui/${id}/related.json?tty=IN+BN+DF`] = `related-${id}`;
     routes[`/rxcui/${id}/allProperties.json?prop=attributes`] = `attributes-${id}`;
   }
+  routes['/rxcui.json?name=Atorvastatin%20calcium&search=2'] = 'rxcui-name-atorvastatin-calcium';
+  routes['/rxcui.json?name=Lisinopril&search=2'] = 'rxcui-name-lisinopril';
+  routes['/rxcui.json?name=Zzqqxx&search=2'] = 'rxcui-name-none';
+  routes['/rxcui/83366/related.json?tty=IN'] = 'related-in-83366';
+  routes['/rxcui/29046/related.json?tty=IN'] = 'related-in-29046';
   const calls: string[] = [];
   const fetchFn = vi.fn(async (input: string | URL | Request) => {
     const url = String(input);
@@ -135,6 +140,18 @@ describe('RxNav client', () => {
       const client = create(fixtureFetch().fetchFn);
       expect(await client.product('29046')).toBeNull();
       expect(await client.product('999999999')).toBeNull();
+    });
+  });
+
+  describe('ingredientByName', () => {
+    it('maps a name to its RxNorm ingredient, via the related IN for salts', async () => {
+      const client = create(fixtureFetch().fetchFn);
+      expect(await client.ingredientByName('Lisinopril')).toBe('29046');
+      expect(await client.ingredientByName('Atorvastatin calcium')).toBe('83367');
+    });
+
+    it('returns null for an unknown name', async () => {
+      expect(await create(fixtureFetch().fetchFn).ingredientByName('Zzqqxx')).toBeNull();
     });
   });
 

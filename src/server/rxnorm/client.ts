@@ -28,6 +28,8 @@ export interface RxNavClient {
   products(name: string): Promise<RxProduct[]>;
   /** Details of an SCD/SBD product; null for other concept types or unknown RXCUIs. */
   product(rxcui: string): Promise<RxProductDetails | null>;
+  /** RxNorm ingredient (IN) for a drug name, including synonyms and salts; null if unknown. */
+  ingredientByName(name: string): Promise<string | null>;
 }
 
 export class RxNavUnavailableError extends Error {
@@ -138,6 +140,20 @@ export function createRxNavClient({
           })),
         );
       });
+    },
+
+    async ingredientByName(name) {
+      const found = (await get(`/rxcui.json?name=${encodeURIComponent(name.trim())}&search=2`)) as {
+        idGroup?: { rxnormId?: string[] };
+      };
+      const rxcui = found.idGroup?.rxnormId?.[0];
+      if (!rxcui) return null;
+      // Salts (PIN) and other forms map to their ingredient; an IN maps to itself.
+      const ingredients = conceptsOf(
+        groupsOf(await get(`/rxcui/${rxcui}/related.json?tty=IN`)),
+        'IN',
+      );
+      return ingredients.length === 1 ? ingredients[0].rxcui : null;
     },
 
     product(rxcui) {
