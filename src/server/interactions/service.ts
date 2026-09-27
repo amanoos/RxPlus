@@ -29,6 +29,8 @@ export interface InteractionReportResponse extends InteractionReport {
   source: typeof DDINTER_SOURCE & { importedAt: string };
 }
 
+type ProductInfo = Pick<RxProductDetails, 'rxcui' | 'name' | 'ingredients'>;
+
 interface Deps {
   repo: InteractionsRepository;
   medications: MedicationsRepository;
@@ -102,8 +104,13 @@ export function createInteractionsService({ repo, medications, rxnav, openFda }:
     },
 
     async evidence(query: z.infer<typeof EvidenceQuery>): Promise<LabelEvidence[]> {
-      const [a, b] = await Promise.all([resolveProduct(query.a), resolveProduct(query.b)]);
-      const side = (p: RxProductDetails, ingredientRxcui: string) => {
+      // Saved medications already hold their RxNorm names and ingredients; only
+      // other products (e.g. the candidate, usually cached by the check) need RxNav.
+      const saved = await medications.list();
+      const productInfo = async (id: string): Promise<ProductInfo> =>
+        saved.find((m) => m.rxcui === id) ?? resolveProduct(id);
+      const [a, b] = await Promise.all([productInfo(query.a), productInfo(query.b)]);
+      const side = (p: ProductInfo, ingredientRxcui: string) => {
         const ingredient = p.ingredients.find((i) => i.rxcui === ingredientRxcui);
         if (!ingredient || query.aIngredient === query.bIngredient) {
           throw createError({

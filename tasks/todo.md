@@ -85,7 +85,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/pages/(app)/interactions.page.ts` (+ spec), `src/app/features/interactions/interaction-list.component.ts` (+ spec)
   - Depends on: 7, 8
 
-- [ ] **Task 10: Add-dialog warning and dashboard summary** (S)
+- [x] **Task 10: Add-dialog warning and dashboard summary** (S)
   - Acceptance:
     - After a product is picked in the add dialog, a compact warning lists interacting current meds with severity and a details link; _Add_ stays enabled
     - The dashboard shows "N Major interactions between your current medications" (or none) linking to `/interactions`

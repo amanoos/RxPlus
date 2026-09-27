@@ -135,6 +135,36 @@ describe('evidenceFor', () => {
     expect(evidence.every((e) => e.sentences.length > 0)).toBe(true);
   });
 
+  it('still matches by ingredient name when brand/class lookups fail', async () => {
+    const slowRxnav = {
+      classNames: vi.fn(async () => {
+        throw new Error('RxNav timed out');
+      }),
+      brandNames: vi.fn(async () => {
+        throw new Error('RxNav timed out');
+      }),
+    } as unknown as RxNavClient;
+    const evidence = await evidenceFor(
+      {
+        a: {
+          rxcui: '313096',
+          name: 'spironolactone 25 MG Oral Tablet',
+          ingredient: 'spironolactone',
+          ingredientRxcui: '9997',
+        },
+        b: {
+          rxcui: '314076',
+          name: 'lisinopril 10 MG Oral Tablet',
+          ingredient: 'lisinopril',
+          ingredientRxcui: '29046',
+        },
+      },
+      { openFda, rxnav: slowRxnav },
+    );
+    // The lisinopril label names spironolactone directly.
+    expect(evidence[1].sentences.join(' ')).toMatch(/spironolactone/i);
+  });
+
   it('marks a product without a label', async () => {
     const [missing] = await evidenceFor(
       {

@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { RouteMeta } from '@analogjs/router';
 import { Store } from '@ngrx/store';
@@ -16,7 +15,7 @@ export const routeMeta: RouteMeta = { title: 'Interactions · RxPlus' };
 
 @Component({
   selector: 'app-interactions-page',
-  imports: [DatePipe, MessageModule, InteractionListComponent, ProductPickerComponent],
+  imports: [MessageModule, InteractionListComponent, ProductPickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1 class="text-2xl font-semibold">Interactions</h1>
@@ -114,11 +113,7 @@ export const routeMeta: RouteMeta = { title: 'Interactions · RxPlus' };
           >
             DDInter 2.0</a
           >
-          (CC BY-NC-SA 4.0)
-          @if (importedAt(); as date) {
-            , imported {{ date | date: 'mediumDate' }}
-          }
-          . Label text from the FDA via openFDA and DailyMed.
+          {{ sourceNote() }} Label text from the FDA via openFDA and DailyMed.
         </p>
         <p class="mt-1">Not medical advice. Always confirm with your pharmacist or prescriber.</p>
       </footer>
@@ -137,9 +132,18 @@ export default class InteractionsPage implements OnInit {
   readonly noData = this.store.selectSignal(interactionsFeature.selectNoData);
   private readonly active = this.store.selectSignal(selectActiveMedications);
   readonly activeCount = computed(() => this.active().length);
-  readonly importedAt = computed(
-    () => this.current()?.source.importedAt ?? this.candidate()?.source.importedAt ?? null,
-  );
+  /** "(CC BY-NC-SA 4.0), imported Sep 27, 2026." */
+  readonly sourceNote = computed(() => {
+    const importedAt = this.current()?.source.importedAt ?? this.candidate()?.source.importedAt;
+    const date = importedAt
+      ? new Date(importedAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })
+      : null;
+    return `(CC BY-NC-SA 4.0)${date ? `, imported ${date}` : ''}.`;
+  });
 
   ngOnInit(): void {
     // Loading medications also refreshes the current-interactions report (effect).

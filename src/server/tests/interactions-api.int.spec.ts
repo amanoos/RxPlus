@@ -172,6 +172,12 @@ describe('interactions API (integration)', () => {
       ).status,
     ).toBe(400);
 
+    // Saved medications don't need RxNav: names and ingredients come from the database.
+    await addMedication('313096');
+    await addMedication('314076');
+    rxnav.product.mockRejectedValue(new RxNavUnavailableError('slow'));
+    expect((await get(path)).status).toBe(200);
+
     openFda.interactionLabel.mockRejectedValue(new OpenFdaUnavailableError('down'));
     const down = await get(path);
     expect(down.status).toBe(503);

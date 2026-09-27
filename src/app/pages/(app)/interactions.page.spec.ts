@@ -107,7 +107,9 @@ describe('InteractionsPage', () => {
       'No interactions found in DDInter between your current medications.',
     );
     expect(el.querySelector('footer')?.textContent).toContain('DDInter 2.0');
-    expect(el.querySelector('footer')?.textContent).toContain('imported Sep 27, 2026');
+    expect(el.querySelector('footer')?.textContent).toContain(
+      '(CC BY-NC-SA 4.0), imported Sep 27, 2026.',
+    );
     expect(el.querySelector('footer')?.textContent).toContain('Not medical advice');
   });
 

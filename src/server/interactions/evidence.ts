@@ -107,11 +107,15 @@ export async function evidenceFor(
   pair: { a: EvidenceSide; b: EvidenceSide },
   { openFda, rxnav }: { openFda: OpenFdaClient; rxnav: RxNavClient },
 ): Promise<LabelEvidence[]> {
-  const termsOf = async (side: EvidenceSide): Promise<OtherDrugTerms> => ({
-    ingredient: side.ingredient,
-    brands: await rxnav.brandNames(side.ingredientRxcui),
-    classes: await rxnav.classNames(side.ingredientRxcui),
-  });
+  // Brand and class names only widen the match; if RxNav is slow or down, match by name alone.
+  const bestEffort = (lookup: Promise<string[]>) => lookup.catch(() => [] as string[]);
+  const termsOf = async (side: EvidenceSide): Promise<OtherDrugTerms> => {
+    const [brands, classes] = await Promise.all([
+      bestEffort(rxnav.brandNames(side.ingredientRxcui)),
+      bestEffort(rxnav.classNames(side.ingredientRxcui)),
+    ]);
+    return { ingredient: side.ingredient, brands, classes };
+  };
 
   return Promise.all(
     (

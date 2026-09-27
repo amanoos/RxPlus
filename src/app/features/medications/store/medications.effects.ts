@@ -1,8 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, concatMap, map, mergeMap, of, switchMap } from 'rxjs';
 
+import { httpErrorInfo } from '../../../shared/http-error';
 import { MedicationsApi } from '../medications-api.service';
 import { MedicationsActions } from './medications.actions';
 
@@ -10,9 +10,8 @@ const FALLBACK = 'Something went wrong. Please try again.';
 
 /** User-facing message for a failed medications request. */
 function errorMessage(error: unknown): string {
-  if (!(error instanceof HttpErrorResponse)) return FALLBACK;
-  const serverMessage = (error.error as { statusMessage?: string } | null)?.statusMessage;
-  switch (error.status) {
+  const { status, statusMessage: serverMessage } = httpErrorInfo(error);
+  switch (status) {
     case 409:
       return serverMessage ?? 'This medication is already on your active list.';
     case 422:
