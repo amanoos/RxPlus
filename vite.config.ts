@@ -28,8 +28,15 @@ export default defineConfig(() => ({
     // npm run test:coverage (runs unit + integration; needs npm run db:test:up)
     coverage: {
       provider: 'v8',
-      include: ['src/server/utils/**', 'src/app/core/auth/**', 'src/app/store/**'],
-      exclude: ['**/*.spec.ts'],
+      include: [
+        'src/server/utils/**',
+        'src/app/core/auth/**',
+        'src/app/store/**',
+        'src/server/rxnorm/**',
+        'src/server/medications/**',
+        'src/app/features/medications/**',
+      ],
+      exclude: ['**/*.spec.ts', '**/fixtures/**', '**/*.fixture.ts'],
       reporter: ['text-summary', 'html'],
       thresholds: { lines: 80 },
     },

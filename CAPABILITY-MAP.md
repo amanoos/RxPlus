@@ -32,4 +32,4 @@ Build order: foundation → medications → interactions → drug-info → liter
 ## Specs
 
 - [SPEC-foundation.md](SPEC-foundation.md) (done)
-- [SPEC-medications.md](SPEC-medications.md) (approved)
+- [SPEC-medications.md](SPEC-medications.md) (done, awaiting review)

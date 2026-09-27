@@ -53,11 +53,11 @@ Let the owner add, list, stop, restart and delete prescriptions, each resolved t
 ### Phase 3: Verification
 
 - [x] Task 9: E2E against a stub RxNav
-- [ ] Task 10: Migration in Docker, coverage targets, docs
+- [x] Task 10: Migration in Docker, coverage targets, docs
 
 ### Checkpoint C: medications complete
 
-- [ ] Spec success criteria 1–8 verified
+- [x] Spec success criteria 1–8 verified
 - [ ] Human review, then `SPEC-interactions.md` (needs the interaction data-source decision)
 
 ## Risks and Mitigations

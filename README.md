@@ -20,8 +20,13 @@ Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit
 | `VITE_PRIMEUI_LICENSE` | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                 |
 | `DB_DEV_PORT`          | Host port for the dev database (default 5432; change it if that port is taken).                               |
 | `APP_PORT`             | Host port for the app in Docker (default 3000).                                                               |
+| `RXNAV_BASE_URL`       | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub. |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
+
+## Drug data
+
+Medications are looked up in [RxNorm](https://www.nlm.nih.gov/research/umls/rxnorm/) through NLM's free RxNav API (no key needed). Only the server talks to RxNav: requests time out after 5 seconds, are retried once on network errors, and are cached (drug names 24 hours, product details 7 days). If RxNav is down, adding a medication shows "Drug lookup is unavailable right now"; your saved list keeps working.
 
 ## Development
 
@@ -37,9 +42,10 @@ npm run dev          # http://localhost:5173
 npm test             # unit tests (no database needed)
 npm run db:test:up   # throwaway Postgres on localhost:5433
 npm run test:int     # integration tests against it
-npm run e2e          # production build + Playwright (uses installed Google Chrome)
+npm run e2e          # test DB + production build + Playwright (installed Chrome, stub RxNav)
 npm run db:test:down
 npm run lint
+npm run test:coverage  # unit + integration with coverage (needs the test DB)
 ```
 
 ## Database migrations

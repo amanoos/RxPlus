@@ -94,7 +94,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `playwright.config.ts`, `e2e/stub-rxnav.ts`, `e2e/medications.spec.ts`
   - Depends on: 8
 
-- [ ] **Task 10: Migration in Docker, coverage and docs** (S)
+- [x] **Task 10: Migration in Docker, coverage and docs** (S)
   - Acceptance:
     - `docker compose up -d --build` logs `[migrate] database is up to date`, and the medications flow works in the container
     - Coverage at least 80% on `src/server/rxnorm`, `src/server/medications`, `src/app/features/medications` (added to the coverage config)
@@ -105,5 +105,5 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint C: medications complete
 
-- [ ] Spec success criteria 1–8 verified
+- [x] Spec success criteria 1–8 verified (search 0.5 s uncached / 30 ms cached; add persists across reload and container restart; 409 message; stop/restart/edit/delete; 503 in 5.0 s with the list unaffected; SSR list without refetch; migration on `docker compose up`; lint, 165 unit+integration, 7 e2e, 97% line coverage)
 - [ ] Human review, then `SPEC-interactions.md`
