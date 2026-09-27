@@ -5,7 +5,7 @@ import { RouteMeta } from '@analogjs/router';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { PasswordModule } from 'primeng/password';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { AuthActions } from '../core/auth/auth.actions';
 import { selectAuthError, selectAuthPending } from '../core/auth/auth.selectors';
@@ -16,7 +16,7 @@ export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
 // Public and prerendered at build time (see prerender.routes in vite.config.ts).
 @Component({
   selector: 'app-login-page',
-  imports: [ReactiveFormsModule, ButtonModule, PasswordModule, MessageModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main class="flex min-h-screen items-center justify-center p-4">
@@ -28,14 +28,13 @@ export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
       >
         <h1 id="login-title" class="text-2xl font-semibold">RxPlus</h1>
         <label for="password" class="text-sm font-medium">Password</label>
-        <p-password
+        <input
+          pInputText
+          id="password"
+          type="password"
           formControlName="password"
-          inputId="password"
-          [feedback]="false"
-          [toggleMask]="true"
           autocomplete="current-password"
           class="w-full"
-          inputStyleClass="w-full"
         />
         @if (error(); as error) {
           <p-message severity="error">{{ error }}</p-message>

@@ -155,7 +155,7 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
 // src/app/pages/login.page.ts
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, PasswordModule, MessageModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form
@@ -164,12 +164,7 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
       class="mx-auto mt-24 flex max-w-sm flex-col gap-4 p-4"
     >
       <h1 class="text-2xl font-semibold">RxPlus</h1>
-      <p-password
-        formControlName="password"
-        [feedback]="false"
-        [toggleMask]="true"
-        inputId="password"
-      />
+      <input pInputText id="password" type="password" formControlName="password" />
       @if (error()) {
         <p-message severity="error">{{ error() }}</p-message>
       }

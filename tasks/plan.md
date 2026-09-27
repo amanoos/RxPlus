@@ -63,7 +63,7 @@ Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwin
 ### Phase 4: Shell and E2E
 
 - [x] Task 9: Responsive app shell with placeholder pages and logout
-- [ ] Task 10: Playwright e2e (3 specs)
+- [x] Task 10: Playwright e2e (3 specs)
 
 ### Phase 5: Deploy
 

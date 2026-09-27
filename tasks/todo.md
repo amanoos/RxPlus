@@ -163,12 +163,12 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/pages/(app).page.ts`, `src/app/core/layout/app-shell.component.ts`, `src/app/pages/(app)/{index,medications,interactions,digest}.page.ts`
   - Depends on: 8
 
-- [ ] **Task 10: Playwright e2e (3 specs)** (S)
+- [x] **Task 10: Playwright e2e (3 specs)** (S)
   - Acceptance:
-    - Playwright runs against the built SSR server with the test DB and a known test password hash in `.env.test` (a test-only value, committed as an example)
+    - Playwright runs against the built SSR server using the installed Chrome (`channel: 'chrome'`, no browser download) and a test-only password hashed inside `playwright.config.ts` (no `.env.test` needed)
     - Specs: redirect-to-login; wrong-then-right password reaching the dashboard; logout
   - Verify: `npm run e2e` passes locally
-  - Files: `playwright.config.ts`, `e2e/auth.spec.ts`, `.env.test.example`, `package.json`
+  - Files: `playwright.config.ts`, `e2e/auth.spec.ts`, `package.json`, `src/app/pages/login.page.ts` (`p-password` replaced by a plain `pInputText` password input: its strength meter defaults on and appeared during SSR hand-off, blocking the button)
   - Depends on: 9
 
 ## Phase 5: Deploy

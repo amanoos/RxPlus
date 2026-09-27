@@ -23,7 +23,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:test:down": "docker compose -f docker-compose.test.yml down",
-    "hash-password": "node scripts/hash-password.ts"
+    "hash-password": "node scripts/hash-password.ts",
+    "e2e": "npm run build && playwright test"
   },
   "private": true,
   "dependencies": {
@@ -59,6 +60,7 @@
     "@angular/cli": "22.2.0",
     "@angular/compiler-cli": "22.2.0",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
     "@types/node": "24.19.0",
     "@types/pg": "8.23.1",
     "angular-eslint": "22.5.0",
