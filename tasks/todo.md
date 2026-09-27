@@ -82,7 +82,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/literature/**`, `src/app/store/app.store.ts`
   - Depends on: 7
 
-- [ ] **Task 9: Research section: papers** (M)
+- [x] **Task 9: Research section: papers** (M)
   - Acceptance: on `/drugs/:rxcui` below the summary, one block per ingredient; each paper: type badge, title → PubMed, journal · year, "Free full text" when PMC; takeaway with its quote shown inline below it ("In the study: '…'"); a note when the quote doesn't back up all of it (`supported: false`); unverified takeaways marked; pending (elapsed), failed (retry), unavailable (reason) states; loading and error states that never block the page
   - Verify: component tests; browser check
   - Files: `src/app/features/literature/research-section.component.ts`, `paper-list.component.ts` (+ specs), drug page

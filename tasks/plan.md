@@ -51,7 +51,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 ### Phase 2: Client
 
 - [x] Task 8: NgRx `literature` feature and API service
-- [ ] Task 9: Research section: papers with takeaways and source popovers
+- [x] Task 9: Research section: papers with takeaways and quotes shown inline
 - [ ] Task 10: Hide and undo, trials list, footer and "Check for new research"
 - [ ] Task 10b: Summary panel "Show quotes" toggle
 

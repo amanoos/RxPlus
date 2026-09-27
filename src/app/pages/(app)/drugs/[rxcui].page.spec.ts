@@ -12,6 +12,7 @@ import {
   initialDrugInfoState,
   type DrugInfoState,
 } from '../../../features/drug-info/store/drug-info.reducer';
+import { initialLiteratureState } from '../../../features/literature/store/literature.reducer';
 import DrugPage from './[rxcui].page';
 
 const rxcui = '314076';
@@ -41,7 +42,7 @@ describe('DrugPage', () => {
       imports: [DrugPage],
       providers: [
         providePrimeNG(),
-        provideMockStore({ initialState: { drugInfo } }),
+        provideMockStore({ initialState: { drugInfo, literature: initialLiteratureState } }),
         { provide: ActivatedRoute, useValue: { paramMap: params } },
       ],
     }).compileComponents();
@@ -102,6 +103,7 @@ describe('DrugPage', () => {
   it('shows the summary panel for the drug', async () => {
     const { el } = await setup(stateWith(factsFixture()));
     expect(el.querySelector('app-summary-panel')?.textContent).toContain('Loading summary…');
+    expect(el.querySelector('app-research-section')?.textContent).toContain('Research');
   });
 
   it('says which optional sources were unavailable', async () => {

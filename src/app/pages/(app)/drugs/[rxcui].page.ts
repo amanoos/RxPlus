@@ -10,13 +10,20 @@ import { TagModule } from 'primeng/tag';
 import { ReportedReactionsComponent } from '../../../features/drug-info/reported-reactions.component';
 import { DrugInfoActions } from '../../../features/drug-info/store/drug-info.actions';
 import { SummaryPanelComponent } from '../../../features/drug-info/summary-panel.component';
+import { ResearchSectionComponent } from '../../../features/literature/research-section.component';
 import { drugInfoFeature } from '../../../features/drug-info/store/drug-info.reducer';
 
 export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
 
 @Component({
   selector: 'app-drug-page',
-  imports: [MessageModule, TagModule, ReportedReactionsComponent, SummaryPanelComponent],
+  imports: [
+    MessageModule,
+    TagModule,
+    ReportedReactionsComponent,
+    SummaryPanelComponent,
+    ResearchSectionComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let f = facts();
@@ -88,6 +95,10 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
           <app-summary-panel [rxcui]="rxcui()" [state]="e.summary" />
         </div>
       }
+
+      <div class="mt-8">
+        <app-research-section [rxcui]="rxcui()" />
+      </div>
 
       <div class="mt-8">
         <app-reported-reactions
