@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
 
@@ -28,6 +29,7 @@ describe('InteractionsPage', () => {
       imports: [InteractionsPage],
       providers: [
         providePrimeNG(),
+        provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
         provideMockStore({

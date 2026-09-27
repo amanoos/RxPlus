@@ -89,7 +89,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/drug-info/summary-panel.component.ts` (+ spec), page
   - Depends on: 9
 
-- [ ] **Task 11: Links from medication cards and interaction results** (S)
+- [x] **Task 11: Links from medication cards and interaction results** (S)
   - Acceptance: "About this drug" on each medication card; product names in interaction results link to `/drugs/:rxcui`
   - Verify: component tests; e2e navigation
   - Files: `medication-card.component.ts`, `interaction-list.component.ts` (+ specs)

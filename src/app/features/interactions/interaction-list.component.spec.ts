@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
 
@@ -28,6 +29,7 @@ describe('InteractionListComponent', () => {
       imports: [InteractionListComponent],
       providers: [
         providePrimeNG(),
+        provideRouter([]),
         provideMockStore({
           initialState: { interactions: { ...initialInteractionsState, evidence } },
         }),
@@ -49,6 +51,15 @@ describe('InteractionListComponent', () => {
     expect(items[0].textContent).toContain('Major');
     expect(items[1].textContent).toContain('Not rated');
     expect(items[1].textContent).toContain('severity not rated');
+  });
+
+  it('links both products to their drug pages', async () => {
+    const { el } = await setup([major]);
+    const links = [...el.querySelectorAll('[data-testid="drug-link"]')];
+    expect(links.map((a) => [a.textContent?.trim(), a.getAttribute('href')])).toEqual([
+      ['spironolactone 25 MG Oral Tablet', '/drugs/313096'],
+      ['lisinopril 10 MG Oral Tablet', '/drugs/314076'],
+    ]);
   });
 
   it('loads label evidence when a pair is expanded', async () => {

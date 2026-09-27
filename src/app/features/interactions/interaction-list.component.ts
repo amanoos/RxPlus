@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
@@ -26,7 +27,7 @@ const TAGS: Record<
 /** Interaction results with severity tags and expandable FDA label quotes. */
 @Component({
   selector: 'app-interaction-list',
-  imports: [MessageModule, TagModule],
+  imports: [MessageModule, RouterLink, TagModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ul class="flex flex-col gap-3">
@@ -44,7 +45,19 @@ const TAGS: Record<
                 {{ result.a.ingredient }} + {{ result.b.ingredient }}
               </h3>
               <p class="text-sm text-surface-600 dark:text-surface-300">
-                {{ result.a.name }} · {{ result.b.name }}
+                <a
+                  [routerLink]="['/drugs', result.a.rxcui]"
+                  class="hover:underline"
+                  data-testid="drug-link"
+                  >{{ result.a.name }}</a
+                >
+                ·
+                <a
+                  [routerLink]="['/drugs', result.b.rxcui]"
+                  class="hover:underline"
+                  data-testid="drug-link"
+                  >{{ result.b.name }}</a
+                >
               </p>
             </div>
             <p-tag [value]="tag.label" [severity]="tag.severity" />

@@ -1,5 +1,6 @@
 import { ComponentRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 
 import { medicationFixture } from './medication.fixture';
@@ -9,7 +10,7 @@ describe('MedicationCardComponent', () => {
   const render = async (overrides = {}) => {
     await TestBed.configureTestingModule({
       imports: [MedicationCardComponent],
-      providers: [providePrimeNG()],
+      providers: [providePrimeNG(), provideRouter([])],
     }).compileComponents();
     const fixture = TestBed.createComponent(MedicationCardComponent);
     (fixture.componentRef as ComponentRef<MedicationCardComponent>).setInput(
@@ -27,6 +28,13 @@ describe('MedicationCardComponent', () => {
     expect(el.textContent).toContain('Oral Tablet');
     expect(el.textContent).toContain('Started Jan 15, 2026');
     expect(el.textContent).toContain('with breakfast');
+  });
+
+  it('links to the drug page', async () => {
+    const el = await render();
+    expect(el.querySelector('[data-testid="about-drug"]')?.getAttribute('href')).toBe(
+      '/drugs/314076',
+    );
   });
 
   it('shows the brand for branded products and the stop date when stopped', async () => {

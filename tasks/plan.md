@@ -56,7 +56,7 @@ A drug page (`/drugs/:rxcui`) with:
 - [x] Task 8: NgRx `drugInfo` feature and API service (with polling)
 - [x] Task 9: `/drugs/:rxcui` page: facts, FAERS panel, links (SSR)
 - [x] Task 10: Summary panel: citations, uncited styling, states, refresh
-- [ ] Task 11: Links from medication cards and interaction results
+- [x] Task 11: Links from medication cards and interaction results
 
 ### Checkpoint B
 

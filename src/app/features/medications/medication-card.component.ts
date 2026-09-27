@@ -1,12 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 
 import type { Medication } from './medication';
 
 @Component({
   selector: 'app-medication-card',
-  imports: [DatePipe, TagModule],
+  imports: [DatePipe, RouterLink, TagModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let med = medication();
@@ -49,6 +50,13 @@ import type { Medication } from './medication';
       @if (med.notes) {
         <p data-testid="notes" class="whitespace-pre-line text-sm">{{ med.notes }}</p>
       }
+
+      <a
+        [routerLink]="['/drugs', med.rxcui]"
+        class="self-start text-sm font-medium text-primary-700 hover:underline dark:text-primary-300"
+        data-testid="about-drug"
+        >About this drug</a
+      >
 
       <ng-content />
     </article>
