@@ -83,7 +83,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/pages/(app)/drugs/[rxcui].page.ts` (+ spec), `src/app/features/drug-info/reported-reactions.component.ts` (+ spec)
   - Depends on: 8
 
-- [ ] **Task 10: Summary panel** (M)
+- [x] **Task 10: Summary panel** (M)
   - Acceptance: five sections; citation markers with a popover (quote + label section); uncited sentences with a dotted underline and note; pending (elapsed time), failed (retry), unavailable (reason) states; "Check for a newer label"; footer with model, provider and label date
   - Verify: component tests; browser check
   - Files: `src/app/features/drug-info/summary-panel.component.ts` (+ spec), page

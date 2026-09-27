@@ -28,8 +28,11 @@ export class DrugInfoApi {
       );
   }
 
-  startSummary(rxcui: string): Observable<DrugSummary> {
-    return this.http.post<DrugSummary>(`/api/drugs/${rxcui}/summary`, null);
+  /** `refresh` re-reads the FDA label first, so a newer label version gets its own summary. */
+  startSummary(rxcui: string, refresh = false): Observable<DrugSummary> {
+    return this.http.post<DrugSummary>(`/api/drugs/${rxcui}/summary`, null, {
+      params: refresh ? { refresh: '1' } : {},
+    });
   }
 }
 

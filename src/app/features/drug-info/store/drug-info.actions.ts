@@ -15,7 +15,8 @@ export const DrugInfoActions = createActionGroup({
     'Load Reactions Failure': props<{ rxcui: string; error: string }>(),
     'Load Summary Success': props<{ rxcui: string; summary: DrugSummary | null }>(),
     'Load Summary Failure': props<{ rxcui: string; error: string }>(),
-    'Start Summary': props<{ rxcui: string }>(),
+    /** `refresh`: "Check for a newer label". */
+    'Start Summary': props<{ rxcui: string; refresh?: boolean }>(),
     'Start Summary Success': props<{ rxcui: string; summary: DrugSummary }>(),
     'Start Summary Failure': props<{ rxcui: string; error: string }>(),
     'Poll Summary Success': props<{ rxcui: string; summary: DrugSummary | null }>(),

@@ -33,6 +33,10 @@ describe('DrugInfoApi', () => {
     expect(post.request.method).toBe('POST');
     post.flush(summaryFixture({ status: 'pending' }), { status: 202, statusText: 'Accepted' });
     expect((await started).status).toBe('pending');
+
+    const refreshed = firstValueFrom(api.startSummary('314076', true));
+    http.expectOne('/api/drugs/314076/summary?refresh=1').flush(summaryFixture());
+    expect((await refreshed).status).toBe('ready');
   });
 
   it('treats a missing summary as null and passes other errors on', async () => {

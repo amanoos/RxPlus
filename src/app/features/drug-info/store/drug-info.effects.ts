@@ -59,8 +59,8 @@ export const startSummary = createEffect(
   (actions$ = inject(Actions), api = inject(DrugInfoApi)) =>
     actions$.pipe(
       ofType(DrugInfoActions.startSummary),
-      exhaustMap(({ rxcui }) =>
-        api.startSummary(rxcui).pipe(
+      exhaustMap(({ rxcui, refresh }) =>
+        api.startSummary(rxcui, refresh).pipe(
           map((summary) => DrugInfoActions.startSummarySuccess({ rxcui, summary })),
           catchError((e: unknown) =>
             of(DrugInfoActions.startSummaryFailure({ rxcui, error: drugInfoError(e) })),

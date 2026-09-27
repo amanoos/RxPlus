@@ -15,13 +15,14 @@ import { TagModule } from 'primeng/tag';
 
 import { ReportedReactionsComponent } from '../../../features/drug-info/reported-reactions.component';
 import { DrugInfoActions } from '../../../features/drug-info/store/drug-info.actions';
+import { SummaryPanelComponent } from '../../../features/drug-info/summary-panel.component';
 import { drugInfoFeature } from '../../../features/drug-info/store/drug-info.reducer';
 
 export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
 
 @Component({
   selector: 'app-drug-page',
-  imports: [MessageModule, TagModule, ReportedReactionsComponent],
+  imports: [MessageModule, TagModule, ReportedReactionsComponent, SummaryPanelComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let f = facts();
@@ -88,6 +89,12 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
         </section>
       </div>
 
+      @if (entry(); as e) {
+        <div class="mt-8 rounded-lg border border-surface-200 p-4 dark:border-surface-800">
+          <app-summary-panel [rxcui]="rxcui()" [state]="e.summary" />
+        </div>
+      }
+
       <div class="mt-8">
         <app-reported-reactions
           [reactions]="entry()?.reactions?.data ?? null"
@@ -129,7 +136,8 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
         class="mt-10 border-t border-surface-200 pt-4 text-xs text-surface-600 dark:border-surface-800 dark:text-surface-300"
       >
         <p>
-          Drug class and uses from RxClass (FDA and MED-RT). Reports from FDA FAERS via openFDA.
+          Drug class and uses from RxClass (FDA and MED-RT). Summary from the FDA label via openFDA.
+          Reports from FDA FAERS via openFDA.
         </p>
         <p class="mt-1">Not medical advice. Always confirm with your pharmacist or prescriber.</p>
       </footer>

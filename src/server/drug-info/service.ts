@@ -62,10 +62,10 @@ const fail = (statusCode: number, message: string) =>
   createError({ statusCode, statusMessage: message, message });
 
 export function createSummaryService(deps: Deps) {
-  async function currentLabel(rxcui: string): Promise<SummaryLabel> {
+  async function currentLabel(rxcui: string, refresh = false): Promise<SummaryLabel> {
     let label: SummaryLabel | null;
     try {
-      label = await deps.openFda.summaryLabel(rxcui);
+      label = await deps.openFda.summaryLabel(rxcui, { refresh });
     } catch (error) {
       if (error instanceof OpenFdaUnavailableError) {
         throw fail(503, 'The FDA label is unavailable right now.');
@@ -157,9 +157,12 @@ export function createSummaryService(deps: Deps) {
       return toResponse(row, label);
     },
 
-    /** Starts generation for the current label; idempotent while pending or ready. */
-    async start(rxcui: string): Promise<SummaryResponse> {
-      const label = await currentLabel(rxcui);
+    /**
+     * Starts generation for the current label; idempotent while pending or ready.
+     * `refresh` re-reads the label from openFDA first ("Check for a newer label").
+     */
+    async start(rxcui: string, { refresh = false } = {}): Promise<SummaryResponse> {
+      const label = await currentLabel(rxcui, refresh);
       const key = keyOf(rxcui, label);
       const existing = await deps.repo.find(key);
       if (existing && existing.status !== 'failed') return toResponse(existing, label);

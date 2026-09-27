@@ -93,6 +93,11 @@ describe('DrugPage', () => {
     expect(el.textContent).toContain('304,318 reports');
   });
 
+  it('shows the summary panel for the drug', async () => {
+    const { el } = await setup(stateWith(factsFixture()));
+    expect(el.querySelector('app-summary-panel')?.textContent).toContain('Loading summary…');
+  });
+
   it('says which optional sources were unavailable', async () => {
     const { el } = await setup(
       stateWith(

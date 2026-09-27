@@ -22,6 +22,10 @@ export interface SummaryState {
   starting: boolean;
   /** Polling gave up while the summary was still pending. */
   timedOut: boolean;
+  /** A "Check for a newer label" request is in flight. */
+  checking: boolean;
+  /** The last check found no newer label than the stored summary's. */
+  upToDate: boolean;
 }
 
 export interface DrugInfoEntry {
@@ -47,7 +51,15 @@ const emptyEntry = (rxcui: string): DrugInfoEntry => ({
   rxcui,
   facts: loading(),
   reactions: loading(),
-  summary: { status: 'loading', data: null, error: null, starting: false, timedOut: false },
+  summary: {
+    status: 'loading',
+    data: null,
+    error: null,
+    starting: false,
+    timedOut: false,
+    checking: false,
+    upToDate: false,
+  },
 });
 
 /** Applies a summary response (or its absence) from any source. */
@@ -80,7 +92,7 @@ export const drugInfoFeature = createFeature({
           changes: {
             facts: loading(entry.facts),
             reactions: loading(entry.reactions),
-            summary: { ...entry.summary, timedOut: false },
+            summary: { ...entry.summary, timedOut: false, upToDate: false },
           },
         },
         state,
@@ -107,19 +119,35 @@ export const drugInfoFeature = createFeature({
     on(DrugInfoActions.loadSummaryFailure, (s, { rxcui, error }) =>
       patch(s, rxcui, (e) => ({ summary: { ...e.summary, status: 'error', error } })),
     ),
-    on(DrugInfoActions.startSummary, (s, { rxcui }) =>
+    on(DrugInfoActions.startSummary, (s, { rxcui, refresh }) =>
       patch(s, rxcui, (e) => ({
-        summary: { ...e.summary, starting: true, timedOut: false, error: null },
+        summary: {
+          ...e.summary,
+          starting: true,
+          checking: !!refresh,
+          upToDate: false,
+          timedOut: false,
+          error: null,
+        },
       })),
     ),
     on(DrugInfoActions.startSummarySuccess, (s, { rxcui, summary }) =>
       patch(s, rxcui, (e) => ({
-        summary: { ...e.summary, ...withSummary(summary), starting: false },
+        summary: {
+          ...e.summary,
+          ...withSummary(summary),
+          starting: false,
+          checking: false,
+          // A check that returns the stored ready summary means the label hasn't changed.
+          upToDate: e.summary.checking && summary.status === 'ready',
+        },
       })),
     ),
     // The stored summary (if any) stays; the error explains why a new one didn't start.
     on(DrugInfoActions.startSummaryFailure, (s, { rxcui, error }) =>
-      patch(s, rxcui, (e) => ({ summary: { ...e.summary, starting: false, error } })),
+      patch(s, rxcui, (e) => ({
+        summary: { ...e.summary, starting: false, checking: false, error },
+      })),
     ),
     on(DrugInfoActions.pollSummaryTimeout, (s, { rxcui }) =>
       patch(s, rxcui, (e) => ({ summary: { ...e.summary, timedOut: true } })),

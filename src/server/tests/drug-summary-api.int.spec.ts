@@ -145,6 +145,23 @@ describe('drug summary API (integration)', () => {
     expect(row.input_tokens).toBe(900);
   });
 
+  it('re-reads the label on refresh and summarizes a new label version', async () => {
+    generate.mockResolvedValue({ raw: raw([cited]) });
+    await post();
+    await settleSummaryJobs();
+    expect(openFda.summaryLabel).toHaveBeenLastCalledWith('314076', { refresh: false });
+
+    openFda.summaryLabel.mockResolvedValue({ ...label, version: '3' });
+    const refreshed = await handle(
+      new Request('http://localhost/api/drugs/314076/summary?refresh=1', { method: 'POST' }),
+    );
+    expect(openFda.summaryLabel).toHaveBeenLastCalledWith('314076', { refresh: true });
+    expect(refreshed.status).toBe(202);
+    expect(await refreshed.json()).toMatchObject({ label: { version: '3' } });
+    await settleSummaryJobs();
+    expect(generate).toHaveBeenCalledTimes(2);
+  });
+
   it('is idempotent while pending or ready', async () => {
     let finish!: () => void;
     generate.mockReturnValue(

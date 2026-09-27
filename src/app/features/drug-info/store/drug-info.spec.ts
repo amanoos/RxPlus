@@ -56,6 +56,17 @@ describe('drugInfo reducer and selectors', () => {
     expect(entry(s)?.summary).toMatchObject({ status: 'ready', data: ready });
   });
 
+  it('reports when a label check finds nothing newer', () => {
+    let s = reducer(opened, DrugInfoActions.loadSummarySuccess({ rxcui, summary: ready }));
+    s = reducer(s, DrugInfoActions.startSummary({ rxcui, refresh: true }));
+    expect(entry(s)?.summary.checking).toBe(true);
+    s = reducer(s, DrugInfoActions.startSummarySuccess({ rxcui, summary: ready }));
+    expect(entry(s)?.summary).toMatchObject({ checking: false, upToDate: true });
+    s = reducer(s, DrugInfoActions.startSummary({ rxcui, refresh: true }));
+    s = reducer(s, DrugInfoActions.startSummarySuccess({ rxcui, summary: pending }));
+    expect(entry(s)?.summary).toMatchObject({ status: 'pending', upToDate: false });
+  });
+
   it('shows why a summary could not start, keeping any stored one', () => {
     let s = reducer(opened, DrugInfoActions.loadSummarySuccess({ rxcui, summary: ready }));
     s = reducer(s, DrugInfoActions.startSummary({ rxcui }));
@@ -138,7 +149,11 @@ describe('drugInfo effects', () => {
     );
     const out = collect(effects.startSummary);
     actions$.next(DrugInfoActions.startSummary({ rxcui }));
-    actions$.next(DrugInfoActions.startSummary({ rxcui }));
+    actions$.next(DrugInfoActions.startSummary({ rxcui, refresh: true }));
+    expect(api.startSummary.mock.calls).toEqual([
+      [rxcui, undefined],
+      [rxcui, true],
+    ]);
     expect(out).toEqual([
       DrugInfoActions.startSummarySuccess({ rxcui, summary: pending }),
       DrugInfoActions.startSummaryFailure({
