@@ -1,189 +1,109 @@
-# Tasks: foundation
+# Tasks: medications
 
-Plan: [plan.md](plan.md) · Spec: [SPEC-foundation.md](../SPEC-foundation.md)
-
-Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
-
-## Phase 1: Scaffold
-
-- [x] **Task 1: Scaffold the Analog app, add tooling and set LF line endings** (M, mostly generated files)
-  - Acceptance:
-    - `npm create analog@latest` output sits at the repo root, and all package versions are pinned exactly
-    - `.gitattributes` sets `* text=auto eol=lf`; `.nvmrc` holds `24`; ESLint (angular-eslint) and Prettier are configured, with `lint`, `format`, `test`, `test:watch` scripts
-    - The spec's Project Structure and Tech Stack are updated if the scaffold differs
-  - Verify: `npm run lint && npm test && npm run build`; `npm run dev` serves the default page
-  - Files: scaffold output, `package.json`, `.gitattributes`, `.nvmrc`, `eslint.config.js`, `.prettierrc`, `SPEC-foundation.md`
-  - Depends on: none
-
-- [x] **Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode** (S)
-  - Acceptance:
-    - `providePrimeNG` uses the Aura preset, CSS layers are ordered so Tailwind utilities can override PrimeNG, and `tailwindcss-primeui` is loaded
-    - Dark mode follows `prefers-color-scheme` for both PrimeNG and Tailwind
-    - The index page renders a `p-button` inside a Tailwind flex layout
-  - Verify: `npm run build`; view-source on `/` shows the server-rendered button; toggling the OS theme switches colors
-  - Files: `vite.config.ts`, `src/styles.css`, `src/app/app.config.ts`, `src/app/pages/index.page.ts`
-  - Depends on: 1
-
-- [x] **Task 3: Validate env config and fail fast** (S)
-  - Acceptance:
-    - A zod schema covers `DATABASE_URL`, `APP_PASSWORD_HASH`, `SESSION_SECRET` (at least 32 characters), `COOKIE_SECURE`, `PORT`, `TZ`, and is parsed once at server startup via a Nitro plugin
-    - A missing or invalid value makes the process exit with a message naming the variable, and the value itself is never printed
-    - `.env.example` is committed with placeholder values
-  - Verify: unit tests for valid, missing and short-secret cases; `npm run dev` with an empty `.env` prints a readable error
-  - Files: `src/server/utils/env.ts`, `src/server/plugins/env.ts`, `src/server/utils/env.spec.ts`, `.env.example`
-  - Depends on: 1
-
-### Checkpoint A
-
-- [ ] `npm run lint && npm test && npm run build` pass
-- [ ] SSR-rendered PrimeNG + Tailwind page works in both themes
-- [ ] Human review
-
-## Phase 2: Data
-
-- [x] **Task 4: Drizzle client, dev Postgres and `/api/health`** (M)
-  - Acceptance:
-    - `docker-compose.yml` has a `db` service (`postgres:18`, named volume, `pg_isready` healthcheck, `TZ`) with no host port; `docker-compose.dev.yml` exposes it on localhost at `DB_DEV_PORT` (default 5432); `docker-compose.test.yml` runs a throwaway `rxplus_test` on 5433 (a separate file, because Compose would otherwise demand `POSTGRES_PASSWORD` for test runs)
-    - `src/server/db/client.ts` exports one Drizzle instance on a shared `pg` Pool; `drizzle.config.ts` and the `db:generate` / `db:migrate` scripts exist
-    - `GET /api/health` returns `200 {status:"ok",db:"ok"}`, or `503 {status:"degraded",db:"down"}` when `SELECT 1` fails
-  - Verify: integration test against `rxplus_test` for 200; unit test with a failing client for 503; manually, `curl` before and after `docker compose stop db`
-  - Files: `docker-compose.yml`, `docker-compose.dev.yml`, `drizzle.config.ts`, `src/server/db/client.ts`, `src/server/routes/api/health.get.ts` (+ spec)
-  - Depends on: 3
-
-## Phase 3: Auth slice
-
-- [x] **Task 5: Password hashing util and `hash-password` script** (S)
-  - Acceptance:
-    - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, stored as `scrypt:<N>:<salt>:<hash>` (base64url; colons, not `# Tasks: foundation
-
-Plan: [plan.md](plan.md) · Spec: [SPEC-foundation.md](../SPEC-foundation.md)
+Plan: [plan.md](plan.md) · Spec: [SPEC-medications.md](../SPEC-medications.md)
 
 Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
 
-## Phase 1: Scaffold
+## Phase 1: Server
 
-- [x] **Task 1: Scaffold the Analog app, add tooling and set LF line endings** (M, mostly generated files)
+- [ ] **Task 1: RxNav client with timeout, retry, cache and fixtures** (M)
   - Acceptance:
-    - `npm create analog@latest` output sits at the repo root, and all package versions are pinned exactly
-    - `.gitattributes` sets `* text=auto eol=lf`; `.nvmrc` holds `24`; ESLint (angular-eslint) and Prettier are configured, with `lint`, `format`, `test`, `test:watch` scripts
-    - The spec's Project Structure and Tech Stack are updated if the scaffold differs
-  - Verify: `npm run lint && npm test && npm run build`; `npm run dev` serves the default page
-  - Files: scaffold output, `package.json`, `.gitattributes`, `.nvmrc`, `eslint.config.js`, `.prettierrc`, `SPEC-foundation.md`
+    - `createRxNavClient({ baseUrl, fetch, now })` exposes `search(q)`, `products(name)`, `product(rxcui)`; defaults from `RXNAV_BASE_URL` (optional env, default `https://rxnav.nlm.nih.gov/REST`)
+    - 5-second timeout, one retry on network error (not on 4xx), TTL cache (search 24 hours, product 7 days); failures throw `RxNavUnavailableError`
+    - Mapping handles single-ingredient, combination and branded products; `product()` returns `null` for non-SCD/SBD or unknown RXCUIs
+  - Verify: unit tests on recorded fixtures (lisinopril, a combination product, a branded product, empty results), fake timers for the timeout/retry/cache
+  - Files: `src/server/rxnorm/client.ts`, `src/server/rxnorm/client.spec.ts`, `src/server/rxnorm/fixtures/*.json`, `src/server/utils/env.ts`
   - Depends on: none
 
-- [x] **Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode** (S)
+- [ ] **Task 2: RxNorm search and products proxy routes** (S)
   - Acceptance:
-    - `providePrimeNG` uses the Aura preset, CSS layers are ordered so Tailwind utilities can override PrimeNG, and `tailwindcss-primeui` is loaded
-    - Dark mode follows `prefers-color-scheme` for both PrimeNG and Tailwind
-    - The index page renders a `p-button` inside a Tailwind flex layout
-  - Verify: `npm run build`; view-source on `/` shows the server-rendered button; toggling the OS theme switches colors
-  - Files: `vite.config.ts`, `src/styles.css`, `src/app/app.config.ts`, `src/app/pages/index.page.ts`
+    - `GET /api/rxnorm/search?q=` (2–100 characters) and `GET /api/rxnorm/products?name=` return mapped results; 400 on bad input; 503 with a generic message when RxNav is unavailable
+    - Both require a session (existing middleware)
+  - Verify: route tests in `src/server/tests/` with a stubbed client
+  - Files: `src/server/routes/api/rxnorm/search.get.ts`, `src/server/routes/api/rxnorm/products.get.ts`, `src/server/rxnorm/index.ts` (shared instance), `src/server/tests/rxnorm-api.spec.ts`
   - Depends on: 1
 
-- [ ] **Task 3: Validate env config and fail fast** (S)
+- [ ] **Task 3: Medications schema, first migration and repository** (M)
   - Acceptance:
-    - A zod schema covers `DATABASE_URL`, `APP_PASSWORD_HASH`, `SESSION_SECRET` (at least 32 characters), `COOKIE_SECURE`, `PORT`, `TZ`, and is parsed once at server startup via a Nitro plugin
-    - A missing or invalid value makes the process exit with a message naming the variable, and the value itself is never printed
-    - `.env.example` is committed with placeholder values
-  - Verify: unit tests for valid, missing and short-secret cases; `npm run dev` with an empty `.env` prints a readable error
-  - Files: `src/server/utils/env.ts`, `src/server/plugins/env.ts`, `src/server/utils/env.spec.ts`, `.env.example`
-  - Depends on: 1
+    - `medications` table per spec, with a partial unique index on `rxcui` where `stopped_on is null`
+    - `drizzle/0000_*.sql` generated and committed; the drizzle config points at the schema index
+    - The repository offers `list()` (active first, then stopped, newest first), `create()`, `update()`, `remove()`; a unique violation maps to a `DuplicateActiveMedicationError`
+  - Verify: integration tests against `rxplus_test` (migrations applied in setup); `npm run db:migrate` against the dev DB
+  - Files: `src/server/db/schema/medications.ts`, `src/server/db/schema/index.ts`, `drizzle/`, `src/server/medications/repository.ts`, `src/server/medications/repository.int.spec.ts`
+  - Depends on: none
+
+- [ ] **Task 4: Medications API (list, create with re-verify, update, delete)** (M)
+  - Acceptance:
+    - Routes per spec with zod validation: `POST` accepts only `{ rxcui, notes?, startedOn? }` and stores RxNav's details; 422 for non-SCD/SBD; 409 duplicate; 503 RxNav down
+    - `PATCH` updates notes/startedOn/stoppedOn (restart = `stoppedOn: null`, 409 if that creates a duplicate); `DELETE` returns 204/404
+    - Notes max 1000 characters; dates `YYYY-MM-DD`, `stoppedOn` not before `startedOn`
+  - Verify: route tests with a stubbed RxNav client and the test DB
+  - Files: `src/server/routes/api/medications/{index.get,index.post,[id].patch,[id].delete}.ts`, `src/server/medications/service.ts`, `src/server/tests/medications-api.int.spec.ts`
+  - Depends on: 1, 3
 
 ### Checkpoint A
 
-- [ ] `npm run lint && npm test && npm run build` pass
-- [ ] SSR-rendered PrimeNG + Tailwind page works in both themes
-- [ ] Human review
+- [ ] Unit and integration tests pass; migration applies to the dev DB
+- [ ] Manual curl run of search → products → add → duplicate 409 → stop → delete
 
-## Phase 2: Data
+## Phase 2: Client
 
-- [ ] **Task 4: Drizzle client, dev Postgres and `/api/health`** (M)
+- [ ] **Task 5: NgRx medications feature (`@ngrx/entity`) and API service** (M)
   - Acceptance:
-    - `docker-compose.yml` has a `db` service (`postgres:18`, named volume, `pg_isready` healthcheck, `TZ`) with no host port; `docker-compose.dev.yml` exposes `5432` to localhost; a `test` profile creates `rxplus_test`
-    - `src/server/db/client.ts` exports one Drizzle instance on a shared `pg` Pool; `drizzle.config.ts` and the `db:generate` / `db:migrate` scripts exist
-    - `GET /api/health` returns `200 {status:"ok",db:"ok"}`, or `503 {status:"degraded",db:"down"}` when `SELECT 1` fails
-  - Verify: integration test against `rxplus_test` for 200; unit test with a failing client for 503; manually, `curl` before and after `docker compose stop db`
-  - Files: `docker-compose.yml`, `docker-compose.dev.yml`, `drizzle.config.ts`, `src/server/db/client.ts`, `src/server/routes/api/health.get.ts` (+ spec)
-  - Depends on: 3
+    - Entity adapter sorted active first; actions and effects for load/add/update/remove with user-facing error messages (409, 422, 503)
+    - Selectors `selectActive`, `selectStopped`, `selectLoaded`, `selectSaving`, `selectError`; registered in `provideAppStore`
+  - Verify: reducer, selector and effect unit tests; `MedicationsApi` tests with `HttpTestingController`
+  - Files: `src/app/features/medications/store/*`, `src/app/features/medications/medications-api.service.ts` (+ specs), `src/app/store/app.store.ts`
+  - Depends on: 4
 
-## Phase 3: Auth slice
-
-- [x] **Task 5: Password hashing util and `hash-password` script** (S)
+- [ ] **Task 6: `/medications` list page with SSR, stopped section and empty state** (M)
   - Acceptance:
-    - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, , so Compose/dotenv don't interpolate it; format already enforced by `env.ts`); verification uses `timingSafeEqual`
-    - `npm run hash-password` prompts without echoing the password and prints the hash to paste into `.env`
-  - Verify: unit tests for round trip, wrong password, tampered hash and malformed string
-  - Files: `src/server/utils/password.ts`, `src/server/utils/password.spec.ts`, `scripts/hash-password.ts`, `package.json`
-  - Depends on: 3
+    - Cards show name, strength, form, brand, started date and notes; "Stopped" is a collapsible section; empty state with an "Add medication" button
+    - The SSR HTML already contains the list; no refetch flash on hydration (transfer cache, or Analog `load` as a fallback)
+  - Verify: component tests; curl the SSR HTML with a session for the medication name; browser check for no double request and no hydration warnings
+  - Files: `src/app/pages/(app)/medications.page.ts`, `src/app/features/medications/medication-card.component.ts` (+ specs)
+  - Depends on: 5
 
-- [x] **Task 6: Auth API routes, session, rate limiter and middleware** (M)
+- [ ] **Task 7: Add-medication dialog** (M)
   - Acceptance:
-    - `POST /api/auth/login` (zod body) returns 204 and sets a sealed `httpOnly`, `sameSite=lax` cookie expiring in 30 days (h3 emits `Expires` and enforces the TTL in the seal) and `secure` from env; 401 with a generic message on failure; 429 on the sixth failure within 15 minutes
-    - `POST /api/auth/logout` returns 204 and clears the session; `GET /api/auth/me` returns 200 or 401
-    - The middleware returns 401 for every `/api/*` except `auth/login` and `health`
-  - Verify: integration tests for each status code and the cookie flags; the rate limiter unit-tested with a fake clock
-  - Files: `src/server/utils/session.ts`, `src/server/utils/rate-limit.ts` (+ spec), `src/server/routes/api/auth/{login.post,logout.post,me.get}.ts`, `src/server/middleware/auth.ts`, `src/server/tests/auth-api.spec.ts` (tests must not live under `routes/` or `middleware/`: Nitro registers every file there)
-  - Depends on: 4, 5
-
-- [x] **Task 7: NgRx root store and `auth` feature** (M)
-  - Acceptance:
-    - `provideStore`, `provideEffects`, and `provideStoreDevtools` only when `import.meta.env.DEV` (build-time constant, so production bundles contain no devtools code)
-    - The `auth` feature has status `unknown | authenticated | anonymous` plus `error`; actions `login`, `loginSuccess`, `loginFailure`, `logout`, `logoutSuccess`, `sessionChecked`
-    - Effects call the API through an `AuthApi` service, map 401 and 429 to user-facing messages, and navigate on success
-  - Verify: unit tests for the reducer, selectors and effects (`provideMockActions`, `HttpTestingController`); a production build contains no devtools
-  - Files: `src/app/store/app.store.ts`, `src/app/core/auth/{auth.actions,auth.reducer,auth.effects,auth.selectors,auth-api.service}.ts` (+ specs)
+    - A PrimeNG Dialog with AutoComplete (300 ms debounce, 2+ characters) → product list (generics first) → optional start date and notes → Save dispatches `add`; closes on success, shows the 409/503 message on failure
+    - RxNav-down message "Drug lookup is unavailable right now"; keyboard-operable
+  - Verify: component tests with a stubbed API; manual browser run
+  - Files: `src/app/features/medications/add-medication-dialog.component.ts` (+ spec), `src/app/features/medications/rxnorm-api.service.ts` (+ spec), `medications.page.ts`
   - Depends on: 6
 
-- [x] **Task 8: Login page (prerendered) and auth guard** (M)
+- [ ] **Task 8: Edit notes/start date, stop, restart, delete with confirmation** (M)
   - Acceptance:
-    - `/login` matches the spec's code-style example and is the only route in Analog `prerender.routes` (the default also prerendered `/`, which would bypass the guard)
-    - The client build's empty `index.html` is excluded from Nitro static assets (`nitro.ignore`), otherwise `/` is served statically and never reaches SSR or the guard
-    - `forwardCookieInterceptor` forwards the request cookie to same-origin `/api` calls during SSR (Analog's interceptor doesn't)
-    - The guard on the `(app)` layout checks the session during SSR (forwarding the request cookie) and in the browser, and redirects to `/login?next=<path>`
-    - After login the app navigates to `next` only if it's a same-origin relative path; otherwise to `/`
-  - Verify: unit test for the `next` sanitizer; build output contains `login/index.html`; manual pass of Checkpoint B flows, including a hard refresh while signed in
-  - Files: `src/app/pages/login.page.ts`, `src/app/pages/(app).page.ts`, `src/app/core/auth/auth.guard.ts`, `src/app/core/auth/safe-next.ts` (+ spec), `vite.config.ts`
-  - Depends on: 2, 7
+    - Per-card actions: Edit (notes, start date), Stop (date defaults to today, editable), Restart, Delete (PrimeNG ConfirmDialog)
+    - The store updates in place; errors surface as messages
+  - Verify: component tests; manual browser run
+  - Files: `src/app/features/medications/medication-card.component.ts`, `src/app/features/medications/edit-medication-dialog.component.ts` (+ specs), `medications.page.ts`
+  - Depends on: 7
 
 ### Checkpoint B
 
-- [ ] All unit and integration tests pass
-- [ ] Manual login, logout and redirect flows work; health returns 200 and 503
-- [ ] No hydration warnings in the browser console
-- [ ] Human review
+- [ ] Full flow in the browser at 375px and 1280px, light and dark; no hydration warnings; RxNav-down message shown with the list still usable
 
-## Phase 4: Shell and E2E
+## Phase 3: Verification
 
-- [x] **Task 9: Responsive app shell with placeholder pages and logout** (M)
+- [ ] **Task 9: E2E against a stub RxNav** (M)
   - Acceptance:
-    - The `(app)` layout has a top bar with the name and a menu (Dashboard, Medications, Interactions, Digest, Logout); below 768px the menu becomes a PrimeNG Drawer opened by a button
-    - Placeholder pages exist for `/`, `/medications`, `/interactions`, `/digest`
-    - No horizontal scroll at 375px or 1280px; landmarks and focus order are keyboard-usable
-  - Verify: manual check at both widths in the browser pane; Logout dispatches `logout` and lands on `/login`
-  - Files: `src/app/pages/(app).page.ts`, `src/app/core/layout/app-shell.component.ts`, `src/app/pages/(app)/{index,medications,interactions,digest}.page.ts`
+    - Playwright starts a fixture server serving the recorded RxNav responses; the app's `RXNAV_BASE_URL` points at it
+    - Specs: add a medication via search → product; duplicate shows the message; stop → appears under Stopped → restart; delete with confirmation; reload keeps the data
+  - Verify: `npm run e2e` passes (5 repeats stable)
+  - Files: `playwright.config.ts`, `e2e/stub-rxnav.ts`, `e2e/medications.spec.ts`
   - Depends on: 8
 
-- [x] **Task 10: Playwright e2e (3 specs)** (S)
+- [ ] **Task 10: Migration in Docker, coverage and docs** (S)
   - Acceptance:
-    - Playwright runs against the built SSR server using the installed Chrome (`channel: 'chrome'`, no browser download) and a test-only password hashed inside `playwright.config.ts` (no `.env.test` needed)
-    - Specs: redirect-to-login; wrong-then-right password reaching the dashboard; logout
-  - Verify: `npm run e2e` passes locally
-  - Files: `playwright.config.ts`, `e2e/auth.spec.ts`, `package.json`, `src/app/pages/login.page.ts` (`p-password` replaced by a plain `pInputText` password input: its strength meter defaults on and appeared during SSR hand-off, blocking the button)
+    - `docker compose up -d --build` logs `[migrate] database is up to date`, and the medications flow works in the container
+    - Coverage at least 80% on `src/server/rxnorm`, `src/server/medications`, `src/app/features/medications` (added to the coverage config)
+    - README updated (RxNav note, `RXNAV_BASE_URL`)
+  - Verify: Docker run under the `rxplus-verify` project, then removed; `npm run test:coverage`
+  - Files: `vite.config.ts`, `README.md`, `.env.example`
   - Depends on: 9
 
-## Phase 5: Deploy
+### Checkpoint C: medications complete
 
-- [x] **Task 11: Production Dockerfile, Compose app service and migrate-on-start** (M)
-  - Acceptance:
-    - Multi-stage `Dockerfile` (node:24 build, node:24-slim runtime), runs as non-root, `TZ` set, `VITE_PRIMEUI_LICENSE` passed as a build arg (Compose `build.args` from `.env`); the `app` service `depends_on: db: service_healthy`, exposes `3000`, uses `.env`
-    - The entrypoint runs `scripts/migrate.ts` (bundled with esbuild to `dist/migrate.cjs`; runtime migrator; always checks the DB connection, so a bad `DATABASE_URL` fails startup; exits 0 with "no migrations" if there's no journal; non-zero on failure) and then starts the server
-    - A README "Deploy" section explains setup: `cp .env.example .env`, `npm run hash-password`, `docker compose up -d --build`
-  - Verify: `docker compose up -d --build` locally serves login on `:3000`; logs are clean; a broken `DATABASE_URL` makes the container exit non-zero; then repeat on the Ubuntu server (Success Criterion 1)
-  - Files: `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `scripts/migrate.ts`, `README.md`
-  - Depends on: 4, 9
-
-### Checkpoint C: foundation complete
-
-- [ ] Spec Success Criteria 1–8 all verified (all verified locally, including the full Docker stack; criterion 1 still needs a run on the home server)
-- [x] Coverage at least 80% on `src/server/utils`, `src/app/core/auth` and the auth store (98% lines; enforced by `npm run test:coverage`)
-- [x] Human review, then write `SPEC-medications.md` (approved 2026-09-27)
+- [ ] Spec success criteria 1–8 verified
+- [ ] Human review, then `SPEC-interactions.md`

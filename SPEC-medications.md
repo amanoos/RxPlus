@@ -1,6 +1,6 @@
 # Spec: medications
 
-Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `foundation`. Status: **draft, awaiting review**.
+Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `foundation`. Status: **approved 2026-09-27**.
 
 ## Objective
 
@@ -77,7 +77,7 @@ The first real migration is `drizzle/0000_*.sql`, which also proves the foundati
 
 ## State (NgRx)
 
-A `medications` feature built on `@ngrx/entity` (**new dependency, ask first**):
+A `medications` feature built on `@ngrx/entity` (approved):
 
 - **Actions:** `load`, `loadSuccess`/`loadFailure`, `add`/`addSuccess`/`addFailure`, `update…`, `stop…`, `remove…`.
 - **Effects:** call `MedicationsApi`.
@@ -120,12 +120,11 @@ drizzle/0000_*.sql
   - key everything by RXCUI
   - keep RxNav behind the server proxy
 - **Ask first:**
-  - `@ngrx/entity`
   - any other new dependency
   - changing the medications table after its first migration ships
 - **Never:**
   - call RxNav from the browser
-  - store free-text drugs that later modules can't resolve (unless open question 2 decides otherwise)
+  - store free-text drugs that later modules can't resolve
   - log notes or medication names at info level
 
 ## Success criteria
@@ -139,9 +138,13 @@ drizzle/0000_*.sql
 7. The first Drizzle migration applies automatically on `docker compose up`, with `[migrate] database is up to date` in the logs.
 8. Lint, unit, integration and e2e tests pass; coverage targets are met.
 
-## Open questions (need your answer)
+## Resolved decisions (2026-09-27)
 
-1. **"Remove" behaviour:** should removing a drug usually mean _stop taking_, which keeps it in a "Stopped" history (useful context for interactions and the digest), with a separate permanent _delete_? _Recommendation: yes, both, as specified above._
-2. **Drugs RxNorm can't find** (compounded meds, some supplements): allow a free-text entry marked "no drug information available", or RxNorm only? _Recommendation: RxNorm only for now. Every later feature needs an RXCUI, and it keeps the data clean. Free text can come later._
-3. **Extra fields:** is _notes + start date_ enough, or do you also want dose instructions ("1 tablet daily"), prescriber, or pharmacy? _Recommendation: notes + start date only. Dose schedules are out of scope in the intent (no reminders)._
-4. **`@ngrx/entity`:** OK to add? It's the standard NgRx tool for collections and fits the learning goal. _Recommendation: yes._
+1. **Remove:** "Stop taking" is the default and keeps a Stopped history. Permanent delete is separate and asks for confirmation.
+2. **Unknown drugs:** RxNorm only. Every medication has an RXCUI.
+3. **Fields:** notes and start date only (plus stopped date).
+4. **`@ngrx/entity`:** approved.
+
+## Open questions
+
+None.

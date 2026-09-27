@@ -1,91 +1,75 @@
-# Implementation Plan: foundation
+# Implementation Plan: medications
 
-Spec: [SPEC-foundation.md](../SPEC-foundation.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Tasks: [todo.md](todo.md)
+Spec: [SPEC-medications.md](../SPEC-medications.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Tasks: [todo.md](todo.md) · Previous: [foundation](foundation/plan.md)
 
 ## Overview
 
-Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwind shell, NgRx, Drizzle on PostgreSQL, single-password auth, and a Docker Compose deploy to the Ubuntu x86_64 home server (LAN only, `TZ=America/New_York`). No drug features.
+Let the owner add, list, stop, restart and delete prescriptions, each resolved to an RxNorm product (SCD/SBD) through a server-side RxNav proxy, stored in Postgres (first real Drizzle migration), managed in an `@ngrx/entity` store, and rendered with SSR on `/medications`.
 
 ## Architecture Decisions
 
-- **Scaffold first, verify the paths.** `npm create analog@latest` sets the real directory layout and versions. Task 1 updates the spec's Project Structure if the scaffold output differs, before anything else is built on it.
-- **Line endings:** add `.gitattributes` with `* text=auto eol=lf`. The first commit showed CRLF conversion warnings, and shell scripts and Dockerfiles must stay LF for the Linux server.
-- **Migrations at startup use the runtime migrator** (`drizzle-orm/node-postgres/migrator`) in a small script, not `drizzle-kit migrate`. This keeps `drizzle-kit`, a dev dependency, out of the production image. If `drizzle/meta/_journal.json` doesn't exist yet (foundation has no tables), the script logs "no migrations" and exits 0. This refines the spec's "container runs `db:migrate`": the dev command stays `drizzle-kit migrate`.
-- **Dev database:** during development, Postgres runs from the same `docker-compose.yml` with only the `db` service, and a `dev` override file exposes `5432` on localhost. The production compose keeps it unexposed.
-- **Auth is built as a vertical slice** (server, then store, then page), and the shell comes after it, so each task leaves a working, testable app.
+- **One RxNav client on the server** (`src/server/rxnorm/client.ts`) owns base URL, 5-second timeout, one retry on network errors, TTL cache and response mapping. Routes and the repository never call `fetch` directly. It's an injectable `fetch` so tests use recorded fixtures.
+- **Save means re-verify:** `POST /api/medications` takes only `rxcui`. The server fetches the concept's properties, ingredients, dose form, brand and strength from RxNav and stores that snapshot. The client can't forge drug data.
+- **Unique active product** is enforced in the database (partial unique index on `rxcui` where `stopped_on is null`) and mapped to 409, not just checked in code.
+- **SSR list without flash:** the page dispatches `load` on init; the SSR render waits for the HTTP call (cookie forwarded by `forwardCookieInterceptor`). Angular's HTTP transfer cache (enabled by `provideClientHydration`) should hand the response to the browser, so the list doesn't refetch or flash. Verified in Task 6; if the URLs differ between server and client, fall back to Analog's page `load` (`.server.ts`).
+- **Stub RxNav for e2e:** Playwright starts a tiny fixture server and points `RXNAV_BASE_URL` at it, so e2e never depends on NLM.
 
 ## Dependency Graph
 
 ```
-1 Scaffold ─┬─ 2 UI kit (PrimeNG/Tailwind)
-            ├─ 3 Env config ─┬─ 4 DB + health
-            │                └─ 5 Password hash ─┐
-            │                   4 ───────────────┴─ 6 Auth API
-            └─ 7 NgRx root + auth slice (needs 6's API contract)
-               8 Login page + guard (2, 6, 7)
-               9 App shell (2, 8)
-              10 E2E (9)
-              11 Production Docker + migrate-on-start (4, 9)
+1 RxNav client ── 2 RxNorm proxy routes ──────────────┐
+3 Schema + migration + repository ── 4 Medications API ┤
+                                                        ├─ 5 NgRx store ── 6 List page (SSR) ── 7 Add dialog ── 8 Edit/stop/delete
+                                                        │                                                           │
+                                                        └─────────────────────────── 9 E2E (stub RxNav) ────────────┘
+                                                                                     10 Docker migration + coverage + docs
 ```
 
 ## Task List
 
-### Phase 1: Scaffold
+### Phase 1: Server
 
-- [x] Task 1: Scaffold the Analog app, add tooling and set LF line endings
-- [x] Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode
-- [x] Task 3: Validate env config and fail fast
+- [ ] Task 1: RxNav client with timeout, retry, cache and fixtures
+- [ ] Task 2: RxNorm search and products proxy routes
+- [ ] Task 3: Medications schema, first migration and repository
+- [ ] Task 4: Medications API (list, create with re-verify, update, delete)
 
-### Checkpoint A: after Tasks 1–3
+### Checkpoint A
 
-- [ ] `npm run lint && npm test && npm run build` pass
-- [ ] Dev server renders a PrimeNG button styled with Tailwind, via SSR (visible in view-source)
-- [ ] Human review
+- [ ] Unit + integration tests pass; `npm run db:migrate` applies `0000_*` to the dev DB
+- [ ] curl: search `lisin`, list products, add, 409 on duplicate, stop, delete
 
-### Phase 2: Data
+### Phase 2: Client
 
-- [x] Task 4: Drizzle client, dev Postgres and `/api/health`
+- [ ] Task 5: NgRx medications feature (`@ngrx/entity`) and API service
+- [ ] Task 6: `/medications` list page with SSR, stopped section and empty state
+- [ ] Task 7: Add-medication dialog (autocomplete, product pick, notes/date)
+- [ ] Task 8: Edit notes/start date, stop, restart, delete with confirmation
 
-### Phase 3: Auth slice
+### Checkpoint B
 
-- [x] Task 5: Password hashing util and `hash-password` script
-- [x] Task 6: Auth API routes, session, rate limiter and middleware
-- [x] Task 7: NgRx root store and `auth` feature
-- [x] Task 8: Login page (prerendered) and auth guard
+- [ ] Manual in browser: full add/stop/restart/delete flow at 375px and 1280px, light and dark; no hydration warnings; RxNav-down message
 
-### Checkpoint B: after Tasks 4–8
+### Phase 3: Verification
 
-- [ ] All unit and integration tests pass
-- [ ] Manual check: logged-out `/` goes to `/login`; wrong password shows an error; right password lands on `/`; refresh stays signed in
-- [ ] `/api/health` returns 200, and 503 with the DB stopped
-- [ ] Human review
+- [ ] Task 9: E2E against a stub RxNav
+- [ ] Task 10: Migration in Docker, coverage targets, docs
 
-### Phase 4: Shell and E2E
+### Checkpoint C: medications complete
 
-- [x] Task 9: Responsive app shell with placeholder pages and logout
-- [x] Task 10: Playwright e2e (3 specs)
-
-### Phase 5: Deploy
-
-- [x] Task 11: Production Dockerfile, Compose app service and migrate-on-start
-
-### Checkpoint C: complete
-
-- [ ] Spec Success Criteria 1–8 all verified (criterion 1 on the home server)
-- [ ] Coverage targets met
-- [ ] Human review, then `SPEC-medications.md`
+- [ ] Spec success criteria 1–8 verified
+- [ ] Human review, then `SPEC-interactions.md` (needs the interaction data-source decision)
 
 ## Risks and Mitigations
 
-| Risk                                                         | Impact | Mitigation                                                                                                                  |
-| ------------------------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------- |
-| Analog scaffold layout or versions differ from the spec      | Med    | Task 1 reconciles the spec before continuing                                                                                |
-| PrimeNG and Tailwind v4 CSS layer conflicts                  | Med    | Use `tailwindcss-primeui` and PrimeNG's `cssLayer` option; verified at Checkpoint A                                         |
-| SSR guard can't read the session cookie during server render | High   | Task 8 forwards request cookies to `/api/auth/me` during SSR (Analog's request context); covered by e2e with a hard refresh |
-| NgRx devtools or effects break SSR hydration                 | Low    | Register devtools only when `isDevMode()`; the checkpoint checks for no hydration warnings                                  |
-| Migrator with no migrations crashes the container            | Med    | Task 11 guards on the journal file existing and tests it                                                                    |
-| Windows dev vs Linux prod differences (CRLF, native modules) | Med    | `.gitattributes`; no native deps (scrypt comes from `node:crypto`)                                                          |
+| Risk                                                                           | Impact | Mitigation                                                                                  |
+| ------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------- |
+| RxNav slow or down                                                             | Med    | Timeout + retry + cache; 503 with a friendly message; list/edit never depend on RxNav       |
+| RxNav response shape surprises (missing groups, multi-ingredient strength)     | Med    | Map defensively from recorded fixtures of several drug types (single, combination, branded) |
+| SSR transfer cache misses (server/client URL mismatch) → flash or double fetch | Med    | Check in Task 6; fallback to Analog server `load`                                           |
+| Partial unique index not expressible in Drizzle                                | Low    | Drizzle supports `uniqueIndex().on().where(sql…)`; otherwise a hand-written migration       |
+| Dev DB not running for integration tests                                       | Low    | `npm run db:test:up` in the task steps                                                      |
 
 ## Open Questions
 
-None.
+None. All spec questions resolved on 2026-09-27.
