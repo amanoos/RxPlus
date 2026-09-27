@@ -1,0 +1,48 @@
+{
+  "relatedGroup": {
+    "rxcui": null,
+    "conceptGroup": [
+      {
+        "tty": "BN",
+        "conceptProperties": [
+          {
+            "rxcui": "1806885",
+            "name": "Qbrelis",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "196472",
+            "name": "Zestril",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "203644",
+            "name": "Prinivil",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "85783",
+            "name": "Zestoretic",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}

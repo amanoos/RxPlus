@@ -1,0 +1,21 @@
+{
+  "relatedGroup": {
+    "rxcui": null,
+    "conceptGroup": [
+      {
+        "tty": "BN",
+        "conceptProperties": [
+          {
+            "rxcui": "203729",
+            "name": "Biaxin",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}

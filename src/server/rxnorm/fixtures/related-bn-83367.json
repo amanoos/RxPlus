@@ -1,0 +1,39 @@
+{
+  "relatedGroup": {
+    "rxcui": null,
+    "conceptGroup": [
+      {
+        "tty": "BN",
+        "conceptProperties": [
+          {
+            "rxcui": "153165",
+            "name": "Lipitor",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "2631862",
+            "name": "Atorvaliq",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "404914",
+            "name": "Caduet",
+            "synonym": "",
+            "tty": "BN",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}

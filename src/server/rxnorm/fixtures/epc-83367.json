@@ -1,0 +1,16 @@
+{
+  "rxclassDrugInfoList": {
+    "rxclassDrugInfo": [
+      {
+        "minConcept": { "rxcui": "83367", "name": "atorvastatin", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000175589",
+          "className": "HMG-CoA Reductase Inhibitor",
+          "classType": "EPC"
+        },
+        "rela": "has_epc",
+        "relaSource": "DAILYMED"
+      }
+    ]
+  }
+}

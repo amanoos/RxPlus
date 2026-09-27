@@ -40,7 +40,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/interactions/report.ts` (+ spec), `src/server/interactions/repository.ts` (+ int spec)
   - Depends on: 2
 
-- [ ] **Task 5: Label evidence matching** (M)
+- [x] **Task 5: Label evidence matching** (M)
   - Acceptance:
     - RxNav client gains `classNames(ingredientRxcui)` (DAILYMED `has_epc`, cached)
     - `matchEvidence(labelText, other: { ingredient, brands, classes })` splits into sentences and returns ≤ 3 verbatim matches using name, brand, class and a small synonym list (NSAID, potassium-sparing diuretic, …)

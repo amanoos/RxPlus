@@ -1,0 +1,16 @@
+{
+  "rxclassDrugInfoList": {
+    "rxclassDrugInfo": [
+      {
+        "minConcept": { "rxcui": "9997", "name": "spironolactone", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000175557",
+          "className": "Aldosterone Antagonist",
+          "classType": "EPC"
+        },
+        "rela": "has_epc",
+        "relaSource": "DAILYMED"
+      }
+    ]
+  }
+}

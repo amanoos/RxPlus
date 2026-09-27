@@ -24,6 +24,11 @@ function fixtureFetch(overrides: Record<string, () => Promise<Response>> = {}) {
   routes['/rxcui.json?name=Zzqqxx&search=2'] = 'rxcui-name-none';
   routes['/rxcui/83366/related.json?tty=IN'] = 'related-in-83366';
   routes['/rxcui/29046/related.json?tty=IN'] = 'related-in-29046';
+  for (const id of ['29046', '9997']) {
+    routes[`/rxclass/class/byRxcui.json?rxcui=${id}&relaSource=DAILYMED&relas=has_epc`] =
+      `epc-${id}`;
+    routes[`/rxcui/${id}/related.json?tty=BN`] = `related-bn-${id}`;
+  }
   const calls: string[] = [];
   const fetchFn = vi.fn(async (input: string | URL | Request) => {
     const url = String(input);
@@ -152,6 +157,28 @@ describe('RxNav client', () => {
 
     it('returns null for an unknown name', async () => {
       expect(await create(fixtureFetch().fetchFn).ingredientByName('Zzqqxx')).toBeNull();
+    });
+  });
+
+  describe('classNames and brandNames', () => {
+    it('returns FDA established pharmacologic classes for an ingredient', async () => {
+      const client = create(fixtureFetch().fetchFn);
+      expect(await client.classNames('29046')).toEqual(['Angiotensin Converting Enzyme Inhibitor']);
+      expect(await client.classNames('9997')).toEqual(['Aldosterone Antagonist']);
+    });
+
+    it('returns brand names for an ingredient', async () => {
+      expect(await create(fixtureFetch().fetchFn).brandNames('9997')).toEqual([
+        'Aldactone',
+        'Carospir',
+        'Cardalis',
+      ]);
+    });
+
+    it('returns empty lists for unknown ingredients', async () => {
+      const client = create(fixtureFetch().fetchFn);
+      expect(await client.classNames('1')).toEqual([]);
+      expect(await client.brandNames('1')).toEqual([]);
     });
   });
 

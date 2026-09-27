@@ -1,0 +1,16 @@
+{
+  "rxclassDrugInfoList": {
+    "rxclassDrugInfo": [
+      {
+        "minConcept": { "rxcui": "21212", "name": "clarithromycin", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000175935",
+          "className": "Macrolide Antimicrobial",
+          "classType": "EPC"
+        },
+        "rela": "has_epc",
+        "relaSource": "DAILYMED"
+      }
+    ]
+  }
+}

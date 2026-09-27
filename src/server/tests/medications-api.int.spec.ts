@@ -31,6 +31,8 @@ describe('medications API (integration)', () => {
     products: vi.fn<RxNavClient['products']>(),
     product: vi.fn<RxNavClient['product']>(),
     ingredientByName: vi.fn<RxNavClient['ingredientByName']>(),
+    classNames: vi.fn<RxNavClient['classNames']>(),
+    brandNames: vi.fn<RxNavClient['brandNames']>(),
   };
   const { db, pool } = createDb(TEST_DB);
   let handle: (req: Request) => Promise<Response>;

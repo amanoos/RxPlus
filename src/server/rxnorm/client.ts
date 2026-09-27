@@ -30,6 +30,10 @@ export interface RxNavClient {
   product(rxcui: string): Promise<RxProductDetails | null>;
   /** RxNorm ingredient (IN) for a drug name, including synonyms and salts; null if unknown. */
   ingredientByName(name: string): Promise<string | null>;
+  /** FDA established pharmacologic classes (EPC) of an ingredient, e.g. "Aldosterone Antagonist". */
+  classNames(ingredientRxcui: string): Promise<string[]>;
+  /** Brand names related to an ingredient. */
+  brandNames(ingredientRxcui: string): Promise<string[]>;
 }
 
 export class RxNavUnavailableError extends Error {
@@ -154,6 +158,32 @@ export function createRxNavClient({
         'IN',
       );
       return ingredients.length === 1 ? ingredients[0].rxcui : null;
+    },
+
+    classNames(ingredientRxcui) {
+      if (!/^\d{1,10}$/.test(ingredientRxcui)) return Promise.resolve([]);
+      return cached(`epc:${ingredientRxcui}`, DETAILS_TTL, async () => {
+        const body = (await get(
+          `/rxclass/class/byRxcui.json?rxcui=${ingredientRxcui}&relaSource=DAILYMED&relas=has_epc`,
+        )) as {
+          rxclassDrugInfoList?: {
+            rxclassDrugInfo?: { rxclassMinConceptItem: { className: string } }[];
+          };
+        };
+        const names = (body.rxclassDrugInfoList?.rxclassDrugInfo ?? []).map(
+          (x) => x.rxclassMinConceptItem.className,
+        );
+        return [...new Set(names)];
+      });
+    },
+
+    brandNames(ingredientRxcui) {
+      if (!/^\d{1,10}$/.test(ingredientRxcui)) return Promise.resolve([]);
+      return cached(`brands:${ingredientRxcui}`, DETAILS_TTL, async () =>
+        conceptsOf(groupsOf(await get(`/rxcui/${ingredientRxcui}/related.json?tty=BN`)), 'BN').map(
+          (c) => c.name,
+        ),
+      );
     },
 
     product(rxcui) {
