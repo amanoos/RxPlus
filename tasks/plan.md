@@ -59,11 +59,11 @@ Check a new prescription, or the current list, for drug–drug interactions:
 ### Phase 3: Verification
 
 - [x] Task 11: E2E with stub DDInter, RxNav and openFDA
-- [ ] Task 12: Docker import run, coverage, docs
+- [x] Task 12: Docker import run, coverage, docs
 
 ### Checkpoint C: interactions complete
 
-- [ ] Spec success criteria 1–8
+- [x] Spec success criteria 1–8
 - [ ] Human review, then `SPEC-drug-info.md`
 
 ## Risks and Mitigations

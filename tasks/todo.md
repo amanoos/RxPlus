@@ -107,7 +107,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `e2e/stub-rxnav.ts` (renamed stub server if needed), `e2e/global-setup.ts`, `e2e/interactions.spec.ts`, fixtures
   - Depends on: 10
 
-- [ ] **Task 12: Docker import run, coverage, docs** (S)
+- [x] **Task 12: Docker import run, coverage, docs** (S)
   - Acceptance:
     - `docker compose run --rm app node dist/ddi-import.cjs` imports in the container; the app shows interactions
     - Coverage ≥ 80% on `src/server/interactions`, `src/server/openfda`, `src/app/features/interactions`
@@ -118,5 +118,5 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint C: interactions complete
 
-- [ ] Spec success criteria 1–8
+- [x] Spec success criteria 1–8: (1) live import 234,981 pairs, 98.1% mapped, ~5.3 min, idempotent; (2) spironolactone vs lisinopril Major in 347 ms, label quotes in 738 ms; (3) atorvastatin Unknown; (4) pancrelipase notCovered; (5) combination products per ingredient (unit tests, shared-ingredient rule verified live); (6) SSR current list, add-dialog warning; (7) openFDA down → "FDA label text is unavailable right now."; (8) lint, 213 unit + 39 integration + 10 e2e (30/30 over 3 repeats), 97.2% line coverage; import also verified inside Docker
 - [ ] Human review, then `SPEC-drug-info.md`

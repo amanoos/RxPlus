@@ -21,12 +21,31 @@ Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit
 | `DB_DEV_PORT`          | Host port for the dev database (default 5432; change it if that port is taken).                               |
 | `APP_PORT`             | Host port for the app in Docker (default 3000).                                                               |
 | `RXNAV_BASE_URL`       | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub. |
+| `OPENFDA_BASE_URL`     | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                         |
+| `OPENFDA_API_KEY`      | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.               |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
 
 ## Drug data
 
 Medications are looked up in [RxNorm](https://www.nlm.nih.gov/research/umls/rxnorm/) through NLM's free RxNav API (no key needed). Only the server talks to RxNav: requests time out after 5 seconds, are retried once on network errors, and are cached (drug names 24 hours, product details 7 days). If RxNav is down, adding a medication shows "Drug lookup is unavailable right now"; your saved list keeps working.
+
+### Interactions
+
+- **Severity** comes from [DDInter 2.0](https://ddinter2.scbdd.com) (CC BY-NC-SA 4.0, personal non-commercial use), imported into Postgres and mapped to RxNorm ingredients. It is never produced by AI.
+- **Explanations** are verbatim sentences from the FDA drug labels (openFDA / DailyMed), with a link to each label.
+- If a drug's ingredient isn't in DDInter, the app says so instead of reporting "no interactions".
+
+Import the DDInter data once, then again whenever DDInter publishes a release. It takes about 5 minutes the first time (≈2,000 RxNav name lookups); later runs reuse earlier mappings. The data is downloaded at import time and never committed.
+
+```bash
+npm run ddi:import                                   # development (uses DATABASE_URL from .env)
+docker compose run --rm app node dist/ddi-import.cjs # in Docker
+```
+
+Until it has run, the Interactions page explains that the data hasn't been imported yet.
+
+See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 
 ## Development
 
@@ -42,11 +61,13 @@ npm run dev          # http://localhost:5173
 npm test             # unit tests (no database needed)
 npm run db:test:up   # throwaway Postgres on localhost:5433
 npm run test:int     # integration tests against it
-npm run e2e          # test DB + production build + Playwright (installed Chrome, stub RxNav)
+npm run e2e          # test DB + build + Playwright (installed Chrome; stub RxNav/openFDA; sample DDInter data)
 npm run db:test:down
 npm run lint
 npm run test:coverage  # unit + integration with coverage (needs the test DB)
 ```
+
+Integration and e2e tests reset tables in the test database (including any DDInter import there). Use the dev database for manual checks.
 
 ## Database migrations
 
@@ -67,6 +88,7 @@ cp .env.example .env
 npm run hash-password          # or run it on your PC and paste the result
 # edit .env: POSTGRES_PASSWORD, APP_PASSWORD_HASH, SESSION_SECRET, VITE_PRIMEUI_LICENSE
 docker compose up -d --build
+docker compose run --rm app node dist/ddi-import.cjs   # interaction data, ~5 minutes
 ```
 
 Open `http://<server-ip>:3000` (or your `APP_PORT`). Check it:

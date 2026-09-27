@@ -27,10 +27,8 @@ Build order: foundation → medications → interactions → drug-info → liter
 
 ## Open, per module
 
-- **interactions:** NIH retired the free RxNav interaction API in 2024. Proposed replacement (see [docs/research/free-data-sources.md](docs/research/free-data-sources.md)): DDInter 2.0 severity (CC BY-NC-SA, personal use) mapped to RxNorm, plus FDA label `drug_interactions` text. Needs approval in `SPEC-interactions.md`.
-
 ## Specs
 
 - [SPEC-foundation.md](SPEC-foundation.md) (done)
 - [SPEC-medications.md](SPEC-medications.md) (done, awaiting review)
-- [SPEC-interactions.md](SPEC-interactions.md) (approved)
+- [SPEC-interactions.md](SPEC-interactions.md) (done, awaiting review)
