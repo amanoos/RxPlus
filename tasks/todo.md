@@ -15,7 +15,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/openfda/client.ts` (+ spec, fixtures), `src/server/openfda/index.ts`, `src/server/utils/env.ts`
   - Depends on: none
 
-- [ ] **Task 2: DDInter schema, migration and CSV parsing** (M)
+- [x] **Task 2: DDInter schema, migration and CSV parsing** (M)
   - Acceptance:
     - `ddi_drugs`, `ddi_interactions`, `ddi_imports` per spec; migration `0001_*` generated and committed
     - `parseDdinterCsv(text)` handles quoted fields and validates the header; `splitRoute(name)` → `{ base, route }`; `normalizePairs()` orders A < B and keeps the most severe level

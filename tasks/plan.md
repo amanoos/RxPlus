@@ -34,7 +34,7 @@ Check a new prescription, or the current list, for drug–drug interactions:
 ### Phase 1: Data and server
 
 - [x] Task 1: openFDA label client
-- [ ] Task 2: DDInter schema, migration and CSV parsing
+- [x] Task 2: DDInter schema, migration and CSV parsing
 - [ ] Task 3: DDInter importer and `ddi:import` command
 - [ ] Task 4: Interaction report builder and queries
 - [ ] Task 5: Label evidence matching (with RxClass class names)
