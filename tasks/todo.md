@@ -49,7 +49,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/interactions/evidence.ts` (+ spec), `src/server/rxnorm/client.ts` (+ spec)
   - Depends on: 1
 
-- [ ] **Task 6: Interactions API routes** (M)
+- [x] **Task 6: Interactions API routes** (M)
   - Acceptance:
     - `GET /api/interactions/check?rxcui=` (re-resolves via RxNav; 422 non-product; 503 RxNav down; 409 `no-data` before any import), `GET /api/interactions/current`, `GET /api/interactions/evidence?a=&b=` (503 if openFDA is down)
     - zod validation; session required (existing middleware)

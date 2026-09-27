@@ -91,11 +91,11 @@ Run manually when DDInter publishes a release. It doesn't run on server start.
 
 ## API (session required)
 
-| Method and path                                      | Purpose                                                 | Response                                  |
-| ---------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------- |
-| `GET /api/interactions/check?rxcui=<SCD/SBD>`        | New product vs all **active** medications               | `InteractionReport`                       |
-| `GET /api/interactions/current`                      | All pairs among active medications                      | `InteractionReport`                       |
-| `GET /api/interactions/evidence?a=<rxcui>&b=<rxcui>` | Label sentences for one pair (loaded lazily per result) | `LabelEvidence[]`, 503 if openFDA is down |
+| Method and path                                                                              | Purpose                                                 | Response                                  |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------- |
+| `GET /api/interactions/check?rxcui=<SCD/SBD>`                                                | New product vs all **active** medications               | `InteractionReport`                       |
+| `GET /api/interactions/current`                                                              | All pairs among active medications                      | `InteractionReport`                       |
+| `GET /api/interactions/evidence?a=<rxcui>&aIngredient=<rxcui>&b=<rxcui>&bIngredient=<rxcui>` | Label sentences for one pair (loaded lazily per result) | `LabelEvidence[]`, 503 if openFDA is down |
 
 ```ts
 interface InteractionReport {

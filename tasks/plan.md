@@ -38,7 +38,7 @@ Check a new prescription, or the current list, for drug–drug interactions:
 - [x] Task 3: DDInter importer and `ddi:import` command
 - [x] Task 4: Interaction report builder and queries
 - [x] Task 5: Label evidence matching (with RxClass class names)
-- [ ] Task 6: Interactions API routes
+- [x] Task 6: Interactions API routes
 
 ### Checkpoint A
 
