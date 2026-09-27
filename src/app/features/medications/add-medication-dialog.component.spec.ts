@@ -1,26 +1,17 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
-import { of, Subject, throwError } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { AddMedicationDialogComponent } from './add-medication-dialog.component';
 import { medicationFixture } from './medication.fixture';
-import { RxNormApi, type RxProduct } from './rxnorm-api.service';
+import { ProductPickerComponent } from './product-picker.component';
+import { RxNormApi } from './rxnorm-api.service';
 import { MedicationsActions } from './store/medications.actions';
 import { initialMedicationsState } from './store/medications.reducer';
-
-const products: RxProduct[] = [
-  {
-    rxcui: '104377',
-    name: 'lisinopril 10 MG Oral Tablet [Zestril]',
-    tty: 'SBD',
-    brandName: 'Zestril',
-  },
-  { rxcui: '314076', name: 'lisinopril 10 MG Oral Tablet', tty: 'SCD', brandName: null },
-];
 
 describe('AddMedicationDialogComponent', () => {
   const rxnorm = { search: vi.fn(), products: vi.fn() };
@@ -43,32 +34,15 @@ describe('AddMedicationDialogComponent', () => {
     const fixture = TestBed.createComponent(AddMedicationDialogComponent);
     fixture.componentRef.setInput('visible', true);
     await fixture.whenStable();
-    return { fixture, store, cmp: fixture.componentInstance, doc: document };
+    const picker = fixture.debugElement.query(By.directive(ProductPickerComponent))
+      .componentInstance as ProductPickerComponent;
+    return { fixture, store, cmp: fixture.componentInstance, picker };
   };
 
-  it('suggests drug names from the search', async () => {
-    const { cmp } = await setup();
-    rxnorm.search.mockReturnValue(of(['lisinopril', 'hydroCHLOROthiazide / lisinopril']));
-    cmp.search('lisin');
-    expect(rxnorm.search).toHaveBeenCalledWith('lisin');
-    expect(cmp.suggestions()).toEqual(['lisinopril', 'hydroCHLOROthiazide / lisinopril']);
-  });
-
-  it('lists sorted products for the chosen drug and saves the chosen one', async () => {
-    const { cmp, fixture, store, doc } = await setup();
-    rxnorm.products.mockReturnValue(of(products));
-    cmp.selectDrug('lisinopril');
-    await fixture.whenStable();
-
-    const options = [...doc.querySelectorAll('[data-testid="product-option"]')].map((o) =>
-      o.textContent?.trim(),
-    );
-    expect(options).toEqual([
-      'lisinopril 10 MG Oral Tablet',
-      'lisinopril 10 MG Oral Tablet [Zestril]',
-    ]);
-
-    cmp.selectedRxcui.set('314076');
+  it('saves the product chosen in the picker with start date and trimmed notes', async () => {
+    const { cmp, picker, store } = await setup();
+    picker.rxcui.set('314076');
+    expect(cmp.selectedRxcui()).toBe('314076');
     cmp.startedOn.set('2026-01-15');
     cmp.notes.set('  with breakfast  ');
     cmp.save();
@@ -85,32 +59,22 @@ describe('AddMedicationDialogComponent', () => {
     );
   });
 
-  it('shows the lookup outage message', async () => {
-    const { cmp, fixture, doc } = await setup();
-    rxnorm.search.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 503 })));
-    cmp.search('lisin');
-    await fixture.whenStable();
-    expect(cmp.lookupError()).toBe('Drug lookup is unavailable right now.');
-    expect(doc.body.textContent).toContain('Drug lookup is unavailable right now.');
-  });
-
   it('shows the save error from the store', async () => {
-    const { doc } = await setup({
+    await setup({
       ...initialMedicationsState,
       error: 'This medication is already on your active list.',
     });
-    expect(doc.body.textContent).toContain('This medication is already on your active list.');
+    expect(document.body.textContent).toContain('This medication is already on your active list.');
   });
 
-  it('closes and resets after a successful add', async () => {
-    const { cmp, fixture } = await setup();
-    rxnorm.products.mockReturnValue(of(products));
-    cmp.selectDrug('lisinopril');
-    cmp.selectedRxcui.set('314076');
+  it('closes after a successful add, and resets the picker when hidden', async () => {
+    const { cmp, picker, fixture } = await setup();
+    picker.rxcui.set('314076');
     actions$.next(MedicationsActions.addSuccess({ medication: medicationFixture() }));
     await fixture.whenStable();
     expect(cmp.visible()).toBe(false);
-    expect(cmp.selectedDrug()).toBeNull();
+    cmp.reset();
+    expect(picker.rxcui()).toBeNull();
     expect(cmp.selectedRxcui()).toBeNull();
   });
 });

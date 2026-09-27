@@ -71,7 +71,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/interactions/**` (+ specs), `src/app/store/app.store.ts`
   - Depends on: 6
 
-- [ ] **Task 8: Extract `ProductPickerComponent` from the add dialog** (M)
+- [x] **Task 8: Extract `ProductPickerComponent` from the add dialog** (M)
   - Acceptance:
     - The drug search → product radio list moves into a reusable component with an `rxcui` output; the add dialog uses it with identical behavior (existing tests adapted, still green)
   - Verify: component tests; existing medications e2e still passes
