@@ -7,4 +7,6 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+  /** Set by Nitro while prerendering pages during the build. */
+  readonly prerender?: boolean;
 }

@@ -24,6 +24,62 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `vite.config.ts`, `src/styles.css`, `src/app/app.config.ts`, `src/app/pages/index.page.ts`
   - Depends on: 1
 
+- [x] **Task 3: Validate env config and fail fast** (S)
+  - Acceptance:
+    - A zod schema covers `DATABASE_URL`, `APP_PASSWORD_HASH`, `SESSION_SECRET` (at least 32 characters), `COOKIE_SECURE`, `PORT`, `TZ`, and is parsed once at server startup via a Nitro plugin
+    - A missing or invalid value makes the process exit with a message naming the variable, and the value itself is never printed
+    - `.env.example` is committed with placeholder values
+  - Verify: unit tests for valid, missing and short-secret cases; `npm run dev` with an empty `.env` prints a readable error
+  - Files: `src/server/utils/env.ts`, `src/server/plugins/env.ts`, `src/server/utils/env.spec.ts`, `.env.example`
+  - Depends on: 1
+
+### Checkpoint A
+
+- [ ] `npm run lint && npm test && npm run build` pass
+- [ ] SSR-rendered PrimeNG + Tailwind page works in both themes
+- [ ] Human review
+
+## Phase 2: Data
+
+- [ ] **Task 4: Drizzle client, dev Postgres and `/api/health`** (M)
+  - Acceptance:
+    - `docker-compose.yml` has a `db` service (`postgres:18`, named volume, `pg_isready` healthcheck, `TZ`) with no host port; `docker-compose.dev.yml` exposes `5432` to localhost; a `test` profile creates `rxplus_test`
+    - `src/server/db/client.ts` exports one Drizzle instance on a shared `pg` Pool; `drizzle.config.ts` and the `db:generate` / `db:migrate` scripts exist
+    - `GET /api/health` returns `200 {status:"ok",db:"ok"}`, or `503 {status:"degraded",db:"down"}` when `SELECT 1` fails
+  - Verify: integration test against `rxplus_test` for 200; unit test with a failing client for 503; manually, `curl` before and after `docker compose stop db`
+  - Files: `docker-compose.yml`, `docker-compose.dev.yml`, `drizzle.config.ts`, `src/server/db/client.ts`, `src/server/routes/api/health.get.ts` (+ spec)
+  - Depends on: 3
+
+## Phase 3: Auth slice
+
+- [ ] **Task 5: Password hashing util and `hash-password` script** (S)
+  - Acceptance:
+    - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, stored as `scrypt:<N>:<salt>:<hash>` (base64url; colons, not `# Tasks: foundation
+
+Plan: [plan.md](plan.md) · Spec: [SPEC-foundation.md](../SPEC-foundation.md)
+
+Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
+
+## Phase 1: Scaffold
+
+- [x] **Task 1: Scaffold the Analog app, add tooling and set LF line endings** (M, mostly generated files)
+  - Acceptance:
+    - `npm create analog@latest` output sits at the repo root, and all package versions are pinned exactly
+    - `.gitattributes` sets `* text=auto eol=lf`; `.nvmrc` holds `24`; ESLint (angular-eslint) and Prettier are configured, with `lint`, `format`, `test`, `test:watch` scripts
+    - The spec's Project Structure and Tech Stack are updated if the scaffold differs
+  - Verify: `npm run lint && npm test && npm run build`; `npm run dev` serves the default page
+  - Files: scaffold output, `package.json`, `.gitattributes`, `.nvmrc`, `eslint.config.js`, `.prettierrc`, `SPEC-foundation.md`
+  - Depends on: none
+
+- [x] **Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode** (S)
+  - Acceptance:
+    - `providePrimeNG` uses the Aura preset, CSS layers are ordered so Tailwind utilities can override PrimeNG, and `tailwindcss-primeui` is loaded
+    - Dark mode follows `prefers-color-scheme` for both PrimeNG and Tailwind
+    - The index page renders a `p-button` inside a Tailwind flex layout
+  - Verify: `npm run build`; view-source on `/` shows the server-rendered button; toggling the OS theme switches colors
+  - Files: `vite.config.ts`, `src/styles.css`, `src/app/app.config.ts`, `src/app/pages/index.page.ts`
+  - Depends on: 1
+
 - [ ] **Task 3: Validate env config and fail fast** (S)
   - Acceptance:
     - A zod schema covers `DATABASE_URL`, `APP_PASSWORD_HASH`, `SESSION_SECRET` (at least 32 characters), `COOKIE_SECURE`, `PORT`, `TZ`, and is parsed once at server startup via a Nitro plugin
@@ -54,7 +110,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 - [ ] **Task 5: Password hashing util and `hash-password` script** (S)
   - Acceptance:
-    - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, stored as `scrypt$<N>$<salt>$<hash>`; verification uses `timingSafeEqual`
+    - `hashPassword` and `verifyPassword` use `node:crypto` scrypt with a random salt, , so Compose/dotenv don't interpolate it; format already enforced by `env.ts`); verification uses `timingSafeEqual`
     - `npm run hash-password` prompts without echoing the password and prints the hash to paste into `.env`
   - Verify: unit tests for round trip, wrong password, tampered hash and malformed string
   - Files: `src/server/utils/password.ts`, `src/server/utils/password.spec.ts`, `scripts/hash-password.ts`, `package.json`
