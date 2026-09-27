@@ -47,7 +47,7 @@ Check a new prescription, or the current list, for drug–drug interactions:
 
 ### Phase 2: Client
 
-- [ ] Task 7: NgRx interactions feature and API service
+- [x] Task 7: NgRx interactions feature and API service
 - [ ] Task 8: Extract `ProductPickerComponent` from the add dialog
 - [ ] Task 9: `/interactions` page (check + current + evidence)
 - [ ] Task 10: Add-dialog warning and dashboard summary

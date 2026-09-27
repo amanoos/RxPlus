@@ -64,7 +64,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 7: NgRx interactions feature and API service** (M)
+- [x] **Task 7: NgRx interactions feature and API service** (M)
   - Acceptance:
     - State `current`, `candidate`, `evidence` by pair key, loading/error; effects load `current` on medication load/add/update/remove success; `checkCandidate(rxcui)`, `loadEvidence(a, b)`
   - Verify: reducer, selector and effect tests; `InteractionsApi` tests
