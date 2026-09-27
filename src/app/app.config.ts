@@ -5,12 +5,15 @@ import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
+import { provideAppStore } from './store/app.store';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideFileRouter(),
     provideHttpClient(withInterceptors([requestContextInterceptor])),
     provideClientHydration(withEventReplay()),
+    provideAppStore(),
     providePrimeNG({
       license: import.meta.env.VITE_PRIMEUI_LICENSE,
       theme: {

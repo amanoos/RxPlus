@@ -125,9 +125,9 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/utils/session.ts`, `src/server/utils/rate-limit.ts` (+ spec), `src/server/routes/api/auth/{login.post,logout.post,me.get}.ts`, `src/server/middleware/auth.ts`, `src/server/tests/auth-api.spec.ts` (tests must not live under `routes/` or `middleware/`: Nitro registers every file there)
   - Depends on: 4, 5
 
-- [ ] **Task 7: NgRx root store and `auth` feature** (M)
+- [x] **Task 7: NgRx root store and `auth` feature** (M)
   - Acceptance:
-    - `provideStore`, `provideEffects`, and `provideStoreDevtools` only in dev mode
+    - `provideStore`, `provideEffects`, and `provideStoreDevtools` only when `import.meta.env.DEV` (build-time constant, so production bundles contain no devtools code)
     - The `auth` feature has status `unknown | authenticated | anonymous` plus `error`; actions `login`, `loginSuccess`, `loginFailure`, `logout`, `logoutSuccess`, `sessionChecked`
     - Effects call the API through an `AuthApi` service, map 401 and 429 to user-facing messages, and navigate on success
   - Verify: unit tests for the reducer, selectors and effects (`provideMockActions`, `HttpTestingController`); a production build contains no devtools
