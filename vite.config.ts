@@ -15,9 +15,28 @@ export default defineConfig(() => ({
   plugins: [analog(), tailwindcss()],
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: ['src/test-setup.ts'],
-    include: ['**/*.spec.ts'],
     reporters: ['default'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'jsdom',
+          setupFiles: ['src/test-setup.ts'],
+          include: ['src/**/*.spec.ts'],
+          exclude: ['src/**/*.int.spec.ts'],
+        },
+      },
+      {
+        // Needs the test database: npm run db:test:up
+        extends: true,
+        test: {
+          name: 'integration',
+          environment: 'node',
+          include: ['src/**/*.int.spec.ts'],
+          fileParallelism: false,
+        },
+      },
+    ],
   },
 }));

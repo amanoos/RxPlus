@@ -1,0 +1,6 @@
+# Local development only: expose Postgres on localhost (DB_DEV_PORT, default 5432).
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db
+services:
+  db:
+    ports:
+      - '127.0.0.1:${DB_DEV_PORT:-5432}:5432'

@@ -41,9 +41,9 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Data
 
-- [ ] **Task 4: Drizzle client, dev Postgres and `/api/health`** (M)
+- [x] **Task 4: Drizzle client, dev Postgres and `/api/health`** (M)
   - Acceptance:
-    - `docker-compose.yml` has a `db` service (`postgres:18`, named volume, `pg_isready` healthcheck, `TZ`) with no host port; `docker-compose.dev.yml` exposes `5432` to localhost; a `test` profile creates `rxplus_test`
+    - `docker-compose.yml` has a `db` service (`postgres:18`, named volume, `pg_isready` healthcheck, `TZ`) with no host port; `docker-compose.dev.yml` exposes it on localhost at `DB_DEV_PORT` (default 5432); `docker-compose.test.yml` runs a throwaway `rxplus_test` on 5433 (a separate file, because Compose would otherwise demand `POSTGRES_PASSWORD` for test runs)
     - `src/server/db/client.ts` exports one Drizzle instance on a shared `pg` Pool; `drizzle.config.ts` and the `db:generate` / `db:migrate` scripts exist
     - `GET /api/health` returns `200 {status:"ok",db:"ok"}`, or `503 {status:"degraded",db:"down"}` when `SELECT 1` fails
   - Verify: integration test against `rxplus_test` for 200; unit test with a failing client for 503; manually, `curl` before and after `docker compose stop db`

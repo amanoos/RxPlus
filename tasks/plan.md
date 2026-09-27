@@ -44,7 +44,7 @@ Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwin
 
 ### Phase 2: Data
 
-- [ ] Task 4: Drizzle client, dev Postgres and `/api/health`
+- [x] Task 4: Drizzle client, dev Postgres and `/api/health`
 
 ### Phase 3: Auth slice
 
