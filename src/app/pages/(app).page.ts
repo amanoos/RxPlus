@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { RouteMeta } from '@analogjs/router';
 
 import { authGuard } from '../core/auth/auth.guard';
+import { AppShellComponent } from '../core/layout/app-shell.component';
 
 // Pathless layout for every signed-in page; the guard runs during SSR and in the browser.
 export const routeMeta: RouteMeta = {
@@ -11,8 +12,8 @@ export const routeMeta: RouteMeta = {
 
 @Component({
   selector: 'app-authenticated-layout',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, AppShellComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<router-outlet />`,
+  template: `<app-shell><router-outlet /></app-shell>`,
 })
 export default class AuthenticatedLayout {}

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { RouteMeta } from '@analogjs/router';
 import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
@@ -9,6 +10,8 @@ import { PasswordModule } from 'primeng/password';
 import { AuthActions } from '../core/auth/auth.actions';
 import { selectAuthError, selectAuthPending } from '../core/auth/auth.selectors';
 import { safeNext } from '../core/auth/safe-next';
+
+export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
 
 // Public and prerendered at build time (see prerender.routes in vite.config.ts).
 @Component({

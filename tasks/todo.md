@@ -154,7 +154,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 4: Shell and E2E
 
-- [ ] **Task 9: Responsive app shell with placeholder pages and logout** (M)
+- [x] **Task 9: Responsive app shell with placeholder pages and logout** (M)
   - Acceptance:
     - The `(app)` layout has a top bar with the name and a menu (Dashboard, Medications, Interactions, Digest, Logout); below 768px the menu becomes a PrimeNG Drawer opened by a button
     - Placeholder pages exist for `/`, `/medications`, `/interactions`, `/digest`

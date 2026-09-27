@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
+import { RouteMeta } from '@analogjs/router';
+
+export const routeMeta: RouteMeta = { title: 'Dashboard · RxPlus' };
 
 @Component({
-  selector: 'app-home-page',
-  imports: [ButtonModule],
+  selector: 'app-dashboard-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <main class="mx-auto flex min-h-screen max-w-3xl flex-col items-start justify-center gap-6 p-4">
-      <h1 class="text-3xl font-semibold">RxPlus</h1>
-      <p class="text-surface-600 dark:text-surface-300">Your personal medication watchlist.</p>
-      <p-button label="Get started" />
-    </main>
+    <h1 class="text-2xl font-semibold">Dashboard</h1>
+    <p class="mt-2 text-surface-600 dark:text-surface-300">
+      Your medications and what changed this week will appear here.
+    </p>
   `,
 })
-export default class HomePage {}
+export default class DashboardPage {}

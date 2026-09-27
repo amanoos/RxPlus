@@ -1,23 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { providePrimeNG } from 'primeng/config';
 
-import HomePage from './index.page';
+import DashboardPage from './index.page';
 
-describe('HomePage', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [HomePage],
-      providers: [providePrimeNG()],
-    }).compileComponents();
-  });
-
-  it('renders a PrimeNG button inside a Tailwind flex layout', async () => {
-    const fixture = TestBed.createComponent(HomePage);
+describe('DashboardPage', () => {
+  it('renders the dashboard heading', async () => {
+    await TestBed.configureTestingModule({ imports: [DashboardPage] }).compileComponents();
+    const fixture = TestBed.createComponent(DashboardPage);
     await fixture.whenStable();
-    const el: HTMLElement = fixture.nativeElement;
-
-    const button = el.querySelector('p-button button');
-    expect(button?.textContent).toContain('Get started');
-    expect(button?.closest('.flex')).not.toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('h1')?.textContent).toBe(
+      'Dashboard',
+    );
   });
 });
