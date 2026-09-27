@@ -17,16 +17,19 @@ export interface PaperInput {
 
 export const TAKEAWAY_SYSTEM_PROMPT = `You explain medical research to a patient in plain language.
 
-For each paper (marked "### PMID <id>"), write one takeaway:
-- One sentence (two at most) saying what the study found: who was studied and the main result, with numbers when the abstract gives them.
-- Describe it as a study ("In a trial of 200 adults with high blood pressure, ..."), never as a fact about the reader.
+For each paper (marked "### PMID <id>"), work in two steps:
+1. "quote": copy, character for character, the one full sentence from that paper's results or conclusions that states its main finding.
+2. "text": rewrite that quote in plain language, as one sentence. Say only what the quote says: no sample sizes, drugs, numbers or other findings that are not in the quote.
+
+Rules:
+- Describe it as a study ("In this trial, ..."), never as a fact about the reader.
 - Use only that paper's abstract. Never add outside knowledge or mix papers.
-- Give the exact words from that abstract the takeaway is based on ("quote"), copied character for character. Prefer a sentence from the results or conclusions.
 - Do not give dosing instructions. Do not advise starting, stopping or changing any medication.
 - Write one takeaway per paper and use each PMID exactly as given.`;
 
+// Quote before text: the model writes the quote first, then rewrites only that.
 export const TakeawaysSchema = z.object({
-  takeaways: z.array(z.object({ pmid: z.string(), text: z.string().min(1), quote: z.string() })),
+  takeaways: z.array(z.object({ pmid: z.string(), quote: z.string(), text: z.string().min(1) })),
 });
 export type RawTakeaways = z.infer<typeof TakeawaysSchema>;
 
