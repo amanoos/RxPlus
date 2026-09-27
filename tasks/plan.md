@@ -30,7 +30,7 @@ Let the owner add, list, stop, restart and delete prescriptions, each resolved t
 ### Phase 1: Server
 
 - [x] Task 1: RxNav client with timeout, retry, cache and fixtures
-- [ ] Task 2: RxNorm search and products proxy routes
+- [x] Task 2: RxNorm search and products proxy routes
 - [ ] Task 3: Medications schema, first migration and repository
 - [ ] Task 4: Medications API (list, create with re-verify, update, delete)
 

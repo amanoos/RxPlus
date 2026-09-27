@@ -15,7 +15,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/rxnorm/client.ts`, `src/server/rxnorm/client.spec.ts`, `src/server/rxnorm/fixtures/*.json`, `src/server/utils/env.ts`
   - Depends on: none
 
-- [ ] **Task 2: RxNorm search and products proxy routes** (S)
+- [x] **Task 2: RxNorm search and products proxy routes** (S)
   - Acceptance:
     - `GET /api/rxnorm/search?q=` (2–100 characters) and `GET /api/rxnorm/products?name=` return mapped results; 400 on bad input; 503 with a generic message when RxNav is unavailable
     - Both require a session (existing middleware)
