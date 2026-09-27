@@ -9,6 +9,8 @@ import * as drugInfoEffects from '../features/drug-info/store/drug-info.effects'
 import { drugInfoFeature } from '../features/drug-info/store/drug-info.reducer';
 import * as interactionsEffects from '../features/interactions/store/interactions.effects';
 import { interactionsFeature } from '../features/interactions/store/interactions.reducer';
+import * as literatureEffects from '../features/literature/store/literature.effects';
+import { literatureFeature } from '../features/literature/store/literature.reducer';
 import * as medicationsEffects from '../features/medications/store/medications.effects';
 import { medicationsFeature } from '../features/medications/store/medications.reducer';
 
@@ -19,8 +21,15 @@ export function provideAppStore(): EnvironmentProviders[] {
       [medicationsFeature.name]: medicationsFeature.reducer,
       [interactionsFeature.name]: interactionsFeature.reducer,
       [drugInfoFeature.name]: drugInfoFeature.reducer,
+      [literatureFeature.name]: literatureFeature.reducer,
     }),
-    provideEffects(authEffects, medicationsEffects, interactionsEffects, drugInfoEffects),
+    provideEffects(
+      authEffects,
+      medicationsEffects,
+      interactionsEffects,
+      drugInfoEffects,
+      literatureEffects,
+    ),
     // import.meta.env.DEV is a build-time constant, so production bundles drop devtools entirely.
     ...(import.meta.env.DEV ? [provideStoreDevtools({ maxAge: 50, name: 'RxPlus' })] : []),
   ];

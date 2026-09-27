@@ -76,7 +76,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 8: NgRx `literature` feature and API service** (M)
+- [x] **Task 8: NgRx `literature` feature and API service** (M)
   - Acceptance: entries keyed by product RXCUI (lists per ingredient, takeaway state); effects: load, refresh, start takeaways automatically when missing (browser only), poll every 2 s while pending (≤ 12 min, stops on leave), hide/unhide optimistic with rollback
   - Verify: reducer, selector and effect tests (fake timers for polling, rollback on error)
   - Files: `src/app/features/literature/**`, `src/app/store/app.store.ts`
