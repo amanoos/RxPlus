@@ -1,0 +1,32 @@
+{
+  "header": { "type": "esearch", "version": "0.3" },
+  "esearchresult": {
+    "count": "30",
+    "retmax": "20",
+    "retstart": "0",
+    "idlist": [
+      "37417783",
+      "41421750",
+      "29971804",
+      "8806975",
+      "27026378",
+      "31515634",
+      "29967035",
+      "41096770",
+      "35534886",
+      "30326162",
+      "41663753",
+      "19801187",
+      "24685006",
+      "29866077",
+      "23592242",
+      "10449213",
+      "26172390",
+      "37539955",
+      "36645213",
+      "19411440"
+    ],
+    "translationset": [],
+    "querytranslation": "\"lisinopril\"[Title/Abstract] AND (\"meta-analysis\"[Publication Type] OR \"systematic review\"[Publication Type]) AND \"hasabstract\"[All Fields]"
+  }
+}

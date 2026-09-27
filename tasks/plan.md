@@ -15,7 +15,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 
 - **Lists are per ingredient**, keyed by ingredient RXCUI; the drug page resolves its ingredients through drug-info's `product()` (saved medications skip RxNav).
 - **Search once, store the pool.** Up to 20 candidates per tier are stored with their abstracts; Hide and the "first 10 not hidden" selection are database work, with no new search. Refresh (30 days, or on request) upserts candidates, keeping takeaways and hidden state.
-- **PubMed via E-utilities with our own HTTP helpers.** `esearch`/`esummary` are JSON; `efetch` is XML, so `upstream.ts` gains a text variant of `getJson`. Abstract XML is parsed with a small, tested extractor (`<AbstractText>` sections, entities decoded), with no new dependency. Requests are serialized with a minimum spacing (350 ms, or 110 ms with `NCBI_API_KEY`).
+- **PubMed via E-utilities with our own HTTP helpers.** `esearch`/`esummary` are JSON; `efetch` is XML, so `upstream.ts` gains a text variant of `getJson`. Abstract XML is parsed with a small, tested extractor (`<AbstractText>` sections, entities decoded), with no new dependency. Requests are serialized with a minimum spacing (400 ms, or 110 ms with `NCBI_API_KEY`), and a 429 is retried with backoff (measured: NCBI still returns occasional 429s at 350 ms).
 - **ClinicalTrials.gov v2** with a `fields=` subset, two calls (completed with results, recruiting).
 - **One AI call per ingredient list.** The provider layer is refactored into a generic core (Ollama: `system + user + JSON schema`; Claude: documents with citations and headed output) used by both drug-info summaries and literature takeaways. Drug-info's tests must pass unchanged, which guards the refactor.
 - **Verification is shared.** The normalization, stem relevance, synonyms and advice filter move from `drug-info/summary.ts` into a shared module; takeaways verify each quote against that paper's abstract.
@@ -35,7 +35,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 
 ### Phase 1: Server
 
-- [ ] Task 1: PubMed client (search tiers, summaries, abstracts, spacing)
+- [x] Task 1: PubMed client (search tiers, summaries, abstracts, spacing)
 - [ ] Task 2: ClinicalTrials.gov client
 - [ ] Task 3: Schema, migration 0003 and repository
 - [ ] Task 4: Literature service and routes (lists, refresh, hide)

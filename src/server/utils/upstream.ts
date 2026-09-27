@@ -1,15 +1,22 @@
-/** Shared plumbing for calls to public upstream APIs (RxNav, openFDA). */
+/** Shared plumbing for calls to public upstream APIs (RxNav, openFDA, PubMed, …). */
 
 export interface GetJsonOptions {
   fetch: typeof fetch;
   timeoutMs: number;
   /** Builds the client's own "unavailable" error. */
   unavailable: (message: string) => Error;
+  /** Builds the error for a 429 (default: `unavailable`), e.g. so a client can back off and retry. */
+  rateLimited?: () => Error;
 }
 
 export interface JsonResponse {
   status: number;
   body: unknown;
+}
+
+export interface TextResponse {
+  status: number;
+  text: string;
 }
 
 class RetryableError extends Error {}
@@ -19,12 +26,33 @@ class RetryableError extends Error {}
  * 429, invalid JSON and repeated failures become `unavailable`; other statuses are returned.
  */
 export async function getJson(url: string, options: GetJsonOptions): Promise<JsonResponse> {
+  const { status, text } = await withRetry(url, options, 'application/json');
   try {
-    return await attempt(url, options);
+    return { status, body: text ? JSON.parse(text) : null };
+  } catch {
+    throw options.unavailable('unreadable response');
+  }
+}
+
+/** Like getJson, for non-JSON bodies (e.g. PubMed's XML). */
+export function getText(
+  url: string,
+  options: GetJsonOptions & { accept?: string },
+): Promise<TextResponse> {
+  return withRetry(url, options, options.accept ?? '*/*');
+}
+
+async function withRetry(
+  url: string,
+  options: GetJsonOptions,
+  accept: string,
+): Promise<TextResponse> {
+  try {
+    return await attempt(url, options, accept);
   } catch (error) {
     if (!(error instanceof RetryableError)) throw error;
     try {
-      return await attempt(url, options);
+      return await attempt(url, options, accept);
     } catch (retryError) {
       if (!(retryError instanceof RetryableError)) throw retryError;
       throw options.unavailable(`unreachable: ${retryError.message}`);
@@ -34,8 +62,9 @@ export async function getJson(url: string, options: GetJsonOptions): Promise<Jso
 
 async function attempt(
   url: string,
-  { fetch: fetchFn, timeoutMs, unavailable }: GetJsonOptions,
-): Promise<JsonResponse> {
+  { fetch: fetchFn, timeoutMs, unavailable, rateLimited }: GetJsonOptions,
+  accept: string,
+): Promise<TextResponse> {
   const controller = new AbortController();
   let timedOut = false;
   const timer = setTimeout(() => {
@@ -46,7 +75,7 @@ async function attempt(
   let response: Response;
   try {
     response = await Promise.race([
-      fetchFn(url, { signal: controller.signal, headers: { accept: 'application/json' } }),
+      fetchFn(url, { signal: controller.signal, headers: { accept } }),
       new Promise<never>((_, reject) =>
         controller.signal.addEventListener('abort', () => reject(new Error('aborted'))),
       ),
@@ -59,10 +88,9 @@ async function attempt(
   }
 
   if (response.status >= 500) throw new RetryableError(`responded ${response.status}`);
-  if (response.status === 429) throw unavailable('rate limited (429)');
+  if (response.status === 429) throw rateLimited?.() ?? unavailable('rate limited (429)');
   try {
-    const text = await response.text();
-    return { status: response.status, body: text ? JSON.parse(text) : null };
+    return { status: response.status, text: await response.text() };
   } catch {
     throw unavailable('unreadable response');
   }

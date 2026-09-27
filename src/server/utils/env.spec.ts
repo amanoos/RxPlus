@@ -16,6 +16,7 @@ describe('parseEnv', () => {
       TZ: 'America/New_York',
       RXNAV_BASE_URL: 'https://rxnav.nlm.nih.gov/REST',
       OPENFDA_BASE_URL: 'https://api.fda.gov/drug',
+      PUBMED_BASE_URL: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils',
       MEDLINEPLUS_BASE_URL: 'https://connect.medlineplus.gov/service',
       SUMMARY_PROVIDER: 'ollama',
       OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
@@ -59,5 +60,6 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...valid, RXNAV_BASE_URL: 'ftp://x' })).toThrowError(/RXNAV_BASE_URL/);
     expect(() => parseEnv({ ...valid, SUMMARY_PROVIDER: 'gpt' })).toThrowError(/SUMMARY_PROVIDER/);
     expect(() => parseEnv({ ...valid, OLLAMA_NUM_CTX: '512' })).toThrowError(/OLLAMA_NUM_CTX/);
+    expect(() => parseEnv({ ...valid, NCBI_EMAIL: 'not-an-email' })).toThrowError(/NCBI_EMAIL/);
   });
 });

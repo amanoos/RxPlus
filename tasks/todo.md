@@ -6,12 +6,12 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Server
 
-- [ ] **Task 1: PubMed client** (M)
+- [x] **Task 1: PubMed client** (M)
   - Acceptance:
     - `searchPapers(ingredient)` runs both tiers (exact `term` strings from the spec, `hasabstract`, relevance order, 20 each) and returns PMIDs per tier, de-duplicated (a PMID in both tiers stays a review)
     - `paperDetails(pmids)` from esummary: title, journal, year (from `pubdate`), pub types, DOI, PMC id
     - `abstracts(pmids)` from efetch XML: labeled sections joined as "LABEL: text", entities decoded, missing → skipped
-    - requests serialized with ≥ 350 ms spacing (110 ms with `NCBI_API_KEY`); `tool=rxplus`, optional `email`; key redacted from logs; `PUBMED_BASE_URL`, `NCBI_API_KEY`, `NCBI_EMAIL` in env
+    - requests serialized with 400 ms spacing (110 ms with `NCBI_API_KEY`), a 429 retried after 1 s then 2 s; `tool=rxplus`, optional `email`; key redacted from logs; `PUBMED_BASE_URL`, `NCBI_API_KEY`, `NCBI_EMAIL` in env
     - `upstream.ts` gains a text fetch helper with the same timeout/retry rules
   - Verify: unit tests with recorded fixtures (lisinopril esearch ×2, esummary, efetch with structured and plain abstracts, no results)
   - Files: `src/server/pubmed/{client,index}.ts` (+ spec, fixtures), `src/server/utils/upstream.ts`, `src/server/utils/env.ts` (+ specs)

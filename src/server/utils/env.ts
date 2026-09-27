@@ -31,6 +31,13 @@ const envSchema = z.object({
   OPENFDA_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://api.fda.gov/drug'),
+  PUBMED_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    .default('https://eutils.ncbi.nlm.nih.gov/entrez/eutils'),
+  // Optional; raises NCBI's limit from 3 to 10 requests/s. Sent as a query parameter, never logged.
+  NCBI_API_KEY: z.string().trim().min(1).optional(),
+  // Optional contact address NCBI asks E-utilities clients to send (with tool=rxplus).
+  NCBI_EMAIL: z.email('must be an email address').optional(),
   MEDLINEPLUS_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://connect.medlineplus.gov/service'),

@@ -1,0 +1,32 @@
+{
+  "header": { "type": "esearch", "version": "0.3" },
+  "esearchresult": {
+    "count": "295",
+    "retmax": "20",
+    "retstart": "0",
+    "idlist": [
+      "10587334",
+      "20061926",
+      "30284023",
+      "24398888",
+      "9269212",
+      "34282598",
+      "37718674",
+      "9726242",
+      "23519546",
+      "31171092",
+      "36361252",
+      "8410923",
+      "12806591",
+      "11110735",
+      "35794660",
+      "16564798",
+      "22378155",
+      "7803945",
+      "30842257",
+      "19208305"
+    ],
+    "translationset": [],
+    "querytranslation": "\"lisinopril\"[MeSH Major Topic] AND \"randomized controlled trial\"[Publication Type] AND \"hasabstract\"[All Fields]"
+  }
+}

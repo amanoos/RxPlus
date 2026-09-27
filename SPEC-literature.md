@@ -48,7 +48,7 @@ Fields: NCT ID, brief title, status, phase(s), has results, start date, last upd
 
 ### Limits and caching
 
-- NCBI: 3 requests/s without a key, 10/s with `NCBI_API_KEY`. Calls are spaced (≥ 350 ms, or 110 ms with a key), with a `tool=rxplus` parameter and an optional `NCBI_EMAIL` (NCBI asks for both).
+- NCBI: 3 requests/s without a key, 10/s with `NCBI_API_KEY`. Calls are serialized and spaced (400 ms, or 110 ms with a key); a 429 is retried after 1 s, then 2 s (measured 2026-09-27: 350 ms spacing still drew intermittent 429s). Requests carry a `tool=rxplus` parameter and an optional `NCBI_EMAIL` (NCBI asks for both).
 - Upstream calls use the shared `getJson` helper (timeout, one retry on network errors and 5xx, 429 treated as unavailable).
 - A list is refreshed when it's **older than 30 days** and the drug page is opened, or with **"Check for new research"**. Refreshing keeps existing takeaways and hidden papers.
 
