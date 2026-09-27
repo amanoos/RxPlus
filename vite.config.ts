@@ -12,7 +12,16 @@ export default defineConfig(() => ({
   resolve: {
     mainFields: ['module'],
   },
-  plugins: [analog(), tailwindcss()],
+  plugins: [
+    analog({
+      // Only the public login page is static; everything else is private and SSR'd per request.
+      prerender: { routes: ['/login'] },
+      // Don't serve the client build's empty index.html as a static file: '/' must reach
+      // the SSR renderer (and its auth guard). The renderer bundles its own copy.
+      nitro: { ignore: ['*index.html'] },
+    }),
+    tailwindcss(),
+  ],
   test: {
     globals: true,
     reporters: ['default'],

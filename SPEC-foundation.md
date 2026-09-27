@@ -171,7 +171,7 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
         inputId="password"
       />
       @if (error()) {
-        <p-message severity="error" [text]="error()!" />
+        <p-message severity="error">{{ error() }}</p-message>
       }
       <p-button type="submit" label="Sign in" [disabled]="form.invalid" />
     </form>

@@ -134,9 +134,11 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/store/app.store.ts`, `src/app/core/auth/{auth.actions,auth.reducer,auth.effects,auth.selectors,auth-api.service}.ts` (+ specs)
   - Depends on: 6
 
-- [ ] **Task 8: Login page (prerendered) and auth guard** (M)
+- [x] **Task 8: Login page (prerendered) and auth guard** (M)
   - Acceptance:
-    - `/login` matches the spec's code-style example and is listed in Analog `prerender.routes`
+    - `/login` matches the spec's code-style example and is the only route in Analog `prerender.routes` (the default also prerendered `/`, which would bypass the guard)
+    - The client build's empty `index.html` is excluded from Nitro static assets (`nitro.ignore`), otherwise `/` is served statically and never reaches SSR or the guard
+    - `forwardCookieInterceptor` forwards the request cookie to same-origin `/api` calls during SSR (Analog's interceptor doesn't)
     - The guard on the `(app)` layout checks the session during SSR (forwarding the request cookie) and in the browser, and redirects to `/login?next=<path>`
     - After login the app navigates to `next` only if it's a same-origin relative path; otherwise to `/`
   - Verify: unit test for the `next` sanitizer; build output contains `login/index.html`; manual pass of Checkpoint B flows, including a hard refresh while signed in

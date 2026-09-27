@@ -5,13 +5,14 @@ import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
+import { forwardCookieInterceptor } from './core/auth/forward-cookie.interceptor';
 import { provideAppStore } from './store/app.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideFileRouter(),
-    provideHttpClient(withInterceptors([requestContextInterceptor])),
+    provideHttpClient(withInterceptors([forwardCookieInterceptor, requestContextInterceptor])),
     provideClientHydration(withEventReplay()),
     provideAppStore(),
     providePrimeNG({
