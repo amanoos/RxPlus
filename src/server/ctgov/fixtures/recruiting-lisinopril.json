@@ -1,0 +1,77 @@
+{
+  "studies": [
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT07685938",
+          "briefTitle": "Pharmacologic Therapies to Mitigate Radiation- Associated Heart Disease"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2026-08-12" },
+          "lastUpdatePostDateStruct": { "date": "2026-09-17" }
+        },
+        "designModule": { "phases": ["PHASE2"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT07594535",
+          "briefTitle": "The Effect Of Lisinopril On Polycythemia"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2026-07-01" },
+          "lastUpdatePostDateStruct": { "date": "2026-08-21" }
+        },
+        "designModule": { "phases": ["PHASE4"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT05530655",
+          "briefTitle": "A Study to Determine the Preferred Dose of the Drug, Lisinopril, for Preventing Urinary Toxicity Following Radiotherapy for Prostate Cancer"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2024-02-20" },
+          "lastUpdatePostDateStruct": { "date": "2026-07-23" }
+        },
+        "designModule": { "phases": ["EARLY_PHASE1"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": { "nctId": "NCT04977180", "briefTitle": "Cardioprotection in AML" },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2022-03-04" },
+          "lastUpdatePostDateStruct": { "date": "2026-05-05" }
+        },
+        "designModule": { "phases": ["PHASE2"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT07513883",
+          "briefTitle": "The Assessment of Partial Guideline-Directed Medical Therapy Down Titration in Heart Failure in Remission."
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2026-03-16" },
+          "lastUpdatePostDateStruct": { "date": "2026-04-07" }
+        },
+        "designModule": { "phases": ["PHASE4"] }
+      },
+      "hasResults": false
+    }
+  ],
+  "nextPageToken": "ZVNj7o2Elu8o3lpwW8iooeytmpOQJJxuYvag2fYanD6SuP08FCfCF_LV_tJG1yI"
+}

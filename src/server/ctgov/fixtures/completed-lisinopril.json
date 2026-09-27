@@ -1,0 +1,80 @@
+{
+  "studies": [
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT05049616",
+          "briefTitle": "Oral Combined Hydrochlorothiazide/Lisinopril Versus Oral Nifedipine for Postpartum Hypertension"
+        },
+        "statusModule": {
+          "overallStatus": "COMPLETED",
+          "startDateStruct": { "date": "2021-10-18" },
+          "lastUpdatePostDateStruct": { "date": "2025-11-10" }
+        },
+        "designModule": { "phases": ["PHASE4"] }
+      },
+      "hasResults": true
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT01669434",
+          "briefTitle": "Chronic Angiotensin Converting Enzyme Inhibitors in Intermediate Risk Surgery"
+        },
+        "statusModule": {
+          "overallStatus": "COMPLETED",
+          "startDateStruct": { "date": "2015-06-01" },
+          "lastUpdatePostDateStruct": { "date": "2023-09-25" }
+        },
+        "designModule": { "phases": ["PHASE4"] }
+      },
+      "hasResults": true
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT02603809",
+          "briefTitle": "Dose-finding Study With ACT-132577 (Aprocitentan) in Participants With Essential Hypertension"
+        },
+        "statusModule": {
+          "overallStatus": "COMPLETED",
+          "startDateStruct": { "date": "2015-12-14" },
+          "lastUpdatePostDateStruct": { "date": "2022-11-23" }
+        },
+        "designModule": { "phases": ["PHASE2"] }
+      },
+      "hasResults": true
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT03461003",
+          "briefTitle": "N-of-1 Trials In Children With Hypertension"
+        },
+        "statusModule": {
+          "overallStatus": "COMPLETED",
+          "startDateStruct": { "date": "2018-04-02" },
+          "lastUpdatePostDateStruct": { "date": "2022-09-09" }
+        },
+        "designModule": { "phases": ["PHASE4"] }
+      },
+      "hasResults": true
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT00657241",
+          "briefTitle": "Cardioprotective Benefits of Carvedilol-CR or Valsartan Added to Lisinopril"
+        },
+        "statusModule": {
+          "overallStatus": "COMPLETED",
+          "startDateStruct": { "date": "2008-04" },
+          "lastUpdatePostDateStruct": { "date": "2022-05-27" }
+        },
+        "designModule": { "phases": ["PHASE3"] }
+      },
+      "hasResults": true
+    }
+  ],
+  "nextPageToken": "ZVNj7o2Elu8o3lpwW8iooeytmpOQJJxuY_Sm2vQTmj6SuP08FCfCF_fV_tpI1CI"
+}

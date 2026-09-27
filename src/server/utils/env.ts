@@ -38,6 +38,9 @@ const envSchema = z.object({
   NCBI_API_KEY: z.string().trim().min(1).optional(),
   // Optional contact address NCBI asks E-utilities clients to send (with tool=rxplus).
   NCBI_EMAIL: z.email('must be an email address').optional(),
+  CTGOV_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    .default('https://clinicaltrials.gov/api/v2'),
   MEDLINEPLUS_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://connect.medlineplus.gov/service'),

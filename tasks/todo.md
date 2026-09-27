@@ -17,7 +17,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/pubmed/{client,index}.ts` (+ spec, fixtures), `src/server/utils/upstream.ts`, `src/server/utils/env.ts` (+ specs)
   - Depends on: none
 
-- [ ] **Task 2: ClinicalTrials.gov client** (S)
+- [x] **Task 2: ClinicalTrials.gov client** (S)
   - Acceptance: `trials(ingredient)` → up to 3 completed with results, then recruiting, up to 5 total; mapped `{ nctId, title, status, phases, hasResults, startDate, lastUpdate }`; `CTGOV_BASE_URL` in env; 7-day cache
   - Verify: unit tests with recorded fixtures (lisinopril completed-with-results, recruiting, none)
   - Files: `src/server/ctgov/{client,index}.ts` (+ spec, fixtures), `src/server/utils/env.ts`
