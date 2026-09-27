@@ -1,25 +1,14 @@
 /**
- * Claude via the Messages API with citations: each label section is a plain-text
- * document, and the cited text becomes the sentence quotes. Citations can't be
- * combined with JSON output, so the headings are fixed by the prompt and parsed here.
+ * Label summaries from Claude with citations (see ai/claude.ts): each label
+ * section is a document, and the cited text becomes the sentence quotes. The
+ * headings are fixed by the prompt and parsed here.
  */
-import Anthropic from '@anthropic-ai/sdk';
-import type {
-  BetaMessage,
-  MessageCreateParamsNonStreaming,
-} from '@anthropic-ai/sdk/resources/beta/messages/messages';
-
+import { createClaudeCited, type CitedBlock, type ClaudeClient } from '../../ai/claude';
 import type { SummaryLabel } from '../../openfda/client';
 import { HEADINGS, RawSummarySchema, SYSTEM_PROMPT, type RawSummary } from '../summary';
-import { ProviderOutputError, ProviderUnavailableError, type SummaryProvider } from './provider';
+import { ProviderOutputError, type SummaryProvider } from './provider';
 
-export const CLAUDE_MODEL = 'claude-opus-5';
-const MAX_TOKENS = 16_000;
-
-/** The part of the SDK client the provider uses (mocked in tests). */
-export interface ClaudeClient {
-  beta: { messages: { create(params: MessageCreateParamsNonStreaming): Promise<BetaMessage> } };
-}
+export { CLAUDE_MODEL, type ClaudeClient } from '../../ai/claude';
 
 const CLAUDE_FORMAT = `Format:
 - Start each section with a Markdown heading line, exactly: ${HEADINGS.map((h) => `"## ${h}"`).join(', ')}.
@@ -29,69 +18,28 @@ const NO_SUPPORT_SENTENCE = 'The label doesn’t say.';
 
 export function createClaudeProvider({
   apiKey,
-  client = new Anthropic({ apiKey, timeout: 5 * 60_000, maxRetries: 2 }),
+  client,
 }: {
   apiKey: string;
   client?: ClaudeClient;
 }): SummaryProvider {
+  const claude = createClaudeCited({ apiKey, client });
   return {
     name: 'claude',
-    model: CLAUDE_MODEL,
+    model: claude.model,
     async generate(label: SummaryLabel) {
-      let message: BetaMessage;
-      try {
-        message = await client.beta.messages.create({
-          model: CLAUDE_MODEL,
-          max_tokens: MAX_TOKENS,
-          thinking: { type: 'adaptive' },
-          output_config: { effort: 'high' },
-          betas: ['server-side-fallback-2026-07-01'],
-          fallbacks: 'default',
-          system: `${SYSTEM_PROMPT}\n\n${CLAUDE_FORMAT}`,
-          messages: [
-            {
-              role: 'user',
-              content: [
-                ...label.sections.map((section) => ({
-                  type: 'document' as const,
-                  source: {
-                    type: 'text' as const,
-                    media_type: 'text/plain' as const,
-                    data: section.text,
-                  },
-                  title: section.name,
-                  citations: { enabled: true },
-                })),
-                { type: 'text', text: 'Summarize this FDA drug label.' },
-              ],
-            },
-          ],
-        });
-      } catch (error) {
-        // SDK errors carry the status and message, never the API key.
-        const status =
-          error instanceof Anthropic.APIError ? ` (${error.status ?? 'no response'})` : '';
-        throw new ProviderUnavailableError(
-          `Claude request failed${status}: ${(error as Error).message}`,
-        );
-      }
-
-      if (message.stop_reason === 'refusal') {
-        throw new ProviderOutputError('Claude declined to summarize this label.');
-      }
-      if (message.stop_reason === 'max_tokens') {
-        throw new ProviderOutputError('Claude’s summary was cut off (max_tokens).');
-      }
-
-      const parsed = RawSummarySchema.safeParse(parseCitedText(message, label));
+      const { blocks, inputTokens, outputTokens } = await claude.generateCited({
+        system: `${SYSTEM_PROMPT}\n\n${CLAUDE_FORMAT}`,
+        documents: label.sections.map((section) => ({ title: section.name, text: section.text })),
+        instruction: 'Summarize this FDA drug label.',
+        task: 'summarize this label',
+        output: 'summary',
+      });
+      const parsed = RawSummarySchema.safeParse(parseCitedText(blocks, label));
       if (!parsed.success) {
         throw new ProviderOutputError('Claude’s summary did not follow the section headings.');
       }
-      return {
-        raw: parsed.data,
-        inputTokens: message.usage.input_tokens,
-        outputTokens: message.usage.output_tokens,
-      };
+      return { raw: parsed.data, inputTokens, outputTokens };
     },
   };
 }
@@ -105,7 +53,7 @@ const plain = (s: string) => s.toLowerCase().replace(/[‘’]/g, "'").trim();
  * Rebuilds the five sections from the response's text blocks. A cited block's
  * quotes attach to every sentence it contributes text to.
  */
-export function parseCitedText(message: BetaMessage, label: SummaryLabel): RawSummary {
+export function parseCitedText(blocks: CitedBlock[], label: SummaryLabel): RawSummary {
   const sections = new Map<string, RawSummary['sections'][number]['sentences']>();
   let current: RawSummary['sections'][number]['sentences'] | undefined;
   let sentence: { text: string; quotes: Quote[] } | undefined;
@@ -119,11 +67,10 @@ export function parseCitedText(message: BetaMessage, label: SummaryLabel): RawSu
     sentence = undefined;
   };
 
-  for (const block of message.content) {
-    if (block.type !== 'text') continue;
-    const quotes: Quote[] = (block.citations ?? []).flatMap((c) => {
-      const section = c.type === 'char_location' ? label.sections[c.document_index] : undefined;
-      return section ? [{ labelSection: section.name, text: c.cited_text }] : [];
+  for (const block of blocks) {
+    const quotes: Quote[] = block.citations.flatMap((c) => {
+      const section = label.sections[c.documentIndex];
+      return section ? [{ labelSection: section.name, text: c.citedText }] : [];
     });
 
     // Split into lines, then sentences; a heading line opens a new section.

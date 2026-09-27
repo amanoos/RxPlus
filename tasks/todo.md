@@ -41,7 +41,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/literature/service.ts`, `src/server/routes/api/drugs/[rxcui]/literature/*.ts`, `src/server/routes/api/literature/[ingredient]/papers/[pmid]/hide.{post,delete}.ts`, `src/server/tests/literature-api.int.spec.ts`
   - Depends on: 1, 2, 3
 
-- [ ] **Task 5: Provider refactor** (M)
+- [x] **Task 5: Provider refactor** (M)
   - Acceptance:
     - Ollama: generic `generateJson({ system, user, schema, zod })` with the same size check, timeout and error mapping; the summary provider uses it
     - Claude: generic `generateCited({ system, documents, instruction })` returning text blocks with citations; the summary parser uses it

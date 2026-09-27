@@ -4,6 +4,7 @@
  */
 import { z } from 'zod';
 
+import { ignoreSet, isAdvice, isRelevant, MIN_QUOTE_CHARS, normalizeText } from '../ai/verify';
 import { SUMMARY_SECTIONS, type SummaryLabel, type SummarySectionName } from '../openfda/client';
 
 export const HEADINGS = [
@@ -17,8 +18,6 @@ export type Heading = (typeof HEADINGS)[number];
 
 /** Above this share of uncited sentences a summary is regenerated once. */
 export const MAX_UNCITED_RATIO = 0.2;
-/** Shorter quotes ("ACE", "and cough") can't meaningfully ground a sentence. */
-const MIN_QUOTE_CHARS = 12;
 
 export const SYSTEM_PROMPT = `You explain FDA drug labels to a patient in plain language.
 
@@ -81,82 +80,9 @@ export function buildLabelMessage(label: SummaryLabel): string {
   return label.sections.map((s) => `### ${s.name}\n${s.text}`).join('\n\n');
 }
 
-/** Rough token estimate (≈3.5 characters per token for English label text). */
-export function estimateTokens(text: string): number {
-  return Math.ceil(text.length / 3.5);
-}
-
-/** Lowercase, straight quotes, plain hyphens, single spaces, no edge punctuation. */
-function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[‘’‚‛′]/g, "'")
-    .replace(/[“”„‟″]/g, '"')
-    .replace(/[‐-―−]/g, '-')
-    .replace(/\s+/g, ' ')
-    .replace(/^[\s"'.,;:()-]+|[\s"'.,;:()-]+$/g, '');
-}
+export { estimateTokens } from '../ai/ollama';
 
 const NO_SUPPORT = /^the label (doesn['’]t|does not) say/i;
-
-/** Advice to start, stop or change a medication: removed whatever the model wrote. */
-const ADVICE =
-  /\b(stop|start|quit|discontinue|keep) (taking|using)\b|\b(do not|don['’]t|never) (take|use|stop)\b|\byou should (stop|start|take|not take|avoid taking)\b|\b(increase|decrease|lower|raise|change|skip) (your|the) dose\b/i;
-
-/** Words that carry no meaning for relevance (plus the drug's own names, per call). */
-const STOP_WORDS = new Set(
-  (
-    'about above after again also been before being between both cause caused causes could does ' +
-    'doing drug drugs during each even from have having help helps into less like made make many ' +
-    'medicine medicines might more most much must only other over people person patient patients ' +
-    'same should some such take taken takes taking than that their them then there these they ' +
-    'this those through tablet tablets under until used uses using very what when where which ' +
-    'while with within without would your label labels also common commonly'
-  ).split(' '),
-);
-
-const STEM_LENGTH = 6;
-
-/**
- * Plain words and the label terms they translate, as stems. A sentence stem in a
- * group matches any stem of that group (e.g. "heart attack" ~ "myocardial infarction").
- */
-const SYNONYM_GROUPS = [
-  ['heart', 'attack', 'myocar', 'infarc'],
-  ['death', 'deaths', 'mortal', 'fatal'],
-  ['pressu', 'hypert', 'hypote', 'systol', 'diasto'],
-  ['kidney', 'renal'],
-  ['liver', 'hepati', 'hepato'],
-  ['swell', 'swelli', 'swolle', 'angioe', 'edema', 'oedema'],
-  ['potass', 'hyperk'],
-  ['pregna', 'fetal', 'fetus'],
-  ['dizzy', 'dizzin', 'vertig', 'lighth'],
-  ['sugar', 'glucos', 'hypogl', 'hyperg'],
-  ['muscle', 'myopat', 'rhabdo', 'myalgi'],
-  ['breath', 'dyspne'],
-  ['faint', 'fainti', 'syncop'],
-  ['rash', 'skin', 'dermat', 'urtica'],
-  ['stomac', 'nausea', 'vomit', 'vomiti', 'gastro'],
-  ['sleep', 'sleepy', 'insomn', 'drowsy', 'drowsi', 'somnol'],
-  ['child', 'childr', 'kids', 'pediat', 'paedia'],
-].map((group) => new Set(group));
-
-/** Content-word stems: lowercase letters, ≥ 4 chars, not filler, first 6 letters. */
-function stems(text: string, ignore: Set<string>): Set<string> {
-  const words = normalize(text).match(/[a-z]{4,}/g) ?? [];
-  return new Set(
-    words.filter((w) => !STOP_WORDS.has(w) && !ignore.has(w)).map((w) => w.slice(0, STEM_LENGTH)),
-  );
-}
-
-/** Sentence stems widened with their synonym groups. */
-function withSynonyms(sentenceStems: Set<string>): Set<string> {
-  const widened = new Set(sentenceStems);
-  for (const group of SYNONYM_GROUPS) {
-    if ([...sentenceStems].some((s) => group.has(s))) for (const s of group) widened.add(s);
-  }
-  return widened;
-}
 
 export interface VerifyOptions {
   /** The drug's own names (e.g. ingredient), ignored when judging relevance. */
@@ -172,23 +98,16 @@ export function verifySummary(
   if (headings.join('|') !== HEADINGS.join('|')) {
     throw new SummaryFormatError(`Unexpected headings: ${headings.join(', ')}`);
   }
-  const sectionText = new Map(label.sections.map((s) => [s.name, normalize(s.text)]));
-  const ignore = new Set(ignoreWords.flatMap((w) => normalize(w).split(/[^a-z]+/)));
+  const sectionText = new Map(label.sections.map((s) => [s.name, normalizeText(s.text)]));
+  const ignore = ignoreSet(ignoreWords);
 
   /** The section containing the quote: the named one first, else any other. */
   const locate = (quote: Citation): SummarySectionName | null => {
-    const q = normalize(quote.text);
+    const q = normalizeText(quote.text);
     if (q.length < MIN_QUOTE_CHARS) return null;
     if (sectionText.get(quote.labelSection)?.includes(q)) return quote.labelSection;
     for (const [name, text] of sectionText) if (text.includes(q)) return name;
     return null;
-  };
-
-  /** A real quote only supports a sentence if they share a meaningful word. */
-  const relevant = (sentence: string, quote: string) => {
-    const quoteStems = stems(quote, ignore);
-    for (const s of withSynonyms(stems(sentence, ignore))) if (quoteStems.has(s)) return true;
-    return false;
   };
 
   let sentenceCount = 0;
@@ -197,7 +116,7 @@ export function verifySummary(
   const sections = raw.sections.map(({ heading, sentences }) => ({
     heading,
     sentences: sentences.flatMap((sentence): VerifiedSentence[] => {
-      if (ADVICE.test(sentence.text)) {
+      if (isAdvice(sentence.text)) {
         removedAdvice++;
         return [];
       }
@@ -208,7 +127,7 @@ export function verifySummary(
       sentenceCount++;
       const citations = sentence.quotes.flatMap((quote) => {
         const found = locate(quote);
-        return found && relevant(sentence.text, quote.text)
+        return found && isRelevant(sentence.text, quote.text, ignore)
           ? [{ labelSection: found, text: quote.text.trim() }]
           : [];
       });
