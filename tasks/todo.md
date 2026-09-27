@@ -77,7 +77,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/drug-info/**`, `src/app/store/app.store.ts`
   - Depends on: 7
 
-- [ ] **Task 9: `/drugs/:rxcui` page: facts, FAERS, links** (M)
+- [x] **Task 9: `/drugs/:rxcui` page: facts, FAERS, links** (M)
   - Acceptance: SSR facts (class tags, "Used for" chips, "Avoid if you have"), a FAERS bar list with an always-visible disclaimer, DailyMed and MedlinePlus links; error and loading states
   - Verify: component tests; SSR curl
   - Files: `src/app/pages/(app)/drugs/[rxcui].page.ts` (+ spec), `src/app/features/drug-info/reported-reactions.component.ts` (+ spec)
