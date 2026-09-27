@@ -41,7 +41,7 @@ Let the owner add, list, stop, restart and delete prescriptions, each resolved t
 
 ### Phase 2: Client
 
-- [ ] Task 5: NgRx medications feature (`@ngrx/entity`) and API service
+- [x] Task 5: NgRx medications feature (`@ngrx/entity`) and API service
 - [ ] Task 6: `/medications` list page with SSR, stopped section and empty state
 - [ ] Task 7: Add-medication dialog (autocomplete, product pick, notes/date)
 - [ ] Task 8: Edit notes/start date, stop, restart, delete with confirmation

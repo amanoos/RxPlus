@@ -48,7 +48,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 5: NgRx medications feature (`@ngrx/entity`) and API service** (M)
+- [x] **Task 5: NgRx medications feature (`@ngrx/entity`) and API service** (M)
   - Acceptance:
     - Entity adapter sorted active first; actions and effects for load/add/update/remove with user-facing error messages (409, 422, 503)
     - Selectors `selectActive`, `selectStopped`, `selectLoaded`, `selectSaving`, `selectError`; registered in `provideAppStore`

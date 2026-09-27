@@ -5,11 +5,16 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import * as authEffects from '../core/auth/auth.effects';
 import { authFeature } from '../core/auth/auth.reducer';
+import * as medicationsEffects from '../features/medications/store/medications.effects';
+import { medicationsFeature } from '../features/medications/store/medications.reducer';
 
 export function provideAppStore(): EnvironmentProviders[] {
   return [
-    provideStore({ [authFeature.name]: authFeature.reducer }),
-    provideEffects(authEffects),
+    provideStore({
+      [authFeature.name]: authFeature.reducer,
+      [medicationsFeature.name]: medicationsFeature.reducer,
+    }),
+    provideEffects(authEffects, medicationsEffects),
     // import.meta.env.DEV is a build-time constant, so production bundles drop devtools entirely.
     ...(import.meta.env.DEV ? [provideStoreDevtools({ maxAge: 50, name: 'RxPlus' })] : []),
   ];
