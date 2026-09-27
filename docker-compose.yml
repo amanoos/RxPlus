@@ -13,6 +13,12 @@ services:
       DATABASE_URL: postgres://rxplus:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/rxplus
       PORT: '3000'
       TZ: ${TZ:-America/New_York}
+      # Ollama runs on the Docker host (with OLLAMA_HOST=0.0.0.0, see README), whatever
+      # .env says for local dev. Change this if it runs on another machine.
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    extra_hosts:
+      # Linux needs this mapping for host.docker.internal (Docker Desktop has it built in).
+      - 'host.docker.internal:host-gateway'
     ports:
       - '${APP_PORT:-3000}:3000'
     depends_on:

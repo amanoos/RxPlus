@@ -4,26 +4,34 @@ A personal, single-user medication watchlist. Built with [Analog](https://analog
 
 - What and why: [docs/intent/rx-tracker.md](docs/intent/rx-tracker.md)
 - Modules and build order: [CAPABILITY-MAP.md](CAPABILITY-MAP.md)
-- Current spec: [SPEC-medications.md](SPEC-medications.md) · Tasks: [tasks/todo.md](tasks/todo.md) · Done: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md))
+- Current spec: [SPEC-drug-info.md](SPEC-drug-info.md) · Tasks: [tasks/todo.md](tasks/todo.md)
+- Done: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md)) · [medications](SPEC-medications.md) ([tasks](tasks/medications/todo.md)) · [interactions](SPEC-interactions.md) ([tasks](tasks/interactions/todo.md))
 
 ## Configuration
 
 Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit it.
 
-| Variable               | How to set it                                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `POSTGRES_PASSWORD`    | Any strong password. Use letters and digits only: it is embedded in a connection URL.                         |
-| `DATABASE_URL`         | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own. |
-| `APP_PASSWORD_HASH`    | `npm run hash-password` (asks for your login password, at least 12 characters).                               |
-| `SESSION_SECRET`       | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                         |
-| `COOKIE_SECURE`        | `false` on the LAN over plain HTTP.                                                                           |
-| `VITE_PRIMEUI_LICENSE` | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                 |
-| `DB_DEV_PORT`          | Host port for the dev database (default 5432; change it if that port is taken).                               |
-| `APP_PORT`             | Host port for the app in Docker (default 3000).                                                               |
-| `RXNAV_BASE_URL`       | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub. |
-| `OPENFDA_BASE_URL`     | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                         |
-| `OPENFDA_API_KEY`      | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.               |
-| `MEDLINEPLUS_BASE_URL` | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                       |
+| Variable               | How to set it                                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `POSTGRES_PASSWORD`    | Any strong password. Use letters and digits only: it is embedded in a connection URL.                           |
+| `DATABASE_URL`         | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own.   |
+| `APP_PASSWORD_HASH`    | `npm run hash-password` (asks for your login password, at least 12 characters).                                 |
+| `SESSION_SECRET`       | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                           |
+| `COOKIE_SECURE`        | `false` on the LAN over plain HTTP.                                                                             |
+| `VITE_PRIMEUI_LICENSE` | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                   |
+| `DB_DEV_PORT`          | Host port for the dev database (default 5432; change it if that port is taken).                                 |
+| `APP_PORT`             | Host port for the app in Docker (default 3000).                                                                 |
+| `RXNAV_BASE_URL`       | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub.   |
+| `OPENFDA_BASE_URL`     | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                           |
+| `OPENFDA_API_KEY`      | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.                 |
+| `MEDLINEPLUS_BASE_URL` | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                         |
+| `SUMMARY_PROVIDER`     | `ollama` (default, local model) or `claude`. See [AI summaries](#ai-summaries).                                 |
+| `OLLAMA_BASE_URL`      | Local dev: `http://127.0.0.1:11434` (not `localhost`, which Node may resolve to IPv6). Compose sets its own.    |
+| `OLLAMA_MODEL`         | The Ollama model to use, e.g. `qwen2.5:7b`. Without it, summaries are unavailable (the rest of the page works). |
+| `OLLAMA_NUM_CTX`       | Optional. Context window in tokens (default 16384); long labels need it.                                        |
+| `OLLAMA_TIMEOUT_MS`    | Optional. Per-attempt time limit (default 600000, 10 minutes).                                                  |
+| `ANTHROPIC_API_KEY`    | Only for `SUMMARY_PROVIDER=claude`. Never logged.                                                               |
+| `AI_DAILY_LIMIT`       | Optional. Claude summaries per day (default 20). Doesn't apply to the local model.                              |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
 
@@ -45,6 +53,34 @@ docker compose run --rm app node dist/ddi-import.cjs # in Docker
 ```
 
 Until it has run, the Interactions page explains that the data hasn't been imported yet.
+
+### Drug pages
+
+Each medication links to a page (`/drugs/<rxcui>`) with its drug class, uses and conditions to avoid it with (RxClass), the side effects most often reported to the FDA (FAERS, with a disclaimer that reports aren't frequencies), links to the FDA label on DailyMed and to MedlinePlus, and an AI summary of the label.
+
+### AI summaries
+
+An AI model rewrites the product's FDA label in plain language under five headings. Only the public label text is sent to the model. Every sentence must quote the label, and the server checks each quote against the label text before showing it. Sentences it can't link are marked "not linked to the label", and sentences telling you to start, stop or change a medication are removed. A summary is stored per label version and reused until the FDA label changes ("Check for a newer label").
+
+**Local model (default): Ollama on the home server.** Generation takes a few minutes on a consumer GPU; the page shows progress and you can leave and come back.
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh   # installs Ollama as a systemd service
+ollama pull qwen2.5:7b                          # ~4.7 GB
+```
+
+The app container reaches Ollama on the host through `host.docker.internal` (set up in `docker-compose.yml`), so Ollama must listen on all interfaces, not just localhost:
+
+```bash
+sudo systemctl edit ollama   # add the two lines below, save
+#   [Service]
+#   Environment="OLLAMA_HOST=0.0.0.0"
+sudo systemctl restart ollama
+```
+
+This also opens port 11434 to your LAN. Ollama has no authentication, so keep the server LAN-only (or firewall the port to the Docker bridge). Then set `OLLAMA_MODEL=qwen2.5:7b` in `.env` and restart the app. For development on your PC, run Ollama locally and set `OLLAMA_BASE_URL=http://127.0.0.1:11434`.
+
+**Claude (optional).** Set `SUMMARY_PROVIDER=claude` and `ANTHROPIC_API_KEY`. Summaries then use Claude Opus 5 with the label cited through the API's citations feature (about $0.10–0.20 each), capped at `AI_DAILY_LIMIT` per day. There is no automatic fallback between providers.
 
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 
@@ -87,7 +123,8 @@ Prerequisites: Docker Engine with the Compose plugin, and a clone of this reposi
 git clone https://github.com/amanoos/my-tracker.git rxplus && cd rxplus
 cp .env.example .env
 npm run hash-password          # or run it on your PC and paste the result
-# edit .env: POSTGRES_PASSWORD, APP_PASSWORD_HASH, SESSION_SECRET, VITE_PRIMEUI_LICENSE
+# edit .env: POSTGRES_PASSWORD, APP_PASSWORD_HASH, SESSION_SECRET, VITE_PRIMEUI_LICENSE,
+#            OLLAMA_MODEL (after setting up Ollama, see "AI summaries")
 docker compose up -d --build
 docker compose run --rm app node dist/ddi-import.cjs   # interaction data, ~5 minutes
 ```

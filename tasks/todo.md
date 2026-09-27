@@ -107,7 +107,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `e2e/stub-upstream.ts`, `e2e/drug-info.spec.ts`, fixtures, `playwright.config.ts`
   - Depends on: 11
 
-- [ ] **Task 13: Docker, coverage, README** (S)
+- [x] **Task 13: Docker, coverage, README** (S)
   - Acceptance: Compose `extra_hosts: host.docker.internal:host-gateway` and the `OLLAMA_*` env; coverage ≥ 80% on drug-info (server + client); README section on Ollama setup (`OLLAMA_HOST=0.0.0.0`, the model pull, provider switch, the Claude option)
   - Verify: `rxplus-verify` Docker run; `npm run test:coverage`
   - Files: `docker-compose.yml`, `vite.config.ts`, `README.md`, `.env.example`
