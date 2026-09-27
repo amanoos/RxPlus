@@ -31,52 +31,60 @@ Build the runnable RxPlus skeleton: an Analog SSR app with the PrimeNG + Tailwin
 ## Task List
 
 ### Phase 1: Scaffold
-- [ ] Task 1: Scaffold the Analog app, add tooling and set LF line endings
+
+- [x] Task 1: Scaffold the Analog app, add tooling and set LF line endings
 - [ ] Task 2: Add PrimeNG + Tailwind v4 with the Aura theme and dark mode
 - [ ] Task 3: Validate env config and fail fast
 
 ### Checkpoint A: after Tasks 1–3
+
 - [ ] `npm run lint && npm test && npm run build` pass
 - [ ] Dev server renders a PrimeNG button styled with Tailwind, via SSR (visible in view-source)
 - [ ] Human review
 
 ### Phase 2: Data
+
 - [ ] Task 4: Drizzle client, dev Postgres and `/api/health`
 
 ### Phase 3: Auth slice
+
 - [ ] Task 5: Password hashing util and `hash-password` script
 - [ ] Task 6: Auth API routes, session, rate limiter and middleware
 - [ ] Task 7: NgRx root store and `auth` feature
 - [ ] Task 8: Login page (prerendered) and auth guard
 
 ### Checkpoint B: after Tasks 4–8
+
 - [ ] All unit and integration tests pass
 - [ ] Manual check: logged-out `/` goes to `/login`; wrong password shows an error; right password lands on `/`; refresh stays signed in
 - [ ] `/api/health` returns 200, and 503 with the DB stopped
 - [ ] Human review
 
 ### Phase 4: Shell and E2E
+
 - [ ] Task 9: Responsive app shell with placeholder pages and logout
 - [ ] Task 10: Playwright e2e (3 specs)
 
 ### Phase 5: Deploy
+
 - [ ] Task 11: Production Dockerfile, Compose app service and migrate-on-start
 
 ### Checkpoint C: complete
+
 - [ ] Spec Success Criteria 1–8 all verified (criterion 1 on the home server)
 - [ ] Coverage targets met
 - [ ] Human review, then `SPEC-medications.md`
 
 ## Risks and Mitigations
 
-| Risk | Impact | Mitigation |
-|---|---|---|
-| Analog scaffold layout or versions differ from the spec | Med | Task 1 reconciles the spec before continuing |
-| PrimeNG and Tailwind v4 CSS layer conflicts | Med | Use `tailwindcss-primeui` and PrimeNG's `cssLayer` option; verified at Checkpoint A |
-| SSR guard can't read the session cookie during server render | High | Task 8 forwards request cookies to `/api/auth/me` during SSR (Analog's request context); covered by e2e with a hard refresh |
-| NgRx devtools or effects break SSR hydration | Low | Register devtools only when `isDevMode()`; the checkpoint checks for no hydration warnings |
-| Migrator with no migrations crashes the container | Med | Task 11 guards on the journal file existing and tests it |
-| Windows dev vs Linux prod differences (CRLF, native modules) | Med | `.gitattributes`; no native deps (scrypt comes from `node:crypto`) |
+| Risk                                                         | Impact | Mitigation                                                                                                                  |
+| ------------------------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Analog scaffold layout or versions differ from the spec      | Med    | Task 1 reconciles the spec before continuing                                                                                |
+| PrimeNG and Tailwind v4 CSS layer conflicts                  | Med    | Use `tailwindcss-primeui` and PrimeNG's `cssLayer` option; verified at Checkpoint A                                         |
+| SSR guard can't read the session cookie during server render | High   | Task 8 forwards request cookies to `/api/auth/me` during SSR (Analog's request context); covered by e2e with a hard refresh |
+| NgRx devtools or effects break SSR hydration                 | Low    | Register devtools only when `isDevMode()`; the checkpoint checks for no hydration warnings                                  |
+| Migrator with no migrations crashes the container            | Med    | Task 11 guards on the journal file existing and tests it                                                                    |
+| Windows dev vs Linux prod differences (CRLF, native modules) | Med    | `.gitattributes`; no native deps (scrypt comes from `node:crypto`)                                                          |
 
 ## Open Questions
 

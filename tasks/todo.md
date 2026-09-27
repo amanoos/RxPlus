@@ -6,7 +6,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Scaffold
 
-- [ ] **Task 1: Scaffold the Analog app, add tooling and set LF line endings** (M, mostly generated files)
+- [x] **Task 1: Scaffold the Analog app, add tooling and set LF line endings** (M, mostly generated files)
   - Acceptance:
     - `npm create analog@latest` output sits at the repo root, and all package versions are pinned exactly
     - `.gitattributes` sets `* text=auto eol=lf`; `.nvmrc` holds `24`; ESLint (angular-eslint) and Prettier are configured, with `lint`, `format`, `test`, `test:watch` scripts
@@ -34,6 +34,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Depends on: 1
 
 ### Checkpoint A
+
 - [ ] `npm run lint && npm test && npm run build` pass
 - [ ] SSR-rendered PrimeNG + Tailwind page works in both themes
 - [ ] Human review
@@ -87,6 +88,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Depends on: 2, 7
 
 ### Checkpoint B
+
 - [ ] All unit and integration tests pass
 - [ ] Manual login, logout and redirect flows work; health returns 200 and 503
 - [ ] No hydration warnings in the browser console
@@ -123,6 +125,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Depends on: 4, 9
 
 ### Checkpoint C: foundation complete
+
 - [ ] Spec Success Criteria 1–8 all verified
 - [ ] Coverage at least 80% on `src/server/utils`, `src/app/core/auth` and the auth store
 - [ ] Human review, then write `SPEC-medications.md`

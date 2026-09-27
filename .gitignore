@@ -1,21 +1,31 @@
-node_modules/
-dist/
-tmp/
-coverage/
-.angular/
-.nitro/
-.output/
-.vite/
-test-results/
-playwright-report/
+# Compiled output
+/dist
+/tmp
+/out-tsc
 
-.env
-.env.*
-!.env.example
+# Node
+/node_modules
+npm-debug.log
 
-*.log
-.DS_Store
-Thumbs.db
+# Tooling caches
+/.angular/cache
+/.nx/
+/coverage
+/test-results
+/playwright-report
+.sass-cache/
+
+# IDEs and editors
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.test.example

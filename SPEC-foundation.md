@@ -9,40 +9,41 @@ Stand up the runnable skeleton that every other module builds on: an Analog (Ang
 No drug features are part of this module. When it's done, the owner can deploy to the home server, log in, and see an empty, responsive app shell with navigation to placeholder pages for the later modules.
 
 **User:** the owner only (single user). This is also a learning project, so the full stack is used on purpose. Each tool is used where it earns its place:
+
 - **SSR** renders the authenticated pages on the server.
 - **SSG** pre-renders only the public `/login` page, since everything else is private and changes often.
 - **NgRx** handles app-level state (session now, medications later) with store, effects and devtools.
 
 ## Tech Stack
 
-Use the latest stable version of each at scaffold time, pinned exactly in `package.json`.
+Scaffolded with `create-analog@2.7.5` (template `latest`). All versions are pinned exactly in `package.json` (`.npmrc` has `save-exact=true`).
 
-| Concern | Choice |
-|---|---|
-| Runtime | Node.js 24 LTS |
-| Meta-framework | AnalogJS (Vite, file-based routing, SSR, Nitro server routes) |
-| UI framework | Angular (standalone components, signals, zoneless if the scaffold supports it) |
-| Components | PrimeNG with the Aura theme preset (`@primeuix/themes`) |
-| Styling | Tailwind CSS v4 (`@tailwindcss/vite`) + `tailwindcss-primeui` |
-| State | `@ngrx/store`, `@ngrx/effects`, `@ngrx/store-devtools` (dev only) |
-| Database | PostgreSQL 18 (Docker), `drizzle-orm` + `pg`, `drizzle-kit` |
-| Auth | h3 sealed sessions (`useSession`) + `node:crypto` scrypt password hash; no auth library |
-| Tests | Vitest (unit/integration), Playwright (e2e) |
-| Lint/format | angular-eslint, Prettier |
-| Deploy | Docker Compose: `app` + `db` |
+| Concern        | Choice                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------- |
+| Runtime        | Node.js 24 LTS (dev: 24.19.0)                                                           |
+| Meta-framework | AnalogJS 2.7.5 on Vite 8 (file-based routing, SSR, Nitro server routes)                 |
+| UI framework   | Angular 22.2 (standalone components, signals, zoneless by default), TypeScript 6.0      |
+| Components     | PrimeNG with the Aura theme preset (`@primeuix/themes`)                                 |
+| Styling        | Tailwind CSS 4.3 (`@tailwindcss/vite`) + `tailwindcss-primeui`                          |
+| State          | `@ngrx/store`, `@ngrx/effects`, `@ngrx/store-devtools` (dev only)                       |
+| Database       | PostgreSQL 18 (Docker), `drizzle-orm` + `pg`, `drizzle-kit`                             |
+| Auth           | h3 sealed sessions (`useSession`) + `node:crypto` scrypt password hash; no auth library |
+| Tests          | Vitest 4.1 + jsdom (unit/integration), Playwright (e2e)                                 |
+| Lint/format    | ESLint 10 + angular-eslint 22 + typescript-eslint (flat config), Prettier 3             |
+| Deploy         | Docker Compose: `app` + `db`                                                            |
 
 ## Configuration
 
 `.env.example` is committed. `.env` is gitignored.
 
-| Var | Purpose |
-|---|---|
-| `DATABASE_URL` | `postgres://rxplus:***@db:5432/rxplus` |
-| `APP_PASSWORD_HASH` | scrypt hash, created with `npm run hash-password` |
-| `SESSION_SECRET` | at least 32 random characters; signs and encrypts the session cookie |
-| `COOKIE_SECURE` | `false` on plain-HTTP LAN; `true` behind TLS |
-| `PORT` | default `3000` |
-| `TZ` | `America/New_York` |
+| Var                 | Purpose                                                              |
+| ------------------- | -------------------------------------------------------------------- |
+| `DATABASE_URL`      | `postgres://rxplus:***@db:5432/rxplus`                               |
+| `APP_PASSWORD_HASH` | scrypt hash, created with `npm run hash-password`                    |
+| `SESSION_SECRET`    | at least 32 random characters; signs and encrypts the session cookie |
+| `COOKIE_SECURE`     | `false` on plain-HTTP LAN; `true` behind TLS                         |
+| `PORT`              | default `3000`                                                       |
+| `TZ`                | `America/New_York`                                                   |
 
 The server refuses to start, with a clear error, if `DATABASE_URL`, `APP_PASSWORD_HASH` or `SESSION_SECRET` is missing or invalid.
 
@@ -103,6 +104,7 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
 ## Behavior
 
 **Auth**
+
 - `POST /api/auth/login` takes `{ password }`.
   - On a match (checked with `timingSafeEqual` against the scrypt hash), it sets a sealed session cookie (`httpOnly`, `sameSite=lax`, `secure` taken from `COOKIE_SECURE`, 30-day max age) and returns `204`.
   - On a wrong password it returns `401` with a generic message.
@@ -113,25 +115,30 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
 - A page guard runs during SSR and in the browser: unauthenticated visits to any `(app)` route redirect to `/login?next=<path>`. After login, the app returns to `next`, but only if it is a same-origin relative path.
 
 **Health**
+
 - `GET /api/health` returns `200 { status: "ok", db: "ok" }`, or `503 { status: "degraded", db: "down" }` if `SELECT 1` fails.
 
 **NgRx**
+
 - An `auth` feature slice holds `status: 'unknown' | 'authenticated' | 'anonymous'`, plus `error`.
 - Actions: `login`, `loginSuccess`, `loginFailure`, `logout`, `logoutSuccess`, `sessionChecked`.
 - Effects call the API and navigate as needed.
 - Store devtools are registered only in dev builds.
 
 **UI shell**
+
 - Top bar with the app name, plus a navigation menu for Dashboard, Medications, Interactions and Digest (placeholders) and Logout.
 - On screens narrower than 768px the navigation collapses into a PrimeNG Drawer opened by a menu button.
 - Follows the system light/dark preference through PrimeNG's dark-mode selector and Tailwind's `dark:` variant.
 
 **Database**
+
 - A shared Drizzle client with a single `pg` Pool.
 - Foundation defines no tables. The migration pipeline is proven by `medications`' first migration.
 - The app container runs `db:migrate` before starting the server, and exits with a non-zero code if a migration fails.
 
 **Docker**
+
 - `db`: `postgres:18`, a named volume for data, a healthcheck with `pg_isready`, and no exposed host port by default.
 - `app`: multi-stage Dockerfile (build, then a slim runtime), runs as a non-root user, `depends_on: db (service_healthy)`, and exposes `3000`.
 
@@ -150,10 +157,21 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
   imports: [ReactiveFormsModule, ButtonModule, PasswordModule, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <form [formGroup]="form" (ngSubmit)="submit()" class="mx-auto mt-24 flex max-w-sm flex-col gap-4 p-4">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      class="mx-auto mt-24 flex max-w-sm flex-col gap-4 p-4"
+    >
       <h1 class="text-2xl font-semibold">RxPlus</h1>
-      <p-password formControlName="password" [feedback]="false" [toggleMask]="true" inputId="password" />
-      @if (error()) { <p-message severity="error" [text]="error()!" /> }
+      <p-password
+        formControlName="password"
+        [feedback]="false"
+        [toggleMask]="true"
+        inputId="password"
+      />
+      @if (error()) {
+        <p-message severity="error" [text]="error()!" />
+      }
       <p-button type="submit" label="Sign in" [disabled]="form.invalid" />
     </form>
   `,
