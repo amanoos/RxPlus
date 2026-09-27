@@ -23,7 +23,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/ctgov/{client,index}.ts` (+ spec, fixtures), `src/server/utils/env.ts`
   - Depends on: none
 
-- [ ] **Task 3: Schema, migration 0003 and repository** (M)
+- [x] **Task 3: Schema, migration 0003 and repository** (M)
   - Acceptance:
     - `literature_lists`, `literature_papers`, `literature_trials` as in the spec; migration `0003_create_literature`
     - repository: save a fetched list (upsert papers keeping `takeaway` and `hiddenAt`; replace trials), shown papers (first 10 not hidden, ≤ 4 reviews, by tier and rank), hidden papers, hide/unhide, takeaway state (claim/complete/fail), `failInterrupted`

@@ -37,7 +37,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 
 - [x] Task 1: PubMed client (search tiers, summaries, abstracts, spacing)
 - [x] Task 2: ClinicalTrials.gov client
-- [ ] Task 3: Schema, migration 0003 and repository
+- [x] Task 3: Schema, migration 0003 and repository
 - [ ] Task 4: Literature service and routes (lists, refresh, hide)
 - [ ] Task 5: Provider refactor (generic structured generation), drug-info unchanged
 - [ ] Task 6: Takeaway core: prompt, schema, per-abstract verification
