@@ -16,6 +16,7 @@ describe('parseEnv', () => {
       TZ: 'America/New_York',
       RXNAV_BASE_URL: 'https://rxnav.nlm.nih.gov/REST',
       OPENFDA_BASE_URL: 'https://api.fda.gov/drug',
+      MEDLINEPLUS_BASE_URL: 'https://connect.medlineplus.gov/service',
       SUMMARY_PROVIDER: 'ollama',
       OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
       OLLAMA_NUM_CTX: 16384,

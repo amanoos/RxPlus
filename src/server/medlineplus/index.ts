@@ -1,3 +1,4 @@
+import { env } from '../utils/env';
 import { createMedlinePlusClient, type MedlinePlusClient } from './client';
 
 export type { MedlinePlusClient, MedlinePlusPage } from './client';
@@ -8,7 +9,7 @@ let override: MedlinePlusClient | undefined;
 /** The app-wide MedlinePlus Connect client (one cache per server process). */
 export function medlinePlus(): MedlinePlusClient {
   if (override) return override;
-  shared ??= createMedlinePlusClient();
+  shared ??= createMedlinePlusClient({ baseUrl: env().MEDLINEPLUS_BASE_URL });
   return shared;
 }
 

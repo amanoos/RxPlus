@@ -28,7 +28,8 @@ export default defineConfig({
   ],
   webServer: [
     {
-      // Recorded RxNav and openFDA responses, so e2e never depends on NLM or FDA.
+      // Recorded RxNav, openFDA, MedlinePlus and Ollama responses, so e2e never
+      // depends on NLM, FDA or a local model.
       command: 'node e2e/stub-upstream.ts',
       url: `http://localhost:${STUB_UPSTREAM_PORT}/health`,
       env: { STUB_UPSTREAM_PORT: String(STUB_UPSTREAM_PORT) },
@@ -49,6 +50,10 @@ export default defineConfig({
         COOKIE_SECURE: 'false',
         RXNAV_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/REST`,
         OPENFDA_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/openfda/drug`,
+        MEDLINEPLUS_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/medlineplus`,
+        SUMMARY_PROVIDER: 'ollama',
+        OLLAMA_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/ollama`,
+        OLLAMA_MODEL: 'qwen2.5:7b',
       },
     },
   ],

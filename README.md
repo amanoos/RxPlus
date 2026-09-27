@@ -23,6 +23,7 @@ Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit
 | `RXNAV_BASE_URL`       | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub. |
 | `OPENFDA_BASE_URL`     | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                         |
 | `OPENFDA_API_KEY`      | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.               |
+| `MEDLINEPLUS_BASE_URL` | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                       |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
 

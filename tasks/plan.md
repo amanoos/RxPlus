@@ -64,7 +64,7 @@ A drug page (`/drugs/:rxcui`) with:
 
 ### Phase 3: Verification
 
-- [ ] Task 12: E2E with stub Ollama and FAERS
+- [x] Task 12: E2E with stub Ollama and FAERS
 - [ ] Task 13: Docker `extra_hosts`, coverage, README (Ollama setup)
 
 ### Checkpoint C: drug-info complete

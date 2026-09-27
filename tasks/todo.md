@@ -66,8 +66,8 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] curl: facts, FAERS and summary generation with the stub provider; live `qwen2.5:7b` if reachable
+- [x] Unit and integration tests pass; migration applies
+- [x] curl: facts, FAERS and summary generation with the stub provider; live `qwen2.5:7b` if reachable (2026-09-27: 10 claims, 1 uncited, 2 advice sentences removed, ~7.5 min with a retry)
 
 ## Phase 2: Client
 
@@ -97,11 +97,11 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Browser: page, FAERS disclaimer, summary states, citation popover; 375px and desktop
+- [x] Browser: page, FAERS disclaimer, summary states, citation popover; 375px and desktop
 
 ## Phase 3: Verification
 
-- [ ] **Task 12: E2E with stub Ollama and FAERS** (M)
+- [x] **Task 12: E2E with stub Ollama and FAERS** (M)
   - Acceptance: the stub server serves `/api/chat` (a recorded, quote-accurate JSON summary for lisinopril) and FAERS counts; the spec opens a drug page from a medication card, sees the facts, FAERS and disclaimer, generates a summary, and opens a citation
   - Verify: `npm run e2e` (3 repeats stable)
   - Files: `e2e/stub-upstream.ts`, `e2e/drug-info.spec.ts`, fixtures, `playwright.config.ts`

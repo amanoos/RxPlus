@@ -31,6 +31,9 @@ const envSchema = z.object({
   OPENFDA_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://api.fda.gov/drug'),
+  MEDLINEPLUS_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    .default('https://connect.medlineplus.gov/service'),
   // AI summaries: a local Ollama model by default, Claude optional.
   SUMMARY_PROVIDER: z.enum(['ollama', 'claude'], 'must be "ollama" or "claude"').default('ollama'),
   OLLAMA_BASE_URL: z
