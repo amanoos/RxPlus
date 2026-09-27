@@ -1,6 +1,6 @@
 # Spec: drug-info
 
-Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications` (and reuses the `interactions` openFDA client). Status: **draft, awaiting review**.
+Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications` (and reuses the `interactions` openFDA client). Status: **approved 2026-09-27**.
 Research basis: [docs/research/free-data-sources.md](docs/research/free-data-sources.md).
 
 ## Objective
@@ -213,7 +213,10 @@ Generation runs **in the server process after the 202**, so page loads never wai
 3. **Daily cap:** only for Claude (default 20/day); none for the local model.
 4. **Anthropic key:** not yet. Build and test with stubs; Claude stays off until a key is added.
 
+5. **Ollama location:** on the Ubuntu host. The app container reaches it at `http://host.docker.internal:11434` (Compose `extra_hosts: host.docker.internal:host-gateway`). Ollama must listen beyond localhost (e.g. `OLLAMA_HOST=0.0.0.0` in its systemd service); the README documents this.
+
+6. **Ollama model:** `qwen2.5:7b` (native 32k context, so `num_ctx` 16384 fits). A 7B model paraphrases more than Claude, so expect more _uncited_ sentences; quote verification and the 20% rule measure this, and Checkpoint C's live check reports the uncited rate. A larger local model is a one-line `OLLAMA_MODEL` change.
+
 ## Open questions
 
-1. **Ollama model tag:** which model should summaries use (the output of `ollama list` on the home server)? This sets the `OLLAMA_MODEL` default in `.env.example`, and informs `num_ctx` and the timeout.
-2. **Where does Ollama run relative to Docker?** On the Ubuntu host itself (the app reaches it at `host.docker.internal:11434`, with Ollama listening on `0.0.0.0` or the docker bridge), or in its own container? _Recommendation: keep your existing host install and use `host.docker.internal`._
+None.

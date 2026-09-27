@@ -1,82 +1,88 @@
-# Implementation Plan: interactions
+# Implementation Plan: drug-info
 
-Spec: [SPEC-interactions.md](../SPEC-interactions.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [medications](medications/plan.md), [foundation](foundation/plan.md)
+Spec: [SPEC-drug-info.md](../SPEC-drug-info.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
 
 ## Overview
 
-Check a new prescription, or the current list, for drug–drug interactions:
+A drug page (`/drugs/:rxcui`) with:
 
-- **Severity:** from DDInter 2.0, imported into Postgres and mapped to RxNorm ingredients.
-- **Explanation:** verbatim FDA label sentences from openFDA.
-- **Where it shows:** `/interactions`, the add-medication dialog, and a dashboard line.
+- **Structured facts from RxClass:** class, what it's used for, conditions to avoid it with.
+- **FAERS reported reactions:** shown with a disclaimer.
+- **Links:** DailyMed and MedlinePlus.
+- **AI summary of the FDA label:** local `qwen2.5:7b` via Ollama by default, optional Claude Opus 5. Every sentence is tied to a verified label quote; summaries are stored per label version.
 
 ## Architecture Decisions
 
-- **Import, don't query live:** DDInter has no API. A one-off `ddi:import` command downloads the CSVs, maps names through the existing RxNav client (new `ingredientByName`), and replaces the three `ddi_*` tables in one transaction. It's bundled like `migrate.cjs` so it runs in the container.
-- **Pure core, thin I/O:** CSV parsing, route-suffix parsing, report building (matching rules, notCovered) and label sentence matching are pure functions tested exhaustively. Queries and HTTP clients stay thin.
-- **One openFDA client** (`src/server/openfda/client.ts`) mirrors the RxNav client: base URL from `OPENFDA_BASE_URL` (optional; default `https://api.fda.gov`), optional `OPENFDA_API_KEY`, 5 s timeout, one retry, 7-day cache. It queries only labels that have the interaction section (`_exists_:drug_interactions`, newest first).
-- **Evidence loads lazily** per pair (`/api/interactions/evidence`), so severity shows immediately and label lookups never block the report.
-- **Shared product picker:** extract drug search → product selection from the add dialog into `ProductPickerComponent`, reused by `/interactions`.
-- **E2E stays offline:** the stub server gains DDInter CSV and openFDA routes. Playwright's global setup runs the importer against the stub.
+- **One summary pipeline, two providers.** `SummaryProvider.generate(label) → RawSummary` (sections → sentences → quotes). Everything else is provider-neutral and pure:
+  - prompt rules
+  - label section selection
+  - quote verification (normalize whitespace, case and quote marks, then substring-match within the named section)
+  - the 20% uncited rule
+- **Ollama via its HTTP API** (`POST /api/chat`, `format` = JSON schema, `num_ctx`, `temperature`, timeout) through the existing `getJson`-style helper, extended for POST. No new dependency.
+- **Claude via `@anthropic-ai/sdk`** (the only new dependency; approved in the spec). Citations enabled on document blocks; `cited_text` become quotes; refusal fallback on.
+- **Background generation** in the server process after `POST` returns 202. A row with status `pending` is inserted first (the unique index prevents duplicates), then updated to `ready` or `failed`. On startup, stale `pending` rows (> 10 min) are marked failed.
+- **Label freshness:** the openFDA client caches the label for 7 days; "Check for a newer label" bypasses the cache for one call. The summary lookup uses the current label's set_id and version.
+- **E2E stays offline:** the stub server gains `/api/chat` (Ollama) and FAERS routes.
 
 ## Dependency Graph
 
 ```
-1 openFDA client ─────────────────────────────┐
-2 Schema + CSV parsing ── 3 Importer (RxNav) ──┤
-                          4 Report builder ───┼── 6 API routes ── 7 NgRx feature ── 9 /interactions page ── 10 Add-dialog warning + dashboard
-5 Label evidence (1 + RxClass EPC) ───────────┘                    8 ProductPicker extraction ┘
-                                                                     11 E2E (stubs) ── 12 Docker import, coverage, docs
+1 openFDA label + FAERS ─┐
+2 RxClass facts ─────────┼─ 3 Facts & FAERS routes ─────────────┐
+4 Summary core (pure) ───┼─ 5 Ollama provider ─┐                ├─ 7 NgRx ── 8 Page (facts, FAERS) ── 9 Summary panel ── 10 Links in
+                         └─ 6 Claude provider ─┴─ 7a Storage, generation, routes ┘
+                                                        11 E2E ── 12 Docker/README/coverage
 ```
 
 ## Task List
 
-### Phase 1: Data and server
+### Phase 1: Server
 
-- [x] Task 1: openFDA label client
-- [x] Task 2: DDInter schema, migration and CSV parsing
-- [x] Task 3: DDInter importer and `ddi:import` command
-- [x] Task 4: Interaction report builder and queries
-- [x] Task 5: Label evidence matching (with RxClass class names)
-- [x] Task 6: Interactions API routes
+- [ ] Task 1: openFDA `summaryLabel(rxcui)` and `reportedReactions(ingredient)`
+- [ ] Task 2: RxClass facts (uses, avoid with, classes) and MedlinePlus link
+- [ ] Task 3: `GET /api/drugs/:rxcui` and `/reported-reactions`
+- [ ] Task 4: Summary core: prompt, output schema, quote verification
+- [ ] Task 5: Ollama provider
+- [ ] Task 6: Claude provider (optional, citations, refusal fallback)
+- [ ] Task 7: Summary storage, background generation and summary routes
 
 ### Checkpoint A
 
-- [x] Real import against live DDInter + RxNav (≥ 95% mapped, idempotent)
-- [x] curl: spironolactone vs active lisinopril → Major + label sentence; atorvastatin → Unknown; notCovered case
+- [ ] Unit and integration tests pass; migration applies
+- [ ] curl: facts, FAERS, summary generation with a stub provider; and live with `qwen2.5:7b` if Ollama is reachable from this machine
 
 ### Phase 2: Client
 
-- [x] Task 7: NgRx interactions feature and API service
-- [x] Task 8: Extract `ProductPickerComponent` from the add dialog
-- [x] Task 9: `/interactions` page (check + current + evidence)
-- [x] Task 10: Add-dialog warning and dashboard summary
+- [ ] Task 8: NgRx `drugInfo` feature and API service (with polling)
+- [ ] Task 9: `/drugs/:rxcui` page: facts, FAERS panel, links (SSR)
+- [ ] Task 10: Summary panel: citations, uncited styling, states, refresh
+- [ ] Task 11: Links from medication cards and interaction results
 
 ### Checkpoint B
 
-- [x] Browser: check flow, current pairs, evidence expand, add-dialog warning, dashboard line; 375px and 1280px; openFDA-down message
+- [ ] Browser: page, FAERS disclaimer, summary states, citation popover; 375px and desktop
 
 ### Phase 3: Verification
 
-- [x] Task 11: E2E with stub DDInter, RxNav and openFDA
-- [x] Task 12: Docker import run, coverage, docs
+- [ ] Task 12: E2E with stub Ollama and FAERS
+- [ ] Task 13: Docker `extra_hosts`, coverage, README (Ollama setup)
 
-### Checkpoint C: interactions complete
+### Checkpoint C: drug-info complete
 
-- [x] Spec success criteria 1–8
-- [ ] Human review, then `SPEC-drug-info.md`
+- [ ] Spec success criteria 1–8; live summary with `qwen2.5:7b` on the home server (uncited rate reported)
+- [ ] Human review, then `SPEC-literature.md`
 
 ## Risks and Mitigations
 
-| Risk                                              | Impact | Mitigation                                                                                                           |
-| ------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
-| DDInter URLs or CSV format change                 | Med    | Importer validates the header and fails loudly; the old data stays (transactional)                                   |
-| Name mapping misses                               | Med    | 90% guard; unmapped names printed; notCovered shown in the UI, so gaps are visible, never silent                     |
-| Label text uses class phrasing the matcher misses | Med    | EPC class names + a synonym list + always a link to the full section; never implies "not mentioned = no interaction" |
-| openFDA daily limit without a key (1,000/day)     | Low    | 7-day cache; lazy evidence; optional `OPENFDA_API_KEY`                                                               |
-| Import time (≈2k RxNav calls)                     | Low    | 10 req/s throttle (~4 min); reuse previous mappings                                                                  |
-| 235k-row insert speed                             | Low    | Batched inserts (e.g. 5k rows per statement) inside the transaction                                                  |
+| Risk                                                                 | Impact | Mitigation                                                                                                                                                    |
+| -------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `qwen2.5:7b` paraphrases instead of quoting → many uncited sentences | Med    | Prompt demands exact quotes; verification tolerant to whitespace, case and punctuation; 20% rule with one retry; the uncited rate is measured at Checkpoint C |
+| Local model slow or context overflow                                 | Med    | Explicit `num_ctx` 16384, prompt size estimate before sending, 5-min timeout, background generation                                                           |
+| Ollama not reachable from the container (listens on localhost only)  | Med    | README: `OLLAMA_HOST=0.0.0.0` + `extra_hosts`; a clear "provider unavailable" message                                                                         |
+| Background generation lost on restart                                | Low    | Stale `pending` rows marked failed on startup; retry button                                                                                                   |
+| FAERS counts misread as frequencies                                  | Med    | Disclaimer always visible; never mixed into the AI summary                                                                                                    |
+| No Ollama in dev/CI                                                  | Low    | Stub provider in unit/integration tests; stub `/api/chat` in e2e                                                                                              |
 
 ## Open Questions
 
-None. Spec decisions resolved 2026-09-27.
+None.
