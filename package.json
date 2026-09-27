@@ -25,7 +25,8 @@
     "db:test:down": "docker compose -f docker-compose.test.yml down",
     "hash-password": "node scripts/hash-password.ts",
     "e2e": "npm run build && playwright test",
-    "build:migrate": "esbuild scripts/migrate.ts --bundle --platform=node --target=node24 --format=cjs --external:pg-native --outfile=dist/migrate.cjs"
+    "build:migrate": "esbuild scripts/migrate.ts --bundle --platform=node --target=node24 --format=cjs --external:pg-native --outfile=dist/migrate.cjs",
+    "test:coverage": "vitest run --coverage"
   },
   "private": true,
   "dependencies": {
@@ -64,6 +65,7 @@
     "@playwright/test": "1.63.0",
     "@types/node": "24.19.0",
     "@types/pg": "8.23.1",
+    "@vitest/coverage-v8": "4.1.11",
     "angular-eslint": "22.5.0",
     "drizzle-kit": "0.31.11",
     "esbuild": "0.27.7",

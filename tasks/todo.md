@@ -184,6 +184,6 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint C: foundation complete
 
-- [ ] Spec Success Criteria 1–8 all verified
-- [ ] Coverage at least 80% on `src/server/utils`, `src/app/core/auth` and the auth store
+- [ ] Spec Success Criteria 1–8 all verified (all verified locally, including the full Docker stack; criterion 1 still needs a run on the home server)
+- [x] Coverage at least 80% on `src/server/utils`, `src/app/core/auth` and the auth store (98% lines; enforced by `npm run test:coverage`)
 - [ ] Human review, then write `SPEC-medications.md`

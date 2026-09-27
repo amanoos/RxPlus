@@ -25,6 +25,14 @@ export default defineConfig(() => ({
   test: {
     globals: true,
     reporters: ['default'],
+    // npm run test:coverage (runs unit + integration; needs npm run db:test:up)
+    coverage: {
+      provider: 'v8',
+      include: ['src/server/utils/**', 'src/app/core/auth/**', 'src/app/store/**'],
+      exclude: ['**/*.spec.ts'],
+      reporter: ['text-summary', 'html'],
+      thresholds: { lines: 80 },
+    },
     projects: [
       {
         extends: true,
