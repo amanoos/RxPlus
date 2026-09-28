@@ -4,13 +4,14 @@ import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 
+import { digestFeature } from '../../features/digest/store/digest.reducer';
 import { AuthActions } from '../auth/auth.actions';
 
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: '/' },
   { label: 'Medications', path: '/medications' },
   { label: 'Interactions', path: '/interactions' },
-  { label: 'Digest', path: '/digest' },
+  { label: 'What’s new', path: '/digest' },
 ] as const;
 
 /** Layout for signed-in pages: top bar, navigation (drawer below 768px), and content. */
@@ -55,6 +56,13 @@ export const NAV_ITEMS = [
               class="rounded px-3 py-2 text-sm font-medium hover:bg-surface-100 dark:hover:bg-surface-800"
             >
               {{ item.label }}
+              @if (item.path === '/digest' && unread()) {
+                <span
+                  class="ml-1 rounded-full bg-primary-600 px-1.5 py-0.5 text-xs font-semibold text-white dark:bg-primary-400 dark:text-surface-950"
+                  data-testid="unread-badge"
+                  >{{ unread() }}<span class="sr-only"> unread</span></span
+                >
+              }
             </a>
           }
         </nav>
@@ -85,6 +93,13 @@ export const NAV_ITEMS = [
                 (click)="drawerOpen.set(false)"
               >
                 {{ item.label }}
+                @if (item.path === '/digest' && unread()) {
+                  <span
+                    class="ml-1 rounded-full bg-primary-600 px-1.5 py-0.5 text-xs font-semibold text-white dark:bg-primary-400 dark:text-surface-950"
+                    data-testid="unread-badge"
+                    >{{ unread() }}<span class="sr-only"> unread</span></span
+                  >
+                }
               </a>
             </li>
           }
@@ -100,6 +115,8 @@ export const NAV_ITEMS = [
 export class AppShellComponent {
   private readonly store = inject(Store);
   protected readonly navItems = NAV_ITEMS;
+  /** Unread digest items, for the What's new badge. */
+  protected readonly unread = this.store.selectSignal(digestFeature.selectUnread);
   readonly drawerOpen = signal(false);
 
   logout(): void {

@@ -57,7 +57,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/digest/**`, `src/app/store/app.store.ts`
   - Depends on: 6
 
-- [ ] **Task 8: "What's new" page and navigation badge** (M)
+- [x] **Task 8: "What's new" page and navigation badge** (M)
   - Acceptance: navigation "What's new" with the unread badge; `/digest`: latest digest open, earlier collapsed, grouped by drug; papers with takeaways and quotes, "N more on PubMed", trials, approvals, label changes, each linked; states (next run, running, failed with Try again, empty week, no active medications); Run now; items highlighted until read
   - Verify: component tests; browser check
   - Files: `src/app/pages/(app)/digest.page.ts` (+ spec), `src/app/features/digest/*.component.ts` (+ specs), `src/app/core/layout/app-shell.component.ts`

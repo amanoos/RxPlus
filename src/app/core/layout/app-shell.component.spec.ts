@@ -4,17 +4,20 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
 
 import { AuthActions } from '../auth/auth.actions';
+import { initialDigestState } from '../../features/digest/store/digest.reducer';
 import { initialAuthState } from '../auth/auth.reducer';
 import { AppShellComponent, NAV_ITEMS } from './app-shell.component';
 
 describe('AppShellComponent', () => {
-  const setup = async () => {
+  const setup = async (unread: number | null = null) => {
     await TestBed.configureTestingModule({
       imports: [AppShellComponent],
       providers: [
         providePrimeNG(),
         provideRouter([]),
-        provideMockStore({ initialState: { auth: initialAuthState } }),
+        provideMockStore({
+          initialState: { auth: initialAuthState, digest: { ...initialDigestState, unread } },
+        }),
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(AppShellComponent);
@@ -38,6 +41,15 @@ describe('AppShellComponent', () => {
       '/interactions',
       '/digest',
     ]);
+  });
+
+  it('shows the unread count on What’s new, and no badge when there is nothing new', async () => {
+    const { el } = await setup(7);
+    const link = el.querySelector('nav[aria-label="Main"] a[href="/digest"]');
+    expect(link?.textContent?.replace(/\s+/g, ' ').trim()).toBe('What’s new 7 unread');
+    TestBed.resetTestingModule();
+    const none = await setup(0);
+    expect(none.el.querySelector('[data-testid="unread-badge"]')).toBeNull();
   });
 
   it('logs out through the store', async () => {

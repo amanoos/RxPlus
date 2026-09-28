@@ -183,11 +183,20 @@ export function parseCitedTakeaways(blocks: CitedBlock[], papers: PaperInput[]):
   return { takeaways };
 }
 
+/**
+ * A takeaway describes a study; one that speaks to the reader ("your heart") or
+ * recommends ("doctors should") reads as advice, so it's removed like advice.
+ * The local model does this despite the prompt (live digest run, 2026-09-28).
+ */
+const READER_DIRECTED = /\b(you|your|yours|yourself)\b|\bshould\b/i;
+
+export const isReaderDirected = (text: string): boolean => READER_DIRECTED.test(text);
+
 export interface VerifiedTakeaways {
   byPmid: Map<string, PaperTakeaway>;
   verifiedCount: number;
   uncitedCount: number;
-  /** Takeaways dropped for advising to start, stop or change a medication. */
+  /** Takeaways dropped as advice, or for speaking to the reader instead of about the study. */
   removedAdvice: number;
 }
 
@@ -210,7 +219,7 @@ export function verifyTakeaways(
     const id = pmid.replace(/\D/g, '');
     const abstract = abstracts.get(id);
     if (!abstract || byPmid.has(id)) continue;
-    if (isAdvice(text)) {
+    if (isAdvice(text) || isReaderDirected(text)) {
       removedAdvice++;
       continue;
     }
