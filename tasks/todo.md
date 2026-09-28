@@ -87,7 +87,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `e2e/stub-upstream.ts`, `e2e/alternatives.spec.ts`, fixtures
   - Depends on: 8
 
-- [ ] **Task 10: Coverage, README, `.env.example`** (S)
+- [x] **Task 10: Coverage, README, `.env.example`** (S)
   - Acceptance: coverage ≥ 80% on `src/server/alternatives`, `src/app/features/alternatives`; README section on Alternatives (sources, "Taken for", cleaning, not a recommendation); env docs if anything new
   - Verify: `npm run test:coverage`; production build
   - Files: `vite.config.ts`, `README.md`

@@ -99,6 +99,18 @@ Each drug page has a **Research** section per ingredient:
 
 Lists are stored and refreshed after 30 days, or with "Check for new research". New papers week to week belong to the upcoming digest.
 
+### Alternatives
+
+Each drug page has an **Alternatives** section: other drugs used for the same purpose, for awareness and for questions to bring to your prescriber. It is **not a recommendation**, and no AI is involved.
+
+- **"Taken for":** set what you take a medication for in its edit dialog (or on its drug page), from the drug's known uses in MED-RT. The medication card shows "For: …".
+- **New for that condition:** drugs first approved by the FDA in the last 5 years (Drugs@FDA), e.g. aprocitentan (2024) for hypertension.
+- **Same class:** other drugs in the same FDA pharmacologic class (RxClass), e.g. the other ACE inhibitors.
+- **Other classes for the condition:** grouped and collapsed by class (ARBs, calcium channel blockers, thiazides…).
+- Each drug shows its first US approval year and whether a generic exists, and links to its own drug page. **Hide** removes one you don't care about ("Show hidden" to undo).
+
+How the lists are made: MED-RT's drugs for the condition, reduced to ingredients with a US prescribable single-ingredient product. Drugs also listed for a more specific form (e.g. pulmonary arterial hypertension) are kept only if their FDA label mentions the plain condition. Lists are built in the background (about a minute the first time for a common condition), stored, shared by every drug taken for that condition, and refreshed after 30 days or with "Check for new approvals". Known gaps: combination-only drugs (e.g. sacubitril/valsartan) are not listed, some drugs lack an FDA class and appear under "Other", and MED-RT can lag new approvals.
+
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 
 ## Development

@@ -46,6 +46,8 @@ export default defineConfig(() => ({
         'src/server/ctgov/**',
         'src/server/literature/**',
         'src/app/features/literature/**',
+        'src/server/alternatives/**',
+        'src/app/features/alternatives/**',
       ],
       exclude: ['**/*.spec.ts', '**/fixtures/**', '**/*.fixture.ts'],
       reporter: ['text-summary', 'html'],
