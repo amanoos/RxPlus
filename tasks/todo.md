@@ -1,99 +1,87 @@
-# Tasks: alternatives
+# Tasks: digest
 
-Plan: [plan.md](plan.md) · Spec: [SPEC-alternatives.md](../SPEC-alternatives.md)
+Plan: [plan.md](plan.md) · Spec: [SPEC-digest.md](../SPEC-digest.md)
 
 Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
 
 ## Phase 1: Server
 
-- [x] **Task 1: RxNav extensions** (M)
+- [ ] **Task 1: PubMed recent papers and ClinicalTrials.gov recent updates** (S)
   - Acceptance:
-    - `drugFacts` also returns `uses: { id, name }[]` (MED-RT `may_treat` with disease ids); existing fields unchanged
-    - `epcClass(ingredientRxcui)` → `{ id, name } | null`; `classMembers(epcId)` and `diseaseMembers(diseaseId)` → ingredient concepts, with salt forms mapped to their ingredient and metabolites/duplicates removed; `moreSpecificDiseases(diseaseId)`-style lookup for the cleaning rule (MED-RT diseases whose name contains the condition's)
-    - `usProduct(ingredientRxcui)` → representative single-ingredient product (oral tablet/capsule first) or `null` when none is prescribable in the US
-    - requests paced ≤ 20/s; results cached 30 days
-  - Verify: unit tests with recorded fixtures (ACE inhibitor EPC members, hypertension and pulmonary-hypertension members, lisinopril uses, availability for a US and a non-US ingredient)
-  - Files: `src/server/rxnorm/client.ts` (+ spec, fixtures)
+    - PubMed `recentPapers(ingredient, { from, to, limit })` → `{ pmids (relevance order, ≤ limit), total, searchUrl }` with `"<name>"[tiab] AND hasabstract`, `datetype=edat`, both dates; `searchUrl` opens the same search on pubmed.ncbi.nlm.nih.gov
+    - ClinicalTrials.gov `recentUpdates(ingredient, since)` → trials updated since the date with `firstPosted` and `resultsFirstPosted` dates
+  - Verify: unit tests with recorded fixtures
+  - Files: `src/server/pubmed/client.ts`, `src/server/ctgov/client.ts` (+ specs, fixtures)
   - Depends on: none
 
-- [x] **Task 2: Drugs@FDA facts and label indications** (S)
-  - Acceptance:
-    - `approvalFacts(ingredientName)` → `{ firstApproved: 'YYYY-MM-DD' | null, genericAvailable: boolean }` from `drugsfda.json` (earliest ORIG NDA approval containing the ingredient; ANDA with the ingredient alone); exact "<name>" / "<name> <salt>" matching (enalapril ≠ enalaprilat)
-    - `indications(ingredientName)` → newest label's `indications_and_usage` text or `null`
-    - cached 30 days; the API key is used and redacted as today (pacing ≤ 4/s lives in the list builder, the only caller making bursts, so the drug page keeps its parallel requests)
-  - Verify: unit tests with recorded fixtures (lisinopril, enalapril, aprocitentan, sacubitril combination-only, bosentan and hydralazine labels)
-  - Files: `src/server/openfda/client.ts` (+ spec, fixtures)
+- [ ] **Task 2: Schema, migration 0005 and repository** (M)
+  - Acceptance: `digests`, `digest_items`, `digest_label_versions` as in the spec, with one `running` digest at most (partial unique index); repository: start (claim), finish with items in one transaction, fail, list recent with items, unread count, mark read, seen external ids, label versions get/set, last successful run, `failInterrupted`
+  - Verify: integration tests
+  - Files: `src/server/db/schema/digest.ts`, `drizzle/0005_*`, `src/server/digest/repository.ts` (+ int spec)
   - Depends on: none
 
-- [x] **Task 3: Schema, migration 0004 and repository** (M)
-  - Acceptance: `medications.taken_for_id/name`; `alternative_lists`, `alternative_drugs`, `alternative_hidden` as in the spec; repository: claim/complete/fail a list build (one at a time per key), save drugs, read lists, stale check, hide/unhide/hidden per ingredient, `failInterrupted`
-  - Verify: integration tests (migration, one build at a time, save/replace, hidden)
-  - Files: `src/server/db/schema/{alternatives,medications}.ts`, `drizzle/0004_*`, `src/server/alternatives/repository.ts` (+ int spec)
-  - Depends on: none
+- [ ] **Task 3: Papers and trials collectors** (M)
+  - Acceptance: papers: up to 5 per ingredient not seen before, details, takeaways (literature provider and checks; failure → papers without takeaways + a note), "N more on PubMed" item when the total is larger; trials: newly posted or results newly posted in the window, not seen before
+  - Verify: unit tests with stubbed clients and provider
+  - Files: `src/server/digest/collect-papers.ts`, `collect-trials.ts` (+ specs)
+  - Depends on: 1, 2
 
-- [x] **Task 4: List builder** (M)
-  - Acceptance:
-    - class list: EPC members → available ingredients → facts (class, first approval, generic, product)
-    - condition list: disease members → available ingredients → cleaning rule (drugs also listed for a more specific form kept only if their label indications mention the condition outside that form) → EPC class per drug → facts
-    - one failed ingredient is left out and counted; background job with status; built lists reused for 30 days; startup plugin fails interrupted builds
-    - pure `cleanCondition()` and `groupAlternatives()` (new within 5 years, same class, other classes by class, the viewed drug and its class removed)
-  - Verify: unit tests for the pure functions with recorded hypertension data (hydralazine and nitroglycerin kept; bosentan and sildenafil dropped; aprocitentan new); integration test of a build with stubbed clients (partial failure counted, reuse)
-  - Files: `src/server/alternatives/{builder,group,clean}.ts` (+ specs), `src/server/plugins/summaries.ts`
-  - Depends on: 1, 2, 3
+- [ ] **Task 4: Approvals and label collectors** (M)
+  - Acceptance: approvals: per "taken for" condition of active medications, snapshot the condition list, rebuild it (force), report drugs newly listed and new by the 5-year rule; first sight of a condition is a baseline; labels: newest label per active product vs the recorded version; first sight is a baseline; both not repeated
+  - Verify: unit/integration tests with stubbed clients
+  - Files: `src/server/digest/collect-approvals.ts`, `collect-labels.ts` (+ specs)
+  - Depends on: 2
 
-- [x] **Task 5: Routes and "Taken for"** (M)
-  - Acceptance:
-    - `GET /api/drugs/:rxcui/alternatives?condition=` per ingredient: uses (for the chooser), the chosen condition (medication `takenFor`, else the query), groups, list statuses, `builtAt`, skipped count, hidden; starts missing builds
-    - `POST /api/drugs/:rxcui/alternatives/refresh` → 202; `POST|DELETE /api/alternatives/:ingredient/hidden/:rxcui` → 204
-    - `PATCH /api/medications/:id` accepts `takenFor: { id, name } | null`; responses include it
-  - Verify: route integration tests with stubbed clients (first visit pending then ready, condition from medication vs query, hide/unhide, refresh, takenFor validation)
-  - Files: `src/server/alternatives/service.ts`, `src/server/routes/api/drugs/[rxcui]/alternatives/*.ts`, `src/server/routes/api/alternatives/[ingredient]/hidden/[rxcui].{post,delete}.ts`, medications service/route, tests
-  - Depends on: 4
+- [ ] **Task 5: Run orchestration, weekly schedule and catch-up** (M)
+  - Acceptance: `runDigest(trigger)`: window from the last successful run (7 days on the first), active medications and ingredients, collectors, one digest stored at the end (or failed with the error), one at a time; Nitro task `digest:weekly` on `0 6 * * 1` with `experimental.tasks`; startup plugin: fail an interrupted run, catch up when the last successful run is older than 7 days
+  - Verify: integration test of a full run with stubs (items per kind, no repeats on the second run, baselines, one at a time); unit test of the catch-up decision
+  - Files: `src/server/digest/run.ts` (+ int spec), `src/server/tasks/digest/weekly.ts`, `src/server/plugins/digest.ts`, `vite.config.ts`
+  - Depends on: 3, 4
+
+- [ ] **Task 6: Digest routes** (S)
+  - Acceptance: `GET /api/digests` (12 weeks, items grouped by subject, running status, next scheduled time), `GET /api/digests/unread-count`, `POST /api/digests/run` (202, 409 when running), `POST /api/digests/:id/read` (204)
+  - Verify: route integration tests
+  - Files: `src/server/digest/service.ts`, `src/server/routes/api/digests/**`, tests
+  - Depends on: 5
 
 ### Checkpoint A
 
-- [x] Unit and integration tests pass; migration applies
-- [x] Live: lisinopril for hypertension (build time, counts per group, noise check) and for heart failure (2026-09-27: 55 s / 2 new, 9 same class, 60 other; heart failure 29 s / 39; injectables and supplements kept by decision)
+- [ ] Unit and integration tests pass; migration applies
+- [ ] Live: a run over current medications (duration, counts per kind); a second run reports no repeats
 
 ## Phase 2: Client
 
-- [x] **Task 6: "Taken for" on medications** (S)
-  - Acceptance: the edit dialog has a "Taken for" select filled from the drug's known uses (loaded from `/api/drugs/:rxcui`), with "Not set"; the card shows "For: <condition>"; NgRx medications update carries `takenFor`
-  - Verify: component and store tests
-  - Files: `edit-medication-dialog.component.ts`, `medication-card.component.ts`, `medication.ts`, medications store (+ specs)
-  - Depends on: 5
-
-- [x] **Task 7: NgRx `alternatives` feature and API service** (M)
-  - Acceptance: entries keyed by product RXCUI + condition; load, choose condition (saves `takenFor` when the product is on the list, else per visit), refresh, poll every 2 s while any list is building (≤ 5 min, stops on leave, browser only), hide/unhide optimistic with rollback
+- [ ] **Task 7: NgRx `digest` feature and API service** (M)
+  - Acceptance: load digests, unread count (on navigation and after actions), run now, poll while a run is going (browser only, every 5 s, ≤ 30 min), mark read after the page shows a digest
   - Verify: reducer, selector and effect tests
-  - Files: `src/app/features/alternatives/**`, `src/app/store/app.store.ts`
-  - Depends on: 5
+  - Files: `src/app/features/digest/**`, `src/app/store/app.store.ts`
+  - Depends on: 6
 
-- [x] **Task 8: Alternatives section** (M)
-  - Acceptance: after Research; the always-visible note; condition chooser (buttons from the drug's uses) and "For <condition> (change)"; groups "New for …", "Same class (…)", "Other classes for …" (collapsible per class, with counts); rows with link, "New (year)", first approved, generic, Hide; "Show hidden"; building / failed / skipped states; footer with sources, date, "Check for new approvals"; per ingredient for combinations
+- [ ] **Task 8: "What's new" page and navigation badge** (M)
+  - Acceptance: navigation "What's new" with the unread badge; `/digest`: latest digest open, earlier collapsed, grouped by drug; papers with takeaways and quotes, "N more on PubMed", trials, approvals, label changes, each linked; states (next run, running, failed with Try again, empty week, no active medications); Run now; items highlighted until read
   - Verify: component tests; browser check
-  - Files: `src/app/features/alternatives/*.component.ts` (+ specs), drug page
+  - Files: `src/app/pages/(app)/digest.page.ts` (+ spec), `src/app/features/digest/*.component.ts` (+ specs), `src/app/core/layout/app-shell.component.ts`
   - Depends on: 7
 
 ### Checkpoint B
 
-- [x] Browser: chooser, groups, links, hide/undo, building state; 375px and desktop
+- [ ] Browser: badge, page groups, read tracking, Run now; 375px and desktop
 
 ## Phase 3: Verification
 
-- [x] **Task 9: E2E with stub RxClass, Drugs@FDA and labels** (M)
-  - Acceptance: the stub serves class/disease members, availability, Drugs@FDA and label fixtures; the spec sets "Taken for" on lisinopril, sees the three groups (aprocitentan new; ACE inhibitors; other classes without bosentan), opens an alternative's page, hides one and undoes it
+- [ ] **Task 9: E2E with stub entry-date search, trial updates, label and approval changes** (M)
+  - Acceptance: the stub serves an entry-date PubMed search, trial updates, a second label version and a newly listed drug; the spec adds a medication, runs the digest, sees the badge, opens What's new, sees each kind of item, and the badge clears
   - Verify: `npm run e2e` (3 repeats stable)
-  - Files: `e2e/stub-upstream.ts`, `e2e/alternatives.spec.ts`, fixtures
+  - Files: `e2e/stub-upstream.ts`, `e2e/digest.spec.ts`, fixtures
   - Depends on: 8
 
-- [x] **Task 10: Coverage, README, `.env.example`** (S)
-  - Acceptance: coverage ≥ 80% on `src/server/alternatives`, `src/app/features/alternatives`; README section on Alternatives (sources, "Taken for", cleaning, not a recommendation); env docs if anything new
+- [ ] **Task 10: Coverage, README** (S)
+  - Acceptance: coverage ≥ 80% on `src/server/digest`, `src/app/features/digest`; README section on the digest (what, when, catch-up, Run now)
   - Verify: `npm run test:coverage`; production build
   - Files: `vite.config.ts`, `README.md`
   - Depends on: 9
 
-### Checkpoint C: alternatives complete
+### Checkpoint C: digest complete
 
-- [x] Spec success criteria 1–8; live counts reported
-- [x] Human review, then `SPEC-digest.md`
+- [ ] Spec success criteria 1–8; live run reported
+- [ ] Human review, then `SPEC-pricing.md`
