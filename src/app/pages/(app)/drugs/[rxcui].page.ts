@@ -12,6 +12,7 @@ import { DrugInfoActions } from '../../../features/drug-info/store/drug-info.act
 import { SummaryPanelComponent } from '../../../features/drug-info/summary-panel.component';
 import { AlternativesSectionComponent } from '../../../features/alternatives/alternatives-section.component';
 import { ResearchSectionComponent } from '../../../features/literature/research-section.component';
+import { PricesSectionComponent } from '../../../features/pricing/prices-section.component';
 import { drugInfoFeature } from '../../../features/drug-info/store/drug-info.reducer';
 
 export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
@@ -25,6 +26,7 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
     SummaryPanelComponent,
     ResearchSectionComponent,
     AlternativesSectionComponent,
+    PricesSectionComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -104,6 +106,10 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
 
       <div class="mt-8">
         <app-alternatives-section [rxcui]="rxcui()" [drugName]="drugName()" />
+      </div>
+
+      <div class="mt-8">
+        <app-prices-section [rxcui]="rxcui()" />
       </div>
 
       <div class="mt-8">

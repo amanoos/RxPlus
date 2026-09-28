@@ -1,8 +1,14 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY } from 'rxjs';
+
+import { initialMedicationsState } from '../../../features/medications/store/medications.reducer';
+import { initialPricingState } from '../../../features/pricing/store/pricing.reducer';
 
 import { factsFixture, reactionsFixture } from '../../../features/drug-info/drug-info.fixture';
 import type { DrugFacts } from '../../../features/drug-info/drug-info';
@@ -48,8 +54,13 @@ describe('DrugPage', () => {
             drugInfo,
             literature: initialLiteratureState,
             alternatives: initialAlternativesState,
+            pricing: initialPricingState,
+            medications: initialMedicationsState,
           },
         }),
+        provideMockActions(() => EMPTY),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: { paramMap: params } },
       ],
     }).compileComponents();

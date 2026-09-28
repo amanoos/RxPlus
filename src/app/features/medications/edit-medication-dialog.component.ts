@@ -99,6 +99,54 @@ export type EditMode = 'edit' | 'stop';
                 >
               }
             </div>
+            <fieldset class="flex flex-col gap-3" data-testid="cost-fields">
+              <legend class="mb-1 text-sm font-medium">Cost</legend>
+              <div class="flex items-center gap-2">
+                <input
+                  pInputText
+                  id="edit-units"
+                  type="number"
+                  inputmode="decimal"
+                  min="0.5"
+                  max="1000"
+                  step="0.5"
+                  class="w-24"
+                  [value]="unitsPerMonth()"
+                  (input)="unitsPerMonth.set($any($event.target).value)"
+                />
+                <label for="edit-units" class="text-sm">units per month</label>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-sm">
+                <label for="edit-copay">Copay (optional): $</label>
+                <input
+                  pInputText
+                  id="edit-copay"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="0.01"
+                  class="w-24"
+                  [value]="copayAmount()"
+                  (input)="copayAmount.set($any($event.target).value)"
+                />
+                <label for="edit-copay-units">for</label>
+                <input
+                  pInputText
+                  id="edit-copay-units"
+                  type="number"
+                  inputmode="decimal"
+                  min="0.5"
+                  step="0.5"
+                  class="w-20"
+                  [value]="copayUnits()"
+                  (input)="copayUnits.set($any($event.target).value)"
+                />
+                <span>units</span>
+              </div>
+              <small class="text-surface-600 dark:text-surface-300"
+                >What you pay with insurance per fill, e.g. $10 for 90 tablets.</small
+              >
+            </fieldset>
             <div class="flex flex-col gap-2">
               <label for="edit-notes" class="text-sm font-medium">Notes</label>
               <textarea
@@ -154,6 +202,10 @@ export class EditMedicationDialogComponent {
   readonly stoppedOn = signal<string | null>(null);
   /** Selected MED-RT condition id; '' = not set. */
   readonly takenForId = signal('');
+  /** Cost fields, as typed. */
+  readonly unitsPerMonth = signal('30');
+  readonly copayAmount = signal('');
+  readonly copayUnits = signal('');
   readonly uses = signal<{ id: string; name: string }[]>([]);
   readonly usesStatus = signal<'idle' | 'loading' | 'loaded' | 'error'>('idle');
 
@@ -176,8 +228,38 @@ export class EditMedicationDialogComponent {
     if (started && stopped && stopped < started) {
       return 'The stop date can’t be before the start date.';
     }
+    if (this.mode() === 'edit') return this.costProblem();
     return null;
   });
+
+  /** Units per month: over 0, at most 1000, in steps of 0.5. */
+  private static validUnits(value: number): boolean {
+    return value > 0 && value <= 1000 && Number.isInteger(value * 2);
+  }
+
+  private readonly costProblem = computed(() => {
+    const units = Number(this.unitsPerMonth());
+    if (!EditMedicationDialogComponent.validUnits(units)) {
+      return 'Units per month must be between 0.5 and 1000, in steps of 0.5.';
+    }
+    const amount = this.copayAmount().trim();
+    const fill = this.copayUnits().trim();
+    if (!amount && !fill) return null;
+    if (!amount || !fill) return 'Enter both the copay and how many units it covers.';
+    if (!(Number(amount) >= 0) || Number(amount) > 10_000) return 'Enter the copay in dollars.';
+    if (!EditMedicationDialogComponent.validUnits(Number(fill))) {
+      return 'The copay’s units must be between 0.5 and 1000, in steps of 0.5.';
+    }
+    return null;
+  });
+
+  /** The copay as the API takes it; null when both fields are empty. */
+  private copayChange(): MedicationChanges['copay'] {
+    const amount = this.copayAmount().trim();
+    const fill = this.copayUnits().trim();
+    if (!amount && !fill) return null;
+    return { amountCents: Math.round(Number(amount) * 100), units: Number(fill) };
+  }
 
   constructor() {
     // Load the form from the medication each time the dialog opens.
@@ -189,6 +271,9 @@ export class EditMedicationDialogComponent {
         this.startedOn.set(med.startedOn);
         this.stoppedOn.set(localToday());
         this.takenForId.set(med.takenForId ?? '');
+        this.unitsPerMonth.set(String(med.unitsPerMonth));
+        this.copayAmount.set(med.copayCents === null ? '' : (med.copayCents / 100).toFixed(2));
+        this.copayUnits.set(med.copayUnits === null ? '' : String(med.copayUnits));
         if (this.mode() === 'edit') this.loadUses(med.rxcui);
       });
     });
@@ -209,6 +294,17 @@ export class EditMedicationDialogComponent {
     if (this.mode() === 'edit' && takenFor !== (med.takenForId ?? '')) {
       const use = this.useOptions().find((u) => u.id === takenFor);
       changes.takenFor = use ? { id: use.id, name: use.name } : null;
+    }
+    if (this.mode() === 'edit') {
+      const units = Number(this.unitsPerMonth());
+      if (units !== med.unitsPerMonth) changes.unitsPerMonth = units;
+      const copay = this.copayChange();
+      if (
+        (copay?.amountCents ?? null) !== med.copayCents ||
+        (copay?.units ?? null) !== med.copayUnits
+      ) {
+        changes.copay = copay;
+      }
     }
     this.store.dispatch(MedicationsActions.update({ id: med.id, changes }));
   }

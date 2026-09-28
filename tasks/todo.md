@@ -37,7 +37,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/pricing/**`, `src/app/store/app.store.ts`
   - Depends on: 3
 
-- [ ] **Task 5: Drug page Prices section and cost fields in the edit dialog** (M)
+- [x] **Task 5: Drug page Prices section and cost fields in the edit dialog** (M)
   - Acceptance: Prices section (per unit, monthly, fee note, link, as-of, not sold, unavailable; for a listed medication: units, copay, comparison, Edit); edit dialog gains units per month and copay
   - Verify: component tests
   - Files: `src/app/features/pricing/prices-section.component.ts`, drug page, `edit-medication-dialog.component.ts` (+ specs)

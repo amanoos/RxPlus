@@ -59,6 +59,67 @@ describe('EditMedicationDialogComponent', () => {
     );
   });
 
+  it('prefills units and copay, and sends only what changed', async () => {
+    const withCopay = medicationFixture({ unitsPerMonth: 60, copayCents: 1000, copayUnits: 90 });
+    const { cmp, store } = await setup('edit', withCopay);
+    expect([cmp.unitsPerMonth(), cmp.copayAmount(), cmp.copayUnits()]).toEqual([
+      '60',
+      '10.00',
+      '90',
+    ]);
+    cmp.save();
+    expect(store.dispatch).toHaveBeenLastCalledWith(
+      MedicationsActions.update({
+        id: withCopay.id,
+        changes: { notes: null, startedOn: '2026-01-15' },
+      }),
+    );
+
+    cmp.unitsPerMonth.set('30');
+    cmp.copayAmount.set('4.5');
+    cmp.copayUnits.set('30');
+    cmp.save();
+    expect(store.dispatch).toHaveBeenLastCalledWith(
+      MedicationsActions.update({
+        id: withCopay.id,
+        changes: {
+          notes: null,
+          startedOn: '2026-01-15',
+          unitsPerMonth: 30,
+          copay: { amountCents: 450, units: 30 },
+        },
+      }),
+    );
+
+    cmp.copayAmount.set('');
+    cmp.copayUnits.set('');
+    cmp.save();
+    expect(store.dispatch).toHaveBeenLastCalledWith(
+      MedicationsActions.update({
+        id: withCopay.id,
+        changes: { notes: null, startedOn: '2026-01-15', unitsPerMonth: 30, copay: null },
+      }),
+    );
+  });
+
+  it('explains invalid units or a half-entered copay', async () => {
+    const { cmp } = await setup('edit');
+    cmp.unitsPerMonth.set('0');
+    expect(cmp.invalid()).toContain('Units per month');
+    cmp.unitsPerMonth.set('1.25');
+    expect(cmp.invalid()).toContain('Units per month');
+    cmp.unitsPerMonth.set('30');
+    cmp.copayAmount.set('10');
+    expect(cmp.invalid()).toBe('Enter both the copay and how many units it covers.');
+    cmp.copayUnits.set('0');
+    expect(cmp.invalid()).toContain('The copay’s units');
+    cmp.copayAmount.set('-3');
+    cmp.copayUnits.set('30');
+    expect(cmp.invalid()).toBe('Enter the copay in dollars.');
+    cmp.copayAmount.set('3');
+    expect(cmp.invalid()).toBeNull();
+  });
+
   it('offers the drug’s known uses as "Taken for" and saves a change', async () => {
     const { cmp, store, fixture } = await setup('edit');
     expect(drugInfo.facts).toHaveBeenCalledWith(med.rxcui);
