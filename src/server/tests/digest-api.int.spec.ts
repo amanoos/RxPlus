@@ -83,6 +83,9 @@ describe('digest API (integration)', () => {
     useOpenFdaClient(undefined);
     useTakeawayProvider(undefined);
     resetDigestRunner();
+    await settleDigestJobs();
+    // The e2e server shares this database: leave no running digest for its startup to resume.
+    await db.execute(sql`truncate digests, digest_items, digest_label_versions, medications`);
     await pool.end();
   });
 

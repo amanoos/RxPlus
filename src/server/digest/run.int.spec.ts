@@ -91,7 +91,12 @@ describe('digest run (integration)', () => {
     });
     await medications.update(stopped.id, { stoppedOn: '2026-01-01' });
   });
-  afterAll(() => pool.end());
+  // The e2e server shares this database: leave no running digest for its startup to resume.
+  afterAll(async () => {
+    await settleDigestJobs();
+    await db.execute(sql`truncate digests, digest_items, digest_label_versions`);
+    await pool.end();
+  });
 
   /** Each upstream answers the same until changed; the condition list grows by `listed`. */
   function create(now = NOW) {

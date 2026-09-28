@@ -27,7 +27,11 @@ describe('digest repository (integration)', () => {
 
   beforeAll(() => runMigrations(url, 'drizzle'));
   beforeEach(() => db.execute(sql`truncate digests, digest_items, digest_label_versions`));
-  afterAll(() => pool.end());
+  // The e2e server shares this database: leave no running digest for its startup to resume.
+  afterAll(async () => {
+    await db.execute(sql`truncate digests, digest_items, digest_label_versions`);
+    await pool.end();
+  });
 
   it('runs one digest at a time', async () => {
     const run = await repo.start({ trigger: 'manual', ...WINDOW });

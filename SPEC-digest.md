@@ -1,6 +1,6 @@
 # Spec: digest
 
-Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications`, `literature` (PubMed and ClinicalTrials.gov clients, takeaways), `alternatives` (condition lists), `drug-info` (FDA labels). Status: **approved 2026-09-27**.
+Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications`, `literature` (PubMed and ClinicalTrials.gov clients, takeaways), `alternatives` (condition lists), `drug-info` (FDA labels). Status: **approved 2026-09-27; built 2026-09-28, awaiting review**.
 Research basis: [docs/research/free-data-sources.md](docs/research/free-data-sources.md) §5–6, plus the queries measured below.
 
 ## Objective
@@ -36,7 +36,9 @@ For each ingredient of the **active** medications (stopped ones are skipped), ov
 
 - A Nitro scheduled task (`experimental.tasks`, `scheduledTasks: { '0 6 * * 1': ['digest:weekly'] }`), in the server's time zone (`TZ=America/New_York`).
 - **Catch-up:** if the server was off at that time, the run starts at the next startup when the last successful run is more than 7 days old.
-- **One run at a time**; a run left `running` by a restart is marked failed at startup (and caught up).
+- **One run at a time**; a run left `running` by a restart is marked failed at startup and run again.
+- **No catch-up before the first digest ever:** a fresh install waits for Monday 6:00 AM or Run now.
+- **Windows** start on the previous digest's end date (that day again, so news entered later that day isn't missed; repeats are filtered). The "N more on PubMed" count can include papers counted, but not listed, in the previous digest on that shared day.
 - **"Run now"** on the page starts a run in the background (e.g. after adding a medication).
 
 ## Data model (Drizzle, `src/server/db/schema/digest.ts`, migration `0005_*`)
@@ -52,12 +54,14 @@ digests = pgTable('digests', {
   finishedAt: timestamp({ withTimezone: true }),
   error: text(),
   notes: jsonb().$type<string[]>(), // e.g. "Takeaways for metformin couldn't be written"
+  claudeCalls: integer().notNull().default(0), // counted toward AI_DAILY_LIMIT before each call
 });
 
 digestItems = pgTable('digest_items', {
   id: uuid().primaryKey().defaultRandom(),
   digestId: uuid().notNull(),
   kind: text({ enum: ['paper', 'more-papers', 'trial', 'approval', 'label'] }).notNull(),
+  position: integer().notNull(), // order within the digest (relevance, then kind)
   ingredientRxcui: text(),
   productRxcui: text(),
   conditionId: text(),
@@ -87,11 +91,11 @@ Condition-list snapshots for "newly listed" come from `alternative_drugs` before
 | `GET /api/digests`              | Digests newest first (up to 12 weeks), with items grouped by drug, and the running one if any | 200                        |
 | `GET /api/digests/unread-count` | For the navigation badge                                                                      | 200 `{ count }`            |
 | `POST /api/digests/run`         | Run now (background)                                                                          | 202; 409 if one is running |
-| `POST /api/digests/:id/read`    | Mark a digest's items as read                                                                 | 204                        |
+| `POST /api/digests/:id/read`    | Mark a digest's items as read                                                                 | 204; 404 if unknown        |
 
 ## UI
 
-- **Navigation:** the existing "Digest" link becomes **"What's new"** with an unread badge (count of unread items), refreshed on navigation.
+- **Navigation:** the existing "Digest" link becomes **"What's new"** with an unread badge (count of unread items), refreshed on navigation. Below 768px the menu button shows a dot and its label says how many are unread.
 - **`/digest` page:** the latest digest open, earlier ones collapsed ("Week of Sep 21: 4 items"). Within a digest, grouped by drug: papers (title → PubMed, journal · year, takeaway with its quote inline, "not linked" marking), "and N more on PubMed", trials (NCT id, title → ClinicalTrials.gov, "New trial" / "Results posted"), approvals ("Newly listed for hypertension: X (approved 2026)" → drug page), label changes ("New FDA label for …, dated …" → drug page and DailyMed).
 - **Read tracking:** items are highlighted until read; opening the page marks the displayed digests read after they load (the badge clears).
 - **States:** "Next digest: Monday 6:00 AM"; running ("Collecting this week's news… started 6:00") with polling; failed with Try again; empty week ("Nothing new this week for your medications"); no active medications.
@@ -103,6 +107,7 @@ Condition-list snapshots for "newly listed" come from `alternative_drugs` before
 - **Integration (test DB):** migration; a full run with stubbed clients (items per kind, dedupe across runs, baselines on first run, takeaway failure note, one run at a time, interrupted run marked failed, catch-up decision); routes (list, unread count, run 202/409, mark read).
 - **E2E:** the stub server gains an entry-date PubMed search, trial updates, a changed label version and a newly listed drug; the spec runs the digest with "Run now", sees the badge, opens What's new, sees each kind of item, and the badge clears.
 - **Live check at the checkpoint:** a run over the current medications (duration, counts per kind).
+  - Result (2026-09-28, test database, real upstreams, `qwen2.5:7b`): lisinopril (taken for hypertension), atorvastatin, metformin, spironolactone (taken for heart failure). First run 299 s: 15 papers (10 with takeaways after the reader-directed filter), "more on PubMed" 51 / 9 / 1, one new trial, baselines for 2 conditions and 4 labels. Second run 86 s: nothing new, no repeats.
 - **Coverage:** ≥ 80% lines on `src/server/digest`, `src/app/features/digest`.
 
 ## Boundaries

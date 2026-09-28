@@ -54,6 +54,7 @@ MED-RT's "may treat Hypertension" also lists drugs for **pulmonary** hypertensio
 - **New:** first approval within 5 years of today is shown in its own group at the top and marked "New (2024)" wherever it appears.
 - **Combination products:** alternatives per ingredient.
 - Upstream calls are spaced (RxNav ≤ 20/s; openFDA with the owner's key, 240/min limit respected) and cached; one failed ingredient doesn't fail the list (it's left out and counted).
+- A **forced** rebuild ("Check for new approvals", the weekly digest) reads the RxNav class and condition member lists again instead of the copy kept in memory for a month (fixed 2026-09-28: before, a forced rebuild could not find a newly listed drug until the server restarted).
 
 ## Data model (Drizzle, `src/server/db/schema/alternatives.ts`, migration `0004_*`)
 
