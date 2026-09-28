@@ -113,6 +113,24 @@ describe('DigestViewComponent', () => {
     );
   });
 
+  it('notes a takeaway worded as if about the reader', async () => {
+    const item = digestItemFixture({
+      takeaway: {
+        text: 'Taking it can help your kidneys.',
+        quote: 'Lisinopril slowed the decline in kidney function compared with placebo.',
+        uncited: false,
+        readerDirected: true,
+      },
+    });
+    const { el } = await setup(
+      digestFixture({ groups: [{ subject: 'lisinopril', items: [item] }] }),
+    );
+    expect(text(el.querySelector('[data-testid="reader-directed"]'))).toBe(
+      'Worded as if about you or as advice; the study itself is what’s quoted.',
+    );
+    expect(el.querySelector('[data-testid="takeaway-quote"]')).not.toBeNull();
+  });
+
   it('shows an empty week, notes, and a failure with Try again', async () => {
     const empty = await setup(
       digestFixture({

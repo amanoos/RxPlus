@@ -27,6 +27,8 @@ export interface PaperTakeaway {
    * checked (no quote, Claude, or the check failed).
    */
   supported?: boolean | null;
+  /** Speaks to the reader ("your heart") or recommends ("should") instead of describing the study. */
+  readerDirected?: boolean;
 }
 
 /** Candidate papers per ingredient (up to 20 per tier); the page shows the first 10 not hidden. */

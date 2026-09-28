@@ -134,15 +134,18 @@ describe('verifyTakeaways', () => {
     expect(result.removedAdvice).toBe(1);
   });
 
-  it('drops takeaways that speak to the reader or recommend, instead of describing the study', () => {
+  it('keeps takeaways that speak to the reader or recommend, marked as such', () => {
     const quote = 'Cough occurred in 11% of patients';
-    const said = (text: string) =>
-      verifyTakeaways({ takeaways: [{ pmid: '222', text, quote }] }, papers).removedAdvice;
-    expect(said('Taking a higher dose right after surgery can help your heart.')).toBe(1);
-    expect(said('If you take it, cough is common.')).toBe(1);
-    expect(said('Doctors should consider combining these medicines.')).toBe(1);
-    expect(said('In this study, cough affected 11% of patients.')).toBe(0);
-    expect(said('Youth athletes in this study coughed more.')).toBe(0);
+    const marked = (text: string) => {
+      const result = verifyTakeaways({ takeaways: [{ pmid: '222', text, quote }] }, papers);
+      expect(result.removedAdvice).toBe(0);
+      return result.byPmid.get('222')?.readerDirected ?? false;
+    };
+    expect(marked('Taking a higher dose right after surgery can help your heart.')).toBe(true);
+    expect(marked('If you take it, cough is common.')).toBe(true);
+    expect(marked('Doctors should consider combining these medicines.')).toBe(true);
+    expect(marked('In this study, cough affected 11% of patients.')).toBe(false);
+    expect(marked('Youth athletes in this study coughed more.')).toBe(false);
   });
 });
 

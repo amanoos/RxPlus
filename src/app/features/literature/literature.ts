@@ -10,6 +10,8 @@ export interface PaperTakeaway {
   uncited: boolean;
   /** Only with a check model: false when the quote doesn't back up the takeaway. */
   supported?: boolean | null;
+  /** Speaks to the reader or recommends, instead of describing the study. */
+  readerDirected?: boolean;
 }
 
 export interface Paper {

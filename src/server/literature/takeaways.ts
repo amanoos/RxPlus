@@ -185,8 +185,9 @@ export function parseCitedTakeaways(blocks: CitedBlock[], papers: PaperInput[]):
 
 /**
  * A takeaway describes a study; one that speaks to the reader ("your heart") or
- * recommends ("doctors should") reads as advice, so it's removed like advice.
- * The local model does this despite the prompt (live digest run, 2026-09-28).
+ * recommends ("doctors should") is kept but marked, so the page can say it
+ * isn't about the reader (owner's decision, 2026-09-28). The local model does
+ * this despite the prompt (live digest run).
  */
 const READER_DIRECTED = /\b(you|your|yours|yourself)\b|\bshould\b/i;
 
@@ -196,7 +197,7 @@ export interface VerifiedTakeaways {
   byPmid: Map<string, PaperTakeaway>;
   verifiedCount: number;
   uncitedCount: number;
-  /** Takeaways dropped as advice, or for speaking to the reader instead of about the study. */
+  /** Takeaways dropped for advising to start, stop or change a medication. */
   removedAdvice: number;
 }
 
@@ -219,7 +220,7 @@ export function verifyTakeaways(
     const id = pmid.replace(/\D/g, '');
     const abstract = abstracts.get(id);
     if (!abstract || byPmid.has(id)) continue;
-    if (isAdvice(text) || isReaderDirected(text)) {
+    if (isAdvice(text)) {
       removedAdvice++;
       continue;
     }
@@ -230,6 +231,7 @@ export function verifyTakeaways(
       text: text.trim(),
       quote: verified ? quote.trim() : null,
       uncited: !verified,
+      ...(isReaderDirected(text) ? { readerDirected: true } : {}),
     });
   }
 

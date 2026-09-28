@@ -84,4 +84,4 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 ### Checkpoint C: digest complete
 
 - [x] Spec success criteria 1–8; live run reported
-- [ ] Human review, then `SPEC-pricing.md`
+- [x] Human review, then `SPEC-pricing.md`

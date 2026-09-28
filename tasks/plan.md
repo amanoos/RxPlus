@@ -57,7 +57,7 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 ### Checkpoint C: digest complete
 
 - [x] Spec success criteria 1–8; live run reported
-- [ ] Human review, then `SPEC-pricing.md`
+- [x] Human review, then `SPEC-pricing.md`
 
 ## Risks and Mitigations
 

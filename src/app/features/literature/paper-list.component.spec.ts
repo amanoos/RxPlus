@@ -49,11 +49,16 @@ describe('PaperListComponent', () => {
           quote: 'Partial quote here.',
           uncited: false,
           supported: false,
+          readerDirected: true,
         },
       }),
       paperFixture({ pmid: '3', takeaway: { text: '', quote: null, uncited: true } }),
     ]);
     const [one, two, three] = [...el.querySelectorAll('[data-testid="paper"]')];
+    expect(one.querySelector('[data-testid="reader-directed"]')).toBeNull();
+    expect(two.querySelector('[data-testid="reader-directed"]')?.textContent).toContain(
+      'Worded as if about you',
+    );
     expect(one.textContent).toContain('(not linked to the abstract)');
     expect(one.querySelector('[data-testid="takeaway-quote"]')).toBeNull();
     expect(two.querySelector('[data-testid="not-supported"]')?.textContent).toContain(

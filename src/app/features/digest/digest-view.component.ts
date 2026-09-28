@@ -96,6 +96,14 @@ export function formatDay(date: string, withYear = true): string {
                           <span class="italic">“{{ item.takeaway!.quote }}”</span>
                         </blockquote>
                       }
+                      @if (item.takeaway!.readerDirected) {
+                        <p
+                          class="mt-1 text-xs text-orange-700 dark:text-orange-300"
+                          data-testid="reader-directed"
+                        >
+                          Worded as if about you or as advice; the study itself is what’s quoted.
+                        </p>
+                      }
                     </div>
                   }
                 }

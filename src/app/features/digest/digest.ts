@@ -5,6 +5,8 @@ export interface DigestTakeaway {
   quote: string | null;
   uncited: boolean;
   supported?: boolean | null;
+  /** Speaks to the reader or recommends, instead of describing the study. */
+  readerDirected?: boolean;
 }
 
 export interface DigestItemDetails {

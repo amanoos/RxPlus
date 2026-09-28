@@ -107,7 +107,7 @@ Condition-list snapshots for "newly listed" come from `alternative_drugs` before
 - **Integration (test DB):** migration; a full run with stubbed clients (items per kind, dedupe across runs, baselines on first run, takeaway failure note, one run at a time, interrupted run marked failed, catch-up decision); routes (list, unread count, run 202/409, mark read).
 - **E2E:** the stub server gains an entry-date PubMed search, trial updates, a changed label version and a newly listed drug; the spec runs the digest with "Run now", sees the badge, opens What's new, sees each kind of item, and the badge clears.
 - **Live check at the checkpoint:** a run over the current medications (duration, counts per kind).
-  - Result (2026-09-28, test database, real upstreams, `qwen2.5:7b`): lisinopril (taken for hypertension), atorvastatin, metformin, spironolactone (taken for heart failure). First run 299 s: 15 papers (10 with takeaways after the reader-directed filter), "more on PubMed" 51 / 9 / 1, one new trial, baselines for 2 conditions and 4 labels. Second run 86 s: nothing new, no repeats.
+  - Result (2026-09-28, test database, real upstreams, `qwen2.5:7b`): lisinopril (taken for hypertension), atorvastatin, metformin, spironolactone (taken for heart failure). First run 299 s: 15 papers (10 with takeaways when reader-directed ones were still removed; now they are kept and marked), "more on PubMed" 51 / 9 / 1, one new trial, baselines for 2 conditions and 4 labels. Second run 86 s: nothing new, no repeats.
 - **Coverage:** ≥ 80% lines on `src/server/digest`, `src/app/features/digest`.
 
 ## Boundaries
