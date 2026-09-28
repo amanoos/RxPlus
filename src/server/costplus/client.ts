@@ -21,9 +21,15 @@ export interface CostPlusItem {
   url: string;
 }
 
+export interface CostPlusLookup {
+  /** Everything Cost Plus sells for the ingredient; [] when it sells none. */
+  items: CostPlusItem[];
+  /** When Cost Plus answered (ms since epoch); answers are kept a day. */
+  fetchedAt: number;
+}
+
 export interface CostPlusClient {
-  /** Everything Cost Plus sells for an ingredient; [] when it sells none. */
-  items(ingredient: string): Promise<CostPlusItem[]>;
+  lookup(ingredient: string): Promise<CostPlusLookup>;
 }
 
 export class CostPlusUnavailableError extends Error {
@@ -99,7 +105,7 @@ export function createCostPlusClient({
     new CostPlusUnavailableError(`Cost Plus Drugs ${message}`);
   let nextStart = 0;
 
-  async function fetchItems(name: string): Promise<CostPlusItem[]> {
+  async function fetchItems(name: string): Promise<CostPlusLookup> {
     const t = now();
     const wait = nextStart - t;
     nextStart = Math.max(t, nextStart) + SPACING_MS;
@@ -109,13 +115,14 @@ export function createCostPlusClient({
     if (status !== 200) throw unavailable(`responded ${status}`);
     const results = (body as { results?: RawItem[] } | null)?.results;
     if (!Array.isArray(results)) throw unavailable('sent an unexpected answer');
-    return results.map(toItem).filter((i): i is CostPlusItem => i !== null);
+    const items = results.map(toItem).filter((i): i is CostPlusItem => i !== null);
+    return { items, fetchedAt: now() };
   }
 
   return {
-    items(ingredient) {
+    lookup(ingredient) {
       const name = searchName(ingredient);
-      if (!name) return Promise.resolve([]);
+      if (!name) return Promise.resolve({ items: [], fetchedAt: now() });
       return cached(`items:${name}`, DAY, () => fetchItems(name));
     },
   };

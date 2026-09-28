@@ -32,7 +32,8 @@ describe('Cost Plus Drugs client', () => {
 
   it('asks by ingredient name and parses each product sold', async () => {
     const fetchFn = answer('lisinopril.json');
-    const items = await create(fetchFn).items('Lisinopril');
+    const { items, fetchedAt } = await create(fetchFn).lookup('Lisinopril');
+    expect(fetchedAt).toBe(now);
     expect(String(fetchFn.mock.calls[0][0])).toBe(`${BASE}?medication_name=lisinopril`);
     expect(items.find((i) => i.strength === '10mg')).toEqual({
       ndc: '68180098003',
@@ -48,21 +49,21 @@ describe('Cost Plus Drugs client', () => {
 
   it('returns nothing for a drug it does not sell, or a name without letters', async () => {
     const fetchFn = answer('none.json');
-    expect(await create(fetchFn).items('apixaban')).toEqual([]);
-    expect(await create(fetchFn).items('()')).toEqual([]);
+    expect((await create(fetchFn).lookup('apixaban')).items).toEqual([]);
+    expect((await create(fetchFn).lookup('()')).items).toEqual([]);
     expect(fetchFn).toHaveBeenCalledTimes(1);
   });
 
   it('keeps answers for a day and spaces requests', async () => {
     const fetchFn = answer('lisinopril.json');
     const client = create(fetchFn);
-    await client.items('lisinopril');
-    await client.items('lisinopril');
+    await client.lookup('lisinopril');
+    await client.lookup('lisinopril');
     expect(fetchFn).toHaveBeenCalledTimes(1);
-    await client.items('atorvastatin');
+    await client.lookup('atorvastatin');
     expect(waits).toEqual([500]);
     now += 24 * 60 * 60 * 1000 + 1;
-    await client.items('lisinopril');
+    await client.lookup('lisinopril');
     expect(fetchFn).toHaveBeenCalledTimes(3);
   });
 
@@ -75,15 +76,17 @@ describe('Cost Plus Drugs client', () => {
         { ndc: '68180-0980-03', unit_billing_price: '$0.01', url: 'https://x' },
       ],
     });
-    const items = await create(vi.fn(async () => new Response(body))).items('lisinopril');
+    const { items } = await create(vi.fn(async () => new Response(body))).lookup('lisinopril');
     expect(items.map((i) => [i.ndc, i.unitPrice])).toEqual([['68180098003', 0.01]]);
   });
 
   it('reports errors and unexpected answers as unavailable', async () => {
     const down = vi.fn(async () => new Response('', { status: 500 }));
-    await expect(create(down).items('lisinopril')).rejects.toBeInstanceOf(CostPlusUnavailableError);
+    await expect(create(down).lookup('lisinopril')).rejects.toBeInstanceOf(
+      CostPlusUnavailableError,
+    );
     const odd = vi.fn(async () => new Response('{"error":"x"}'));
-    await expect(create(odd).items('lisinopril')).rejects.toThrow('unexpected answer');
+    await expect(create(odd).lookup('lisinopril')).rejects.toThrow('unexpected answer');
   });
 
   it('parses dollar amounts', () => {

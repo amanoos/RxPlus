@@ -18,7 +18,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/db/schema/medications.ts`, `drizzle/0006_*`, `src/server/medications/service.ts` (+ tests), client medication type
   - Depends on: none
 
-- [ ] **Task 3: Pricing math, service and routes** (M)
+- [x] **Task 3: Pricing math, service and routes** (M)
   - Acceptance: math (cash, insured, difference, totals, rounding); `GET /api/drugs/:rxcui/prices` (match by NDC, not sold, 503); `GET /api/costs` (active medications, per-item figures and reasons, totals, missing counts)
   - Verify: unit tests for math; route integration tests with stubbed clients
   - Files: `src/server/pricing/{math,service}.ts` (+ specs), `src/server/routes/api/drugs/[rxcui]/prices.get.ts`, `src/server/routes/api/costs.get.ts`, tests

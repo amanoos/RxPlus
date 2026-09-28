@@ -2,7 +2,7 @@ import { env } from '../utils/env';
 import { createCostPlusClient, CostPlusUnavailableError, type CostPlusClient } from './client';
 
 export { CostPlusUnavailableError };
-export type { CostPlusClient, CostPlusItem } from './client';
+export type { CostPlusClient, CostPlusItem, CostPlusLookup } from './client';
 
 let shared: CostPlusClient | undefined;
 let override: CostPlusClient | undefined;
