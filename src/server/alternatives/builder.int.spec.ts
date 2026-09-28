@@ -158,6 +158,22 @@ describe('alternatives builder (integration)', () => {
     expect(rxnav.diseaseMembers.mock.calls.length).toBeGreaterThan(calls);
   });
 
+  it('rebuilds a list and waits for it, joining a build already running', async () => {
+    const { builder, rxnav } = create();
+    await builder.ensure('condition', 'D006973', 'Hypertension');
+    await settleAlternativeJobs();
+    const calls = rxnav.diseaseMembers.mock.calls.length;
+
+    const key = await builder.rebuild('condition', 'D006973', 'Hypertension');
+    expect(await repo.list(key)).toMatchObject({ status: 'ready' });
+    expect(rxnav.diseaseMembers.mock.calls.length).toBeGreaterThan(calls);
+
+    // A second rebuild while one is running waits for that one.
+    await builder.ensure('condition', 'D006973', 'Hypertension', { force: true });
+    await builder.rebuild('condition', 'D006973', 'Hypertension');
+    expect(await repo.list(key)).toMatchObject({ status: 'ready' });
+  });
+
   it('spaces openFDA lookups to stay under its rate limit', async () => {
     const { rxnav, openFda } = stubs();
     let clock = 0;

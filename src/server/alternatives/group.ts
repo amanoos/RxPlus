@@ -7,6 +7,12 @@ import type { AlternativeDrug } from './repository';
 /** First approved within this many years counts as new. */
 export const NEW_WITHIN_YEARS = 5;
 
+/** Whether a first approval (YYYY-MM-DD) is within NEW_WITHIN_YEARS of `today`. */
+export function isNewApproval(firstApproved: string | null, today: string): boolean {
+  const since = `${Number(today.slice(0, 4)) - NEW_WITHIN_YEARS}${today.slice(4)}`;
+  return firstApproved !== null && firstApproved >= since;
+}
+
 export interface AlternativeView extends AlternativeDrug {
   /** First approval year, when known. */
   approvedYear: number | null;
@@ -51,11 +57,10 @@ export function groupAlternatives({
   hidden,
   today,
 }: GroupInput): AlternativeGroups {
-  const newSince = `${Number(today.slice(0, 4)) - NEW_WITHIN_YEARS}${today.slice(4)}`;
   const view = (drug: AlternativeDrug): AlternativeView => ({
     ...drug,
     approvedYear: drug.firstApproved ? Number(drug.firstApproved.slice(0, 4)) : null,
-    isNew: drug.firstApproved !== null && drug.firstApproved >= newSince,
+    isNew: isNewApproval(drug.firstApproved, today),
   });
   const hiddenSet = new Set(hidden);
   const hiddenViews = new Map<string, AlternativeView>();

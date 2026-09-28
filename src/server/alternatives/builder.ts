@@ -203,6 +203,19 @@ export function createAlternativesBuilder({
     }
   }
 
+  // Builds in flight in this process, by list key.
+  const building = new Map<string, Promise<void>>();
+  function start(list: AlternativeList, id: string): Promise<void> {
+    const job = build(list, id);
+    jobs.add(job);
+    building.set(list.key, job);
+    void job.finally(() => {
+      jobs.delete(job);
+      if (building.get(list.key) === job) building.delete(list.key);
+    });
+    return job;
+  }
+
   return {
     /**
      * Starts building a list if it's new, failed, older than 30 days, or `force`d.
@@ -216,11 +229,18 @@ export function createAlternativesBuilder({
     ): Promise<string> {
       const key = listKey(kind, id);
       const claimed = await repo.claim(key, kind, name, { force });
-      if (claimed) {
-        const job = build(claimed, id);
-        jobs.add(job);
-        void job.finally(() => jobs.delete(job));
-      }
+      if (claimed) void start(claimed, id);
+      return key;
+    },
+
+    /**
+     * Rebuilds a list now and waits for it (or for the build already running).
+     * Returns the list's key; the list itself records success or failure.
+     */
+    async rebuild(kind: AlternativeList['kind'], id: string, name: string): Promise<string> {
+      const key = listKey(kind, id);
+      const claimed = await repo.claim(key, kind, name, { force: true });
+      await (claimed ? start(claimed, id) : building.get(key));
       return key;
     },
   };

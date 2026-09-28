@@ -26,7 +26,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/digest/collect-papers.ts`, `collect-trials.ts` (+ specs)
   - Depends on: 1, 2
 
-- [ ] **Task 4: Approvals and label collectors** (M)
+- [x] **Task 4: Approvals and label collectors** (M)
   - Acceptance: approvals: per "taken for" condition of active medications, snapshot the condition list, rebuild it (force), report drugs newly listed and new by the 5-year rule; first sight of a condition is a baseline; labels: newest label per active product vs the recorded version; first sight is a baseline; both not repeated
   - Verify: unit/integration tests with stubbed clients
   - Files: `src/server/digest/collect-approvals.ts`, `collect-labels.ts` (+ specs)
