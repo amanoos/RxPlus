@@ -14,7 +14,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/pubmed/client.ts`, `src/server/ctgov/client.ts` (+ specs, fixtures)
   - Depends on: none
 
-- [ ] **Task 2: Schema, migration 0005 and repository** (M)
+- [x] **Task 2: Schema, migration 0005 and repository** (M)
   - Acceptance: `digests`, `digest_items`, `digest_label_versions` as in the spec, with one `running` digest at most (partial unique index); repository: start (claim), finish with items in one transaction, fail, list recent with items, unread count, mark read, seen external ids, label versions get/set, last successful run, `failInterrupted`
   - Verify: integration tests
   - Files: `src/server/db/schema/digest.ts`, `drizzle/0005_*`, `src/server/digest/repository.ts` (+ int spec)
