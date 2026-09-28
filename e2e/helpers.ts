@@ -18,7 +18,7 @@ export async function resetMedications() {
   await client.connect();
   try {
     await client.query(
-      'truncate table medications, drug_summaries, literature_lists, literature_papers, literature_trials',
+      'truncate table medications, drug_summaries, literature_lists, literature_papers, literature_trials, alternative_lists, alternative_drugs, alternative_hidden',
     );
   } finally {
     await client.end();

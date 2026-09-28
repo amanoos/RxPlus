@@ -37,6 +37,105 @@ for (const id of ['29046', '9997']) {
 
 const OPENFDA_LABELS = ['314076', '313096', '617310'];
 
+// ── Alternatives: a small world for lisinopril taken for hypertension ──────────
+const concept = (rxcui: string, name: string, tty = 'IN') => ({
+  minConcept: { rxcui, name, tty },
+});
+const members = (...list: ReturnType<typeof concept>[]) => ({
+  drugMemberGroup: { drugMember: list },
+});
+const epc = (classId: string, className: string) => ({
+  rxclassDrugInfoList: {
+    rxclassDrugInfo: [{ rxclassMinConceptItem: { classId, className, classType: 'EPC' } }],
+  },
+});
+const scd = (rxcui: string, name: string) => ({
+  relatedGroup: {
+    conceptGroup: [{ tty: 'SCD', conceptProperties: [{ rxcui, name, tty: 'SCD' }] }],
+  },
+});
+/** Synthetic RxNav answers for the alternatives lists (JSON by path). */
+const alternatives: Record<string, unknown> = {
+  '/REST/rxclass/classMembers.json?classId=N0000175562&relaSource=DAILYMED&rela=has_epc': members(
+    concept('29046', 'lisinopril'),
+    concept('3827', 'enalapril'),
+  ),
+  '/REST/rxclass/classMembers.json?classId=D006973&relaSource=MEDRT&rela=may_treat': members(
+    concept('29046', 'lisinopril'),
+    concept('3827', 'enalapril'),
+    concept('52175', 'losartan'),
+    concept('2679059', 'aprocitentan'),
+    concept('75207', 'bosentan'),
+  ),
+  // Bosentan is also listed for pulmonary hypertension; its label rules it out.
+  '/REST/rxclass/classMembers.json?classId=D006976&relaSource=MEDRT&rela=may_treat': members(
+    concept('75207', 'bosentan'),
+  ),
+  '/REST/rxclass/class/byRxcui.json?rxcui=52175&relaSource=DAILYMED&relas=has_epc': epc(
+    'N0000175561',
+    'Angiotensin 2 Receptor Blocker',
+  ),
+  '/REST/rxclass/class/byRxcui.json?rxcui=2679059&relaSource=DAILYMED&relas=has_epc': epc(
+    'N0000191266',
+    'Endothelin Receptor Antagonist',
+  ),
+  '/REST/rxclass/class/byRxcui.json?rxcui=75207&relaSource=DAILYMED&relas=has_epc': epc(
+    'N0000191266',
+    'Endothelin Receptor Antagonist',
+  ),
+  '/REST/Prescribe/rxcui/29046/related.json?tty=SCD': scd('314076', 'lisinopril 10 MG Oral Tablet'),
+  '/REST/Prescribe/rxcui/52175/related.json?tty=SCD': scd(
+    '979492',
+    'losartan potassium 50 MG Oral Tablet',
+  ),
+  '/REST/Prescribe/rxcui/2679059/related.json?tty=SCD': scd(
+    '2679064',
+    'aprocitentan 12.5 MG Oral Tablet',
+  ),
+  '/REST/Prescribe/rxcui/75207/related.json?tty=SCD': scd('656659', 'bosentan 62.5 MG Oral Tablet'),
+};
+rxnav['/REST/rxclass/class/byRxcui.json?rxcui=3827&relaSource=DAILYMED&relas=has_epc'] = 'epc-3827';
+rxnav['/REST/rxclass/classTree.json?classId=D006973&relaSource=MEDRT'] = 'class-tree-D006973';
+rxnav['/REST/Prescribe/rxcui/3827/related.json?tty=SCD'] = 'prescribe-scd-3827';
+for (const suffix of [
+  'properties.json',
+  'related.json?tty=IN+BN+DF',
+  'allProperties.json?prop=attributes',
+]) {
+  const name = suffix.split(/[./?]/)[0];
+  rxnav[`/REST/rxcui/858804/${suffix}`] =
+    `${name === 'allProperties' ? 'attributes' : name}-858804`;
+}
+
+/** Drugs@FDA applications for a Drugs@FDA search, from recorded fixtures or synthetic. */
+function drugsFda(search: string): { status: number; body: string } {
+  const ingredient = /active_ingredients\.name:"?([A-Z ]+)/.exec(search)?.[1].trim().toLowerCase();
+  const kind = search.includes('application_number:ANDA') ? 'anda' : 'nda';
+  const recorded = join(OPENFDA_FIXTURES, `drugsfda-${kind}-${ingredient}.json`);
+  try {
+    const body = readFileSync(recorded, 'utf8');
+    return { status: body.includes('NOT_FOUND') ? 404 : 200, body };
+  } catch {
+    // losartan and bosentan: one NDA each, generics for losartan.
+    const app = (number: string, name: string, date: string) => ({
+      application_number: number,
+      products: [{ active_ingredients: [{ name }] }],
+      submissions: [
+        { submission_type: 'ORIG', submission_status: 'AP', submission_status_date: date },
+      ],
+    });
+    const synthetic: Record<string, unknown[]> = {
+      'nda-losartan': [app('NDA020386', 'LOSARTAN POTASSIUM', '19950414')],
+      'anda-losartan': [app('ANDA078232', 'LOSARTAN POTASSIUM', '20101006')],
+      'nda-bosentan': [app('NDA021290', 'BOSENTAN', '20011120')],
+    };
+    const results = synthetic[`${kind}-${ingredient}`];
+    return results
+      ? { status: 200, body: JSON.stringify({ results }) }
+      : { status: 404, body: readFileSync(join(OPENFDA_FIXTURES, 'label-none.json'), 'utf8') };
+  }
+}
+
 createServer((req, res) => {
   const url = req.url ?? '';
   res.setHeader('content-type', 'application/json');
@@ -106,6 +205,26 @@ createServer((req, res) => {
     }
     const fixture = params.has('count') ? 'faers-count-lisinopril' : 'faers-total-lisinopril';
     return res.end(readFileSync(join(OPENFDA_FIXTURES, `${fixture}.json`)));
+  }
+
+  if (alternatives[url]) return res.end(JSON.stringify(alternatives[url]));
+
+  if (url.startsWith('/openfda/drug/drugsfda.json')) {
+    const search = new URL(url, 'http://stub').searchParams.get('search') ?? '';
+    const { status, body } = drugsFda(search);
+    res.statusCode = status;
+    return res.end(body);
+  }
+
+  if (url.startsWith('/openfda/drug/label.json') && url.includes('generic_name')) {
+    const search = new URL(url, 'http://stub').searchParams.get('search') ?? '';
+    const name = /generic_name:"([A-Z ]+)"/.exec(search)?.[1].toLowerCase();
+    try {
+      return res.end(readFileSync(join(OPENFDA_FIXTURES, `indications-${name}.json`)));
+    } catch {
+      res.statusCode = 404;
+      return res.end(readFileSync(join(OPENFDA_FIXTURES, 'label-none.json')));
+    }
   }
 
   if (url.startsWith('/openfda/drug/label.json')) {

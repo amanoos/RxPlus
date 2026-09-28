@@ -81,7 +81,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Verification
 
-- [ ] **Task 9: E2E with stub RxClass, Drugs@FDA and labels** (M)
+- [x] **Task 9: E2E with stub RxClass, Drugs@FDA and labels** (M)
   - Acceptance: the stub serves class/disease members, availability, Drugs@FDA and label fixtures; the spec sets "Taken for" on lisinopril, sees the three groups (aprocitentan new; ACE inhibitors; other classes without bosentan), opens an alternative's page, hides one and undoes it
   - Verify: `npm run e2e` (3 repeats stable)
   - Files: `e2e/stub-upstream.ts`, `e2e/alternatives.spec.ts`, fixtures

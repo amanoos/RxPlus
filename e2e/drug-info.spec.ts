@@ -22,7 +22,11 @@ test('opens a drug page from a medication card, with facts, FDA reports and link
   await expect(page).toHaveURL(/\/drugs\/314076$/);
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(LISINOPRIL);
-  await expect(page.getByText('Angiotensin Converting Enzyme Inhibitor')).toBeVisible();
+  await expect(
+    page
+      .getByRole('list', { name: 'Drug class' })
+      .getByText('Angiotensin Converting Enzyme Inhibitor'),
+  ).toBeVisible();
   await expect(page.getByTestId('uses')).toContainText('Hypertension');
   await expect(page.getByTestId('avoid')).toContainText('Angioedema');
 

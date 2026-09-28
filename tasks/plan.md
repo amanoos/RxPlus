@@ -53,7 +53,7 @@ An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly ap
 
 ### Phase 3: Verification
 
-- [ ] Task 9: E2E with stub RxClass, Drugs@FDA and labels
+- [x] Task 9: E2E with stub RxClass, Drugs@FDA and labels
 - [ ] Task 10: Coverage, README, `.env.example`
 
 ### Checkpoint C: alternatives complete
