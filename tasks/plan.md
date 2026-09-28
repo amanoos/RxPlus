@@ -1,84 +1,75 @@
-# Implementation Plan: literature
+# Implementation Plan: alternatives
 
-Spec: [SPEC-literature.md](../SPEC-literature.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [drug-info](drug-info/plan.md), [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
+Spec: [SPEC-alternatives.md](../SPEC-alternatives.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [literature](literature/plan.md), [drug-info](drug-info/plan.md), [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
 
 ## Overview
 
-A **Research** section on `/drugs/:rxcui`, per ingredient:
-
-- **Papers:** up to 10 from PubMed, strongest evidence first (≤ 4 meta-analyses and systematic reviews, then randomized trials).
-- **Takeaways:** one plain-language line per paper, written by AI from its abstract and checked against it.
-- **Trials:** up to 5 from ClinicalTrials.gov (completed with results, then recruiting).
-- **Curation:** Hide (with undo) promotes the next candidate from a stored pool.
+An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly approved** for the condition the medication is **taken for** (last 5 years), drugs in the **same class**, and **other classes** for that condition, each with first approval year, generic availability, a link to its drug page and Hide. Structured data only (RxClass, RxNav, Drugs@FDA, FDA labels); no AI.
 
 ## Architecture Decisions
 
-- **Lists are per ingredient**, keyed by ingredient RXCUI; the drug page resolves its ingredients through drug-info's `product()` (saved medications skip RxNav).
-- **Search once, store the pool.** Up to 20 candidates per tier are stored with their abstracts; Hide and the "first 10 not hidden" selection are database work, with no new search. Refresh (30 days, or on request) upserts candidates, keeping takeaways and hidden state.
-- **PubMed via E-utilities with our own HTTP helpers.** `esearch`/`esummary` are JSON; `efetch` is XML, so `upstream.ts` gains a text variant of `getJson`. Abstract XML is parsed with a small, tested extractor (`<AbstractText>` sections, entities decoded), with no new dependency. Requests are serialized with a minimum spacing (400 ms, or 110 ms with `NCBI_API_KEY`), and a 429 is retried with backoff (measured: NCBI still returns occasional 429s at 350 ms).
-- **ClinicalTrials.gov v2** with a `fields=` subset, two calls (completed with results, recruiting).
-- **One AI call per ingredient list.** The provider layer is refactored into a generic core (Ollama: `system + user + JSON schema`; Claude: documents with citations and headed output) used by both drug-info summaries and literature takeaways. Drug-info's tests must pass unchanged, which guards the refactor.
-- **Verification is shared.** The normalization, stem relevance, synonyms and advice filter move from `drug-info/summary.ts` into a shared module; takeaways verify each quote against that paper's abstract.
-- **Background generation** follows drug-info: `POST` → 202, status on the list row, poll every 2 s, startup cleanup. The Claude daily limit counts starts across both tables.
-- **E2E stays offline:** the stub server gains PubMed, ClinicalTrials.gov and an Ollama takeaway reply, routed by request content.
+- **Lists are keyed by what they describe, not by drug:** `class:<EPC id>` and `condition:<MED-RT id>`. Every drug in the class, or taken for the condition, reuses the same stored list; the drug page picks its lists and removes itself.
+- **Building is a background job per list** (like summaries): many upstream calls (~100 ingredients × 2–4 calls for a condition), so `GET` returns stored lists or `pending`, and the page polls. Built lists live 30 days; "Check for new approvals" rebuilds.
+- **Per-ingredient facts are cached separately** (`alternative_drugs` rows are per list, but the ingredient lookups—class, availability, Drugs@FDA facts—are memoized for the build and in the clients' 30-day caches), so a condition list and a class list share work.
+- **The cleaning rule is a pure, tested function** over recorded inputs: candidates, their "more specific condition" memberships, and label indication text for only those in the overlap (so labels are fetched for ~20 drugs, not ~100).
+- **Existing clients are extended, not duplicated:** RxNav client gains class/disease members, ingredient mapping, availability and a representative product; the openFDA client gains Drugs@FDA facts and label indications by ingredient name.
+- **"Taken for" lives on `medications`** (two nullable columns) and is set through the existing PATCH route; the drug page falls back to a per-visit `?condition=` choice for products not on the list.
+- **Request pacing:** RxNav calls are throttled to ≤ 20/s, openFDA to ≤ 4/s (240/min), serialized per client during builds.
 
 ## Dependency Graph
 
 ```
-1 PubMed client ──────┐
-2 CT.gov client ──────┼─ 3 Schema + repository ── 4 Service + routes ──┐
-5 Provider refactor ──┴─ 6 Takeaway core ── 7 Takeaway generation ─────┴─ 8 NgRx ── 9 Papers UI ── 10 Hide, trials, refresh
-                                                                            11 E2E ── 12 Coverage, README
+1 RxNav extensions ──┐
+2 Drugs@FDA + labels ┼─ 4 List builder ── 5 Routes ──┐
+3 Schema + repository┘                              ├─ 7 NgRx ── 8 Alternatives section
+6 "Taken for" (server + medications UI) ────────────┘
+                                          9 E2E ── 10 Coverage, README
 ```
 
 ## Task List
 
 ### Phase 1: Server
 
-- [x] Task 1: PubMed client (search tiers, summaries, abstracts, spacing)
-- [x] Task 2: ClinicalTrials.gov client
-- [x] Task 3: Schema, migration 0003 and repository
-- [x] Task 4: Literature service and routes (lists, refresh, hide)
-- [x] Task 5: Provider refactor (generic structured generation), drug-info unchanged
-- [x] Task 6: Takeaway core: prompt, schema, per-abstract verification
-- [x] Task 7: Takeaway generation in the background, route, shared Claude limit
+- [ ] Task 1: RxNav extensions (classes with ids, members, ingredient mapping, availability, representative product, uses with ids)
+- [ ] Task 2: Drugs@FDA facts and label indications by ingredient
+- [ ] Task 3: Schema, migration 0004 and repository
+- [ ] Task 4: List builder: class and condition lists, cleaning rule, background jobs
+- [ ] Task 5: Alternatives routes (lists, refresh, hide) and "Taken for" on medications
 
 ### Checkpoint A
 
-- [x] Unit and integration tests pass; migration applies
-- [x] curl: lisinopril lists from live PubMed and ClinicalTrials.gov; takeaways with a stub provider, then live with `qwen2.5:7b`
+- [ ] Unit and integration tests pass; migration applies
+- [ ] Live: lisinopril for hypertension (build time, counts per group, noise check) and for heart failure
 
 ### Phase 2: Client
 
-- [x] Task 8: NgRx `literature` feature and API service
-- [x] Task 9: Research section: papers with takeaways and quotes shown inline
-- [x] Task 10: Hide and undo, trials list, footer and "Check for new research"
-- [x] Task 10b: Summary panel "Show quotes" toggle
+- [ ] Task 6: "Taken for" in the medication edit dialog and card
+- [ ] Task 7: NgRx `alternatives` feature and API service
+- [ ] Task 8: Alternatives section: chooser, groups, drug rows, hide, states, footer
 
 ### Checkpoint B
 
-- [x] Browser: Research section states, takeaways, hide/undo, trials; 375px and desktop
+- [ ] Browser: chooser, groups, links, hide/undo, building state; 375px and desktop
 
 ### Phase 3: Verification
 
-- [x] Task 11: E2E with stub PubMed, ClinicalTrials.gov and Ollama
-- [x] Task 12: Coverage, README, `.env.example`
+- [ ] Task 9: E2E with stub RxClass, Drugs@FDA and labels
+- [ ] Task 10: Coverage, README, `.env.example`
 
-### Checkpoint C: literature complete
+### Checkpoint C: alternatives complete
 
-- [x] Spec success criteria 1–8; live takeaways with the verified rate reported (8/10 linked; background-refresh failures show no note)
-- [x] Human review, then `SPEC-alternatives.md`
+- [ ] Spec success criteria 1–8; live counts reported
+- [ ] Human review, then `SPEC-digest.md`
 
 ## Risks and Mitigations
 
-| Risk                                                    | Impact | Mitigation                                                                                             |
-| ------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------ |
-| Provider refactor breaks drug-info summaries            | High   | Do it as its own task with drug-info tests unchanged; e2e summary flow re-run                          |
-| NCBI rate limits (3/s) or slow E-utilities              | Med    | Serialized, spaced calls; stored pools; stale lists served while refreshing                            |
-| Relevance order surfaces off-topic reviews              | Med    | Hide with promotion; cap reviews at 4; measured queries in the spec                                    |
-| qwen2.5:7b mis-attributes takeaways across papers       | Med    | Verify each quote against that PMID's abstract only; unknown PMIDs dropped; live check at Checkpoint A |
-| Abstract XML variations (structured, entities, missing) | Low    | `hasabstract` filter; extractor tests with recorded XML (structured and plain)                         |
-| Several ingredients multiply calls on first load        | Low    | Ingredients fetched one after another; lists cached 30 days                                            |
+| Risk                                                                 | Impact | Mitigation                                                                                                              |
+| -------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| MED-RT "may treat" lists are noisy (other conditions, non-US, salts) | High   | Ingredient + availability filter, the specific-form rule with label check, Hide; measured per condition at Checkpoint A |
+| First build is slow (~1 min) or hits rate limits                     | Med    | Background job with polling; pacing; per-ingredient memoization; partial failures counted, not fatal                    |
+| openFDA daily quota (1,000/day without a key)                        | Med    | The owner has a key; builds reuse cached ingredient facts; 30-day lists                                                 |
+| Drugs@FDA name matching (salts, metabolites, combinations)           | Med    | Exact "<name>" or "<name> <salt>" matching; tests incl. enalapril/enalaprilat                                           |
+| "Taken for" changes the medications table                            | Low    | Nullable columns; migration test; existing medication tests unchanged                                                   |
 
 ## Open Questions
 
