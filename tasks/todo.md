@@ -31,7 +31,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/db/schema/{alternatives,medications}.ts`, `drizzle/0004_*`, `src/server/alternatives/repository.ts` (+ int spec)
   - Depends on: none
 
-- [ ] **Task 4: List builder** (M)
+- [x] **Task 4: List builder** (M)
   - Acceptance:
     - class list: EPC members → available ingredients → facts (class, first approval, generic, product)
     - condition list: disease members → available ingredients → cleaning rule (drugs also listed for a more specific form kept only if their label indications mention the condition outside that form) → EPC class per drug → facts
