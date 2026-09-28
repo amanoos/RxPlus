@@ -32,7 +32,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/digest/collect-approvals.ts`, `collect-labels.ts` (+ specs)
   - Depends on: 2
 
-- [ ] **Task 5: Run orchestration, weekly schedule and catch-up** (M)
+- [x] **Task 5: Run orchestration, weekly schedule and catch-up** (M)
   - Acceptance: `runDigest(trigger)`: window from the last successful run (7 days on the first), active medications and ingredients, collectors, one digest stored at the end (or failed with the error), one at a time; Nitro task `digest:weekly` on `0 6 * * 1` with `experimental.tasks`; startup plugin: fail an interrupted run, catch up when the last successful run is older than 7 days
   - Verify: integration test of a full run with stubs (items per kind, no repeats on the second run, baselines, one at a time); unit test of the catch-up decision
   - Files: `src/server/digest/run.ts` (+ int spec), `src/server/tasks/digest/weekly.ts`, `src/server/plugins/digest.ts`, `vite.config.ts`

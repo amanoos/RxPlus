@@ -1,1 +1,11 @@
-{"header":{"type":"esearch","version":"0.3"},"esearchresult":{"count":"14","retmax":"5","retstart":"0","idlist":["42779940","42793522","42769353","42794645","42764572"],"translationset":[],"querytranslation":"\"atorvastatin\"[Title/Abstract] AND \"hasabstract\"[All Fields] AND 2026/09/20:2026/09/27[Date - Entry]"}}
+{
+  "header": { "type": "esearch", "version": "0.3" },
+  "esearchresult": {
+    "count": "14",
+    "retmax": "5",
+    "retstart": "0",
+    "idlist": ["42779940", "42793522", "42769353", "42794645", "42764572"],
+    "translationset": [],
+    "querytranslation": "\"atorvastatin\"[Title/Abstract] AND \"hasabstract\"[All Fields] AND 2026/09/20:2026/09/27[Date - Entry]"
+  }
+}

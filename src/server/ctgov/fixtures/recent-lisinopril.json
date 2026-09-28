@@ -1,6 +1,69 @@
-{"studies":[
-{"protocolSection":{"identificationModule":{"nctId":"NCT07685938","briefTitle":"Pharmacologic Therapies to Mitigate Radiation- Associated Heart Disease"},"statusModule":{"overallStatus":"RECRUITING","startDateStruct":{"date":"2026-08-12"},"studyFirstPostDateStruct":{"date":"2026-07-06"},"lastUpdatePostDateStruct":{"date":"2026-09-17"}},"designModule":{"phases":["PHASE2"]}},"hasResults":false},
-{"protocolSection":{"identificationModule":{"nctId":"NCT05530655","briefTitle":"A Study to Determine the Preferred Dose of the Drug, Lisinopril, for Preventing Urinary Toxicity Following Radiotherapy for Prostate Cancer"},"statusModule":{"overallStatus":"RECRUITING","startDateStruct":{"date":"2024-02-20"},"studyFirstPostDateStruct":{"date":"2022-09-07"},"lastUpdatePostDateStruct":{"date":"2026-07-23"}},"designModule":{"phases":["EARLY_PHASE1"]}},"hasResults":false},
-{"protocolSection":{"identificationModule":{"nctId":"NCT07594535","briefTitle":"The Effect Of Lisinopril On Polycythemia"},"statusModule":{"overallStatus":"RECRUITING","startDateStruct":{"date":"2026-07-01"},"studyFirstPostDateStruct":{"date":"2026-05-18"},"lastUpdatePostDateStruct":{"date":"2026-08-21"}},"designModule":{"phases":["PHASE4"]}},"hasResults":false},
-{"protocolSection":{"identificationModule":{"nctId":"NCT04550481","briefTitle":"Role of Lisinopril in Preventing the Progression of Non-Alcoholic Fatty Liver Disease, RELIEF-NAFLD Study"},"statusModule":{"overallStatus":"ACTIVE_NOT_RECRUITING","startDateStruct":{"date":"2021-05-11"},"studyFirstPostDateStruct":{"date":"2020-09-16"},"resultsFirstPostDateStruct":{"date":"2026-08-14"},"lastUpdatePostDateStruct":{"date":"2026-08-14"}},"designModule":{"phases":["PHASE2"]}},"hasResults":true}
-]}
+{
+  "studies": [
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT07685938",
+          "briefTitle": "Pharmacologic Therapies to Mitigate Radiation- Associated Heart Disease"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2026-08-12" },
+          "studyFirstPostDateStruct": { "date": "2026-07-06" },
+          "lastUpdatePostDateStruct": { "date": "2026-09-17" }
+        },
+        "designModule": { "phases": ["PHASE2"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT05530655",
+          "briefTitle": "A Study to Determine the Preferred Dose of the Drug, Lisinopril, for Preventing Urinary Toxicity Following Radiotherapy for Prostate Cancer"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2024-02-20" },
+          "studyFirstPostDateStruct": { "date": "2022-09-07" },
+          "lastUpdatePostDateStruct": { "date": "2026-07-23" }
+        },
+        "designModule": { "phases": ["EARLY_PHASE1"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT07594535",
+          "briefTitle": "The Effect Of Lisinopril On Polycythemia"
+        },
+        "statusModule": {
+          "overallStatus": "RECRUITING",
+          "startDateStruct": { "date": "2026-07-01" },
+          "studyFirstPostDateStruct": { "date": "2026-05-18" },
+          "lastUpdatePostDateStruct": { "date": "2026-08-21" }
+        },
+        "designModule": { "phases": ["PHASE4"] }
+      },
+      "hasResults": false
+    },
+    {
+      "protocolSection": {
+        "identificationModule": {
+          "nctId": "NCT04550481",
+          "briefTitle": "Role of Lisinopril in Preventing the Progression of Non-Alcoholic Fatty Liver Disease, RELIEF-NAFLD Study"
+        },
+        "statusModule": {
+          "overallStatus": "ACTIVE_NOT_RECRUITING",
+          "startDateStruct": { "date": "2021-05-11" },
+          "studyFirstPostDateStruct": { "date": "2020-09-16" },
+          "resultsFirstPostDateStruct": { "date": "2026-08-14" },
+          "lastUpdatePostDateStruct": { "date": "2026-08-14" }
+        },
+        "designModule": { "phases": ["PHASE2"] }
+      },
+      "hasResults": true
+    }
+  ]
+}

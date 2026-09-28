@@ -18,7 +18,12 @@ export default defineConfig(() => ({
       prerender: { routes: ['/login'] },
       // Don't serve the client build's empty index.html as a static file: '/' must reach
       // the SSR renderer (and its auth guard). The renderer bundles its own copy.
-      nitro: { ignore: ['*index.html'] },
+      nitro: {
+        ignore: ['*index.html'],
+        // The weekly digest: Monday 6:00 AM in the server's time zone (TZ).
+        experimental: { tasks: true },
+        scheduledTasks: { '0 6 * * 1': ['digest:weekly'] },
+      },
     }),
     tailwindcss(),
   ],
@@ -48,6 +53,7 @@ export default defineConfig(() => ({
         'src/app/features/literature/**',
         'src/server/alternatives/**',
         'src/app/features/alternatives/**',
+        'src/server/digest/**',
       ],
       exclude: ['**/*.spec.ts', '**/fixtures/**', '**/*.fixture.ts'],
       reporter: ['text-summary', 'html'],

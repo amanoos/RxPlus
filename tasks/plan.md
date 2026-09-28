@@ -32,7 +32,7 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 - [x] Task 2: Schema, migration 0005 and repository
 - [x] Task 3: Papers and trials collectors
 - [x] Task 4: Approvals and label collectors (baselines)
-- [ ] Task 5: Run orchestration, weekly schedule and catch-up
+- [x] Task 5: Run orchestration, weekly schedule and catch-up
 - [ ] Task 6: Digest routes
 
 ### Checkpoint A

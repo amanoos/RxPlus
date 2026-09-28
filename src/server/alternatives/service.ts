@@ -172,14 +172,21 @@ export function createAlternativesService({
 /** One builder per process, so every build shares the same openFDA pacing. */
 let sharedBuilder: AlternativesBuilder | undefined;
 
+export function sharedAlternativesBuilder(): AlternativesBuilder {
+  sharedBuilder ??= createAlternativesBuilder({
+    repo: createAlternativesRepository(db()),
+    rxnav: rxnav(),
+    openFda: openFda(),
+  });
+  return sharedBuilder;
+}
+
 /** Service wired to the app database and upstream clients. */
 export function alternativesService() {
-  const repo = createAlternativesRepository(db());
   const facts = drugFactsService();
-  sharedBuilder ??= createAlternativesBuilder({ repo, rxnav: rxnav(), openFda: openFda() });
   return createAlternativesService({
-    repo,
-    builder: sharedBuilder,
+    repo: createAlternativesRepository(db()),
+    builder: sharedAlternativesBuilder(),
     medications: createMedicationsRepository(db()),
     rxnav: rxnav(),
     ingredients: async (rxcui) => (await facts.product(rxcui)).ingredients,
