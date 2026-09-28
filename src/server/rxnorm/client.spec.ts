@@ -25,6 +25,17 @@ function fixtureFetch(overrides: Record<string, () => Promise<Response>> = {}) {
   routes['/rxcui/83366/related.json?tty=IN'] = 'related-in-83366';
   routes['/rxcui/29046/related.json?tty=IN'] = 'related-in-29046';
   routes['/rxclass/class/byRxcui.json?rxcui=29046'] = 'rxclass-all-29046';
+  routes['/rxclass/class/byRxcui.json?rxcui=3827&relaSource=DAILYMED&relas=has_epc'] = 'epc-3827';
+  routes['/rxclass/classMembers.json?classId=N0000175562&relaSource=DAILYMED&rela=has_epc'] =
+    'members-epc-N0000175562';
+  routes['/rxclass/classMembers.json?classId=D006973&relaSource=MEDRT&rela=may_treat'] =
+    'members-may-treat-D006973';
+  routes['/rxclass/classMembers.json?classId=D999999&relaSource=MEDRT&rela=may_treat'] =
+    'members-none';
+  routes['/rxclass/classTree.json?classId=D006973&relaSource=MEDRT'] = 'class-tree-D006973';
+  routes['/Prescribe/rxcui/3827/related.json?tty=SCD'] = 'prescribe-scd-3827';
+  routes['/Prescribe/rxcui/1546358/related.json?tty=SCD'] = 'prescribe-scd-1546358';
+  routes['/rxcui/1545989/related.json?tty=IN'] = 'related-in-1545989';
   for (const id of ['29046', '9997']) {
     routes[`/rxclass/class/byRxcui.json?rxcui=${id}&relaSource=DAILYMED&relas=has_epc`] =
       `epc-${id}`;
@@ -46,7 +57,12 @@ function fixtureFetch(overrides: Record<string, () => Promise<Response>> = {}) {
 describe('RxNav client', () => {
   let now = 0;
   const create = (fetchFn: typeof fetch) =>
-    createRxNavClient({ baseUrl: BASE, fetch: fetchFn, now: () => now });
+    createRxNavClient({
+      baseUrl: BASE,
+      fetch: fetchFn,
+      now: () => now,
+      sleep: async () => undefined,
+    });
 
   beforeEach(() => {
     now = 1_000_000;
@@ -193,6 +209,14 @@ describe('RxNav client', () => {
       expect(facts.avoidWith).toEqual(expect.arrayContaining(['Angioedema']));
       // De-duplicated.
       expect(new Set(facts.mayTreat).size).toBe(facts.mayTreat.length);
+      // The same uses with their MED-RT ids, for "taken for".
+      expect(facts.uses).toEqual(
+        expect.arrayContaining([
+          { id: 'D006973', name: 'Hypertension' },
+          { id: 'D006333', name: 'Heart Failure' },
+        ]),
+      );
+      expect(facts.uses.map((u) => u.name)).toEqual(facts.mayTreat);
     });
 
     it('returns empty lists for an unknown ingredient', async () => {
@@ -202,7 +226,80 @@ describe('RxNav client', () => {
         mayTreat: [],
         mayPrevent: [],
         avoidWith: [],
+        uses: [],
       });
+    });
+  });
+
+  describe('alternatives lookups', () => {
+    it('returns FDA classes with their ids', async () => {
+      expect(await create(fixtureFetch().fetchFn).epcClasses('3827')).toEqual([
+        { id: 'N0000175562', name: 'Angiotensin Converting Enzyme Inhibitor' },
+      ]);
+    });
+
+    it('lists class members and condition members as ingredients and salt forms', async () => {
+      const client = create(fixtureFetch().fetchFn);
+      const members = await client.classMembers('N0000175562');
+      expect(members).toHaveLength(17);
+      expect(members).toContainEqual({ rxcui: '3827', name: 'enalapril', tty: 'IN' });
+      expect(members).toContainEqual({
+        rxcui: '1545989',
+        name: 'enalaprilat anhydrous',
+        tty: 'PIN',
+      });
+      const hypertension = await client.diseaseMembers('D006973');
+      expect(hypertension).toHaveLength(231);
+      expect(hypertension.map((m) => m.name)).toEqual(
+        expect.arrayContaining(['aprocitentan', 'hydralazine', 'bosentan']),
+      );
+      expect(await client.diseaseMembers('D999999')).toEqual([]);
+      expect(await client.classMembers('not-a-class')).toEqual([]);
+    });
+
+    it('lists the more specific forms of a condition, below the condition itself', async () => {
+      const forms = await create(fixtureFetch().fetchFn).diseaseDescendants('D006973');
+      expect(forms).toContainEqual({ id: 'D006976', name: 'Hypertension, Pulmonary' });
+      expect(forms).toContainEqual({ id: 'D006978', name: 'Hypertension, Renovascular' });
+      expect(forms.map((f) => f.id)).not.toContain('D006973');
+    });
+
+    it('maps a salt form to its ingredient', async () => {
+      expect(await create(fixtureFetch().fetchFn).toIngredient('1545989')).toEqual({
+        rxcui: '3829',
+        name: 'enalaprilat',
+        tty: 'IN',
+      });
+    });
+
+    it('picks a single-ingredient oral tablet as the US product, or none', async () => {
+      const client = create(fixtureFetch().fetchFn);
+      expect(await client.usProduct('3827')).toEqual({
+        rxcui: '858804',
+        name: 'enalapril maleate 2.5 MG Oral Tablet',
+      });
+      // An active metabolite has no prescribable product.
+      expect(await client.usProduct('1546358')).toBeNull();
+    });
+
+    it('spaces request starts at least 50 ms apart', async () => {
+      let clock = 0;
+      const waits: number[] = [];
+      const client = createRxNavClient({
+        baseUrl: BASE,
+        fetch: fixtureFetch().fetchFn,
+        now: () => clock,
+        sleep: async (ms) => {
+          waits.push(ms);
+          clock += ms;
+        },
+      });
+      await Promise.all([
+        client.epcClasses('3827'),
+        client.usProduct('3827'),
+        client.toIngredient('1545989'),
+      ]);
+      expect(waits).toEqual([50, 50]);
     });
   });
 

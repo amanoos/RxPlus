@@ -36,6 +36,34 @@ export interface RxNavClient {
   brandNames(ingredientRxcui: string): Promise<string[]>;
   /** Classes, uses and conditions to avoid, from RxClass (MED-RT, FDA EPC, ATC). */
   drugFacts(ingredientRxcui: string): Promise<DrugFacts>;
+  /** FDA established pharmacologic classes of an ingredient, with their class ids. */
+  epcClasses(ingredientRxcui: string): Promise<RxClassRef[]>;
+  /** Drugs in an FDA established pharmacologic class (ingredients and salt forms). */
+  classMembers(epcClassId: string): Promise<RxConcept[]>;
+  /** Drugs MED-RT lists as treating a condition (ingredients and salt forms). */
+  diseaseMembers(diseaseId: string): Promise<RxConcept[]>;
+  /** More specific forms of a condition in MED-RT, e.g. Hypertension → Hypertension, Pulmonary. */
+  diseaseDescendants(diseaseId: string): Promise<RxClassRef[]>;
+  /** The ingredient of a salt form (PIN); an ingredient maps to itself; null if unclear. */
+  toIngredient(rxcui: string): Promise<RxConcept | null>;
+  /**
+   * A prescribable single-ingredient US product for an ingredient (oral tablet,
+   * then oral capsule, then any), or null when there is none.
+   */
+  usProduct(ingredientRxcui: string): Promise<{ rxcui: string; name: string } | null>;
+}
+
+/** An RxClass class or MED-RT disease. */
+export interface RxClassRef {
+  id: string;
+  name: string;
+}
+
+/** An RxNorm concept: ingredient (IN) or salt form (PIN). */
+export interface RxConcept {
+  rxcui: string;
+  name: string;
+  tty: string;
 }
 
 export interface DrugFacts {
@@ -44,6 +72,8 @@ export interface DrugFacts {
   atcClasses: string[];
   /** MED-RT may_treat (MeSH disease names). */
   mayTreat: string[];
+  /** The same uses with their MED-RT disease ids (for "taken for"). */
+  uses: RxClassRef[];
   mayPrevent: string[];
   /** MED-RT ci_with: conditions the drug is contraindicated with. */
   avoidWith: string[];
@@ -57,8 +87,14 @@ export interface RxNavClientOptions {
   baseUrl: string;
   fetch?: typeof fetch;
   now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
   timeoutMs?: number;
 }
+
+/** NLM asks for at most 20 requests per second per IP. */
+const MIN_SPACING_MS = 50;
+const MONTH = 30 * 24 * 60 * 60 * 1000;
+const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const HOUR = 60 * 60 * 1000;
 const NAMES_TTL = 24 * HOUR;
@@ -71,6 +107,15 @@ interface ConceptProperties {
   name: string;
   tty: string;
 }
+interface ClassInfoList {
+  rxclassDrugInfoList?: {
+    rxclassDrugInfo?: { rxclassMinConceptItem: { classId: string; className: string } }[];
+  };
+}
+interface ClassTreeNode {
+  rxclassMinConceptItem: { classId: string; className: string };
+  rxclassTree?: ClassTreeNode[];
+}
 interface ConceptGroup {
   tty: string;
   conceptProperties?: ConceptProperties[];
@@ -80,13 +125,24 @@ export function createRxNavClient({
   baseUrl,
   fetch: fetchFn = fetch,
   now = Date.now,
+  sleep = defaultSleep,
   timeoutMs = 5000,
 }: RxNavClientOptions): RxNavClient {
   const cached = createTtlCache(now);
   const unavailable = (message: string) => new RxNavUnavailableError(`RxNav ${message}`);
 
+  // Request starts at least MIN_SPACING_MS apart (they may still overlap in flight).
+  let nextStart = 0;
+  async function paced(): Promise<void> {
+    const t = now();
+    const wait = nextStart - t;
+    nextStart = Math.max(t, nextStart) + MIN_SPACING_MS;
+    if (wait > 0) await sleep(wait);
+  }
+
   /** GET JSON; any non-2xx response counts as RxNav being unavailable. */
   async function get(path: string): Promise<unknown> {
+    await paced();
     const { status, body } = await getJson(`${baseUrl}${path}`, {
       fetch: fetchFn,
       timeoutMs,
@@ -117,6 +173,13 @@ export function createRxNavClient({
   const conceptsOf = (groups: ConceptGroup[], tty: string) =>
     groups.find((g) => g.tty === tty)?.conceptProperties ?? [];
   const brandFromName = (name: string) => /\[([^\]]+)\]\s*$/.exec(name)?.[1] ?? null;
+  const isId = (rxcui: string) => /^\d{1,10}$/.test(rxcui);
+  const isDiseaseId = (id: string) => /^D\d{6,9}$/.test(id);
+  const membersOf = (body: unknown): RxConcept[] =>
+    (
+      (body as { drugMemberGroup?: { drugMember?: { minConcept: RxConcept }[] } }).drugMemberGroup
+        ?.drugMember ?? []
+    ).map(({ minConcept: c }) => ({ rxcui: c.rxcui, name: c.name, tty: c.tty }));
   const isProductTty = (tty: string | undefined): tty is ProductTty =>
     tty === 'SCD' || tty === 'SBD';
 
@@ -206,6 +269,7 @@ export function createRxNavClient({
         mayTreat: [],
         mayPrevent: [],
         avoidWith: [],
+        uses: [],
       };
       if (!/^\d{1,10}$/.test(ingredientRxcui)) return Promise.resolve(empty);
       return cached(`facts:${ingredientRxcui}`, DETAILS_TTL, async () => {
@@ -214,11 +278,12 @@ export function createRxNavClient({
             rxclassDrugInfo?: {
               rela?: string;
               relaSource?: string;
-              rxclassMinConceptItem: { className: string };
+              rxclassMinConceptItem: { classId: string; className: string };
             }[];
           };
         };
-        const facts: Record<keyof DrugFacts, Set<string>> = {
+        const uses = new Map<string, string>();
+        const facts: Record<Exclude<keyof DrugFacts, 'uses'>, Set<string>> = {
           epcClasses: new Set(),
           atcClasses: new Set(),
           mayTreat: new Set(),
@@ -234,6 +299,7 @@ export function createRxNavClient({
             facts.atcClasses.add(name);
           } else if (relaSource === 'MEDRT' && rela === 'may_treat') {
             facts.mayTreat.add(name);
+            uses.set(info.rxclassMinConceptItem.classId, name);
           } else if (relaSource === 'MEDRT' && rela === 'may_prevent') {
             facts.mayPrevent.add(name);
           } else if (relaSource === 'MEDRT' && rela === 'ci_with') {
@@ -247,7 +313,96 @@ export function createRxNavClient({
           mayTreat: sorted(facts.mayTreat),
           mayPrevent: sorted(facts.mayPrevent),
           avoidWith: sorted(facts.avoidWith),
+          uses: [...uses]
+            .map(([id, name]) => ({ id, name }))
+            .sort((a, b) => a.name.localeCompare(b.name)),
         };
+      });
+    },
+
+    epcClasses(ingredientRxcui) {
+      if (!isId(ingredientRxcui)) return Promise.resolve([]);
+      return cached(`epc-ids:${ingredientRxcui}`, MONTH, async () => {
+        const body = (await get(
+          `/rxclass/class/byRxcui.json?rxcui=${ingredientRxcui}&relaSource=DAILYMED&relas=has_epc`,
+        )) as ClassInfoList;
+        const classes = new Map<string, string>();
+        for (const info of body.rxclassDrugInfoList?.rxclassDrugInfo ?? []) {
+          classes.set(info.rxclassMinConceptItem.classId, info.rxclassMinConceptItem.className);
+        }
+        return [...classes].map(([id, name]) => ({ id, name }));
+      });
+    },
+
+    classMembers(epcClassId) {
+      if (!/^N\d{10}$/.test(epcClassId)) return Promise.resolve([]);
+      return cached(`class-members:${epcClassId}`, MONTH, async () =>
+        membersOf(
+          await get(
+            `/rxclass/classMembers.json?classId=${epcClassId}&relaSource=DAILYMED&rela=has_epc`,
+          ),
+        ),
+      );
+    },
+
+    diseaseMembers(diseaseId) {
+      if (!isDiseaseId(diseaseId)) return Promise.resolve([]);
+      return cached(`disease-members:${diseaseId}`, MONTH, async () =>
+        membersOf(
+          await get(
+            `/rxclass/classMembers.json?classId=${diseaseId}&relaSource=MEDRT&rela=may_treat`,
+          ),
+        ),
+      );
+    },
+
+    diseaseDescendants(diseaseId) {
+      if (!isDiseaseId(diseaseId)) return Promise.resolve([]);
+      return cached(`disease-tree:${diseaseId}`, MONTH, async () => {
+        const body = (await get(
+          `/rxclass/classTree.json?classId=${diseaseId}&relaSource=MEDRT`,
+        )) as {
+          rxclassTree?: ClassTreeNode[];
+        };
+        const found: RxClassRef[] = [];
+        const walk = (nodes: ClassTreeNode[] | undefined) => {
+          for (const node of nodes ?? []) {
+            const item = node.rxclassMinConceptItem;
+            found.push({ id: item.classId, name: item.className });
+            walk(node.rxclassTree);
+          }
+        };
+        // The root is the condition itself; everything below it is more specific.
+        walk(body.rxclassTree?.[0]?.rxclassTree);
+        return found;
+      });
+    },
+
+    toIngredient(rxcui) {
+      if (!isId(rxcui)) return Promise.resolve(null);
+      return cached(`to-in:${rxcui}`, MONTH, async () => {
+        const ingredients = conceptsOf(
+          groupsOf(await get(`/rxcui/${rxcui}/related.json?tty=IN`)),
+          'IN',
+        );
+        return ingredients.length === 1
+          ? { rxcui: ingredients[0].rxcui, name: ingredients[0].name, tty: 'IN' }
+          : null;
+      });
+    },
+
+    usProduct(ingredientRxcui) {
+      if (!isId(ingredientRxcui)) return Promise.resolve(null);
+      return cached(`us-product:${ingredientRxcui}`, MONTH, async () => {
+        const products = conceptsOf(
+          groupsOf(await get(`/Prescribe/rxcui/${ingredientRxcui}/related.json?tty=SCD`)),
+          'SCD',
+        ).filter((c) => !c.name.includes(' / ')); // combinations are not this ingredient alone
+        const pick =
+          products.find((c) => / Oral Tablet$/.test(c.name)) ??
+          products.find((c) => / Oral Capsule$/.test(c.name)) ??
+          products[0];
+        return pick ? { rxcui: pick.rxcui, name: pick.name } : null;
       });
     },
 

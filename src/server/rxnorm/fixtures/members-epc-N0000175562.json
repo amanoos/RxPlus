@@ -1,0 +1,142 @@
+{
+  "drugMemberGroup": {
+    "drugMember": [
+      {
+        "minConcept": { "rxcui": "1545989", "name": "enalaprilat anhydrous", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "Q508Q118JM" },
+          { "attrName": "SourceName", "attrValue": "ENALAPRILAT ANHYDROUS" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546022", "name": "lisinopril anhydrous", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "7Q3P4BS2FD" },
+          { "attrName": "SourceName", "attrValue": "LISINOPRIL ANHYDROUS" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546196", "name": "benazeprilat", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "JRM708L703" },
+          { "attrName": "SourceName", "attrValue": "BENAZEPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546358", "name": "moexiprilat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "H3753190JS" },
+          { "attrName": "SourceName", "attrValue": "MOEXIPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546359", "name": "quinaprilat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "34SSX5LDE5" },
+          { "attrName": "SourceName", "attrValue": "QUINAPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546377", "name": "ramiprilat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "6N5U4QFC3G" },
+          { "attrName": "SourceName", "attrValue": "RAMIPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546379", "name": "trandolaprilat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "RR6866VL0O" },
+          { "attrName": "SourceName", "attrValue": "TRANDOLAPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546393", "name": "fosinoprilat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "S312EY6ZT8" },
+          { "attrName": "SourceName", "attrValue": "FOSINOPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1546400", "name": "perindoprilat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "2UV6ZNQ92K" },
+          { "attrName": "SourceName", "attrValue": "PERINDOPRILAT" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "18867", "name": "benazepril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "UDM7Q7QWP8" },
+          { "attrName": "SourceName", "attrValue": "BENAZEPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1998", "name": "captopril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "9G64RSX1XD" },
+          { "attrName": "SourceName", "attrValue": "CAPTOPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "35208", "name": "quinapril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "RJ84Y44811" },
+          { "attrName": "SourceName", "attrValue": "QUINAPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "35296", "name": "ramipril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "L35JN3I7SJ" },
+          { "attrName": "SourceName", "attrValue": "RAMIPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "3827", "name": "enalapril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "69PN84IO1A" },
+          { "attrName": "SourceName", "attrValue": "ENALAPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "38454", "name": "trandolapril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "1T0N3G9CRC" },
+          { "attrName": "SourceName", "attrValue": "TRANDOLAPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "50166", "name": "fosinopril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "R43D2573WO" },
+          { "attrName": "SourceName", "attrValue": "FOSINOPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "54552", "name": "perindopril", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "Y5GMK36KGY" },
+          { "attrName": "SourceName", "attrValue": "PERINDOPRIL" },
+          { "attrName": "Relation", "attrValue": "DIRECT" }
+        ]
+      }
+    ]
+  }
+}

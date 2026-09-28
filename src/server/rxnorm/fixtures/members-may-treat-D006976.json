@@ -1,0 +1,222 @@
+{
+  "drugMemberGroup": {
+    "drugMember": [
+      {
+        "minConcept": { "rxcui": "104463", "name": "epoprostenol sodium", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "104463" },
+          { "attrName": "SourceName", "attrValue": "epoprostenol sodium" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/104463" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "10634", "name": "tolazoline", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "10634" },
+          { "attrName": "SourceName", "attrValue": "tolazoline" },
+          { "attrName": "Relation", "attrValue": "INDIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/10634" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "136411", "name": "sildenafil", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "136411" },
+          { "attrName": "SourceName", "attrValue": "sildenafil" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/136411" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1439816", "name": "riociguat", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "1439816" },
+          { "attrName": "SourceName", "attrValue": "riociguat" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/1439816" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1442132", "name": "macitentan", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "1442132" },
+          { "attrName": "SourceName", "attrValue": "macitentan" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/1442132" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1468845", "name": "bosentan anhydrous", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "1468845" },
+          { "attrName": "SourceName", "attrValue": "bosentan anhydrous" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/1468845" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1729002", "name": "selexipag", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "1729002" },
+          { "attrName": "SourceName", "attrValue": "selexipag" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/1729002" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "1927409", "name": "treprostinil diolamine", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "1927409" },
+          { "attrName": "SourceName", "attrValue": "treprostinil diolamine" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/1927409" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "221161", "name": "sildenafil citrate", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "221161" },
+          { "attrName": "SourceName", "attrValue": "sildenafil citrate" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/221161" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "235450", "name": "tolazoline hydrochloride", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "235450" },
+          { "attrName": "SourceName", "attrValue": "tolazoline hydrochloride" },
+          { "attrName": "Relation", "attrValue": "INDIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/235450" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "2678930", "name": "sotatercept", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "2678930" },
+          { "attrName": "SourceName", "attrValue": "sotatercept" },
+          { "attrName": "Relation", "attrValue": "INDIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/2678930" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "2678931", "name": "sotatercept-csrk", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "2678931" },
+          { "attrName": "SourceName", "attrValue": "sotatercept-csrk" },
+          { "attrName": "Relation", "attrValue": "INDIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/2678931" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "342691", "name": "treprostinil sodium", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "342691" },
+          { "attrName": "SourceName", "attrValue": "treprostinil sodium" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/342691" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "343048", "name": "treprostinil", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "343048" },
+          { "attrName": "SourceName", "attrValue": "treprostinil" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/343048" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "358263", "name": "tadalafil", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "358263" },
+          { "attrName": "SourceName", "attrValue": "tadalafil" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/358263" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "358274", "name": "ambrisentan", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "358274" },
+          { "attrName": "SourceName", "attrValue": "ambrisentan" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/358274" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "40138", "name": "iloprost", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "40138" },
+          { "attrName": "SourceName", "attrValue": "iloprost" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/40138" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "4917", "name": "nitroglycerin", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "4917" },
+          { "attrName": "SourceName", "attrValue": "nitroglycerin" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/4917" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "498193", "name": "bosentan monohydrate", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "498193" },
+          { "attrName": "SourceName", "attrValue": "bosentan monohydrate" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/498193" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "5470", "name": "hydralazine", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "5470" },
+          { "attrName": "SourceName", "attrValue": "hydralazine" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/5470" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "598", "name": "alprostadil", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "598" },
+          { "attrName": "SourceName", "attrValue": "alprostadil" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/598" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "75207", "name": "bosentan", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "75207" },
+          { "attrName": "SourceName", "attrValue": "bosentan" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/75207" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "82027", "name": "hydralazine hydrochloride", "tty": "PIN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "82027" },
+          { "attrName": "SourceName", "attrValue": "hydralazine hydrochloride" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/82027" }
+        ]
+      },
+      {
+        "minConcept": { "rxcui": "8814", "name": "epoprostenol", "tty": "IN" },
+        "nodeAttr": [
+          { "attrName": "SourceId", "attrValue": "8814" },
+          { "attrName": "SourceName", "attrValue": "epoprostenol" },
+          { "attrName": "Relation", "attrValue": "DIRECT" },
+          { "attrName": "SourceUrl", "attrValue": "https://rxnav.nlm.nih.gov/id/rxnorm/8814" }
+        ]
+      }
+    ]
+  }
+}

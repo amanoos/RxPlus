@@ -6,7 +6,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Server
 
-- [ ] **Task 1: RxNav extensions** (M)
+- [x] **Task 1: RxNav extensions** (M)
   - Acceptance:
     - `drugFacts` also returns `uses: { id, name }[]` (MED-RT `may_treat` with disease ids); existing fields unchanged
     - `epcClass(ingredientRxcui)` → `{ id, name } | null`; `classMembers(epcId)` and `diseaseMembers(diseaseId)` → ingredient concepts, with salt forms mapped to their ingredient and metabolites/duplicates removed; `moreSpecificDiseases(diseaseId)`-style lookup for the cleaning rule (MED-RT diseases whose name contains the condition's)

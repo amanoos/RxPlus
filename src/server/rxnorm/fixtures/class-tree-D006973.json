@@ -1,0 +1,103 @@
+{
+  "rxclassTree": [
+    {
+      "rxclassMinConceptItem": {
+        "classId": "D006973",
+        "className": "Hypertension",
+        "classType": "DISEASE"
+      },
+      "rxclassTree": [
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D000075222",
+            "className": "Essential Hypertension",
+            "classType": "DISEASE"
+          },
+          "rxclassTree": [
+            {
+              "rxclassMinConceptItem": {
+                "classId": "D000092244",
+                "className": "Isolated Systolic Hypertension",
+                "classType": "DISEASE"
+              }
+            }
+          ]
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D000096003",
+            "className": "Hypertensive Crisis",
+            "classType": "DISEASE"
+          }
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D006974",
+            "className": "Hypertension, Malignant",
+            "classType": "DISEASE"
+          }
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D006976",
+            "className": "Hypertension, Pulmonary",
+            "classType": "DISEASE"
+          }
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D006977",
+            "className": "Hypertension, Renal",
+            "classType": "DISEASE"
+          },
+          "rxclassTree": [
+            {
+              "rxclassMinConceptItem": {
+                "classId": "D006978",
+                "className": "Hypertension, Renovascular",
+                "classType": "DISEASE"
+              }
+            }
+          ]
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D046110",
+            "className": "Hypertension, Pregnancy-Induced",
+            "classType": "DISEASE"
+          }
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D058437",
+            "className": "Hypertensive Retinopathy",
+            "classType": "DISEASE"
+          },
+          "rxclassTree": [
+            {
+              "rxclassMinConceptItem": {
+                "classId": "D000080346",
+                "className": "Retinal Arterial Macroaneurysm",
+                "classType": "DISEASE"
+              }
+            }
+          ]
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D059466",
+            "className": "White Coat Hypertension",
+            "classType": "DISEASE"
+          }
+        },
+        {
+          "rxclassMinConceptItem": {
+            "classId": "D059468",
+            "className": "Masked Hypertension",
+            "classType": "DISEASE"
+          }
+        }
+      ]
+    }
+  ]
+}

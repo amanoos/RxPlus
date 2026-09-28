@@ -1,0 +1,75 @@
+{
+  "relatedGroup": {
+    "rxcui": null,
+    "conceptGroup": [
+      {
+        "tty": "SCD",
+        "conceptProperties": [
+          {
+            "rxcui": "1435624",
+            "name": "enalapril maleate 1 MG/ML Oral Solution",
+            "synonym": "enalapril maleate 1 MG per 1 ML Oral Solution",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "858804",
+            "name": "enalapril maleate 2.5 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "858810",
+            "name": "enalapril maleate 20 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "858813",
+            "name": "enalapril maleate 5 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "858817",
+            "name": "enalapril maleate 10 MG Oral Tablet",
+            "synonym": "",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "858824",
+            "name": "enalapril maleate 5 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+            "synonym": "enalapril maleate 5 MG / HCTZ 12.5 MG Oral Tablet",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          },
+          {
+            "rxcui": "858828",
+            "name": "enalapril maleate 10 MG / hydrochlorothiazide 25 MG Oral Tablet",
+            "synonym": "enalapril maleate 10 MG / HCTZ 25 MG Oral Tablet",
+            "tty": "SCD",
+            "language": "ENG",
+            "suppress": "N",
+            "umlscui": ""
+          }
+        ]
+      }
+    ]
+  }
+}

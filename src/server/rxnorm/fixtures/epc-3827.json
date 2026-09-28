@@ -1,0 +1,16 @@
+{
+  "rxclassDrugInfoList": {
+    "rxclassDrugInfo": [
+      {
+        "minConcept": { "rxcui": "3827", "name": "enalapril", "tty": "IN" },
+        "rxclassMinConceptItem": {
+          "classId": "N0000175562",
+          "className": "Angiotensin Converting Enzyme Inhibitor",
+          "classType": "EPC"
+        },
+        "rela": "has_epc",
+        "relaSource": "DAILYMED"
+      }
+    ]
+  }
+}
