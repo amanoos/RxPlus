@@ -51,7 +51,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 7: NgRx `digest` feature and API service** (M)
+- [x] **Task 7: NgRx `digest` feature and API service** (M)
   - Acceptance: load digests, unread count (on navigation and after actions), run now, poll while a run is going (browser only, every 5 s, ≤ 30 min), mark read after the page shows a digest
   - Verify: reducer, selector and effect tests
   - Files: `src/app/features/digest/**`, `src/app/store/app.store.ts`

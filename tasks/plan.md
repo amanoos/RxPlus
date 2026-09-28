@@ -42,7 +42,7 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 
 ### Phase 2: Client
 
-- [ ] Task 7: NgRx `digest` feature and API service
+- [x] Task 7: NgRx `digest` feature and API service
 - [ ] Task 8: "What's new" page and navigation badge
 
 ### Checkpoint B
