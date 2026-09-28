@@ -39,7 +39,7 @@ Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the
 
 - [x] Task 4: NgRx pricing feature and API service
 - [x] Task 5: Drug page Prices section and cost fields in the edit dialog
-- [ ] Task 6: Costs page and navigation
+- [x] Task 6: Costs page and navigation
 
 ### Checkpoint B
 

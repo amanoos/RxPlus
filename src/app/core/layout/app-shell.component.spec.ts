@@ -39,6 +39,7 @@ describe('AppShellComponent', () => {
       '/',
       '/medications',
       '/interactions',
+      '/costs',
       '/digest',
     ]);
   });

@@ -43,7 +43,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/pricing/prices-section.component.ts`, drug page, `edit-medication-dialog.component.ts` (+ specs)
   - Depends on: 4
 
-- [ ] **Task 6: Costs page and navigation** (M)
+- [x] **Task 6: Costs page and navigation** (M)
   - Acceptance: `/costs` with rows (cards below 768px), cheaper option, totals, missing counts, note, Edit; "Costs" in the navigation
   - Verify: component tests; browser check
   - Files: `src/app/pages/(app)/costs.page.ts` (+ spec), `app-shell.component.ts`
