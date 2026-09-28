@@ -40,6 +40,7 @@ describe('medications API (integration)', () => {
     diseaseDescendants: vi.fn<RxNavClient['diseaseDescendants']>(),
     toIngredient: vi.fn<RxNavClient['toIngredient']>(),
     usProduct: vi.fn<RxNavClient['usProduct']>(),
+    ndcs: vi.fn<RxNavClient['ndcs']>(),
   };
   const { db, pool } = createDb(TEST_DB);
   let handle: (req: Request) => Promise<Response>;

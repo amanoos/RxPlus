@@ -26,7 +26,7 @@ Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the
 
 ### Phase 1: Server
 
-- [ ] Task 1: Cost Plus client and RxNav NDCs
+- [x] Task 1: Cost Plus client and RxNav NDCs
 - [ ] Task 2: Migration 0006 and medication cost fields
 - [ ] Task 3: Pricing math, service and routes
 

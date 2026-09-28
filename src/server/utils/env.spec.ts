@@ -18,6 +18,7 @@ describe('parseEnv', () => {
       OPENFDA_BASE_URL: 'https://api.fda.gov/drug',
       PUBMED_BASE_URL: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils',
       CTGOV_BASE_URL: 'https://clinicaltrials.gov/api/v2',
+      COSTPLUS_BASE_URL: 'https://us-central1-costplusdrugs-publicapi.cloudfunctions.net/main',
       MEDLINEPLUS_BASE_URL: 'https://connect.medlineplus.gov/service',
       SUMMARY_PROVIDER: 'ollama',
       OLLAMA_BASE_URL: 'http://127.0.0.1:11434',

@@ -54,6 +54,8 @@ export interface RxNavClient {
    * then oral capsule, then any), or null when there is none.
    */
   usProduct(ingredientRxcui: string): Promise<{ rxcui: string; name: string } | null>;
+  /** The product's NDCs (11 digits, active ones as RxNorm lists them); [] when none. */
+  ndcs(rxcui: string): Promise<string[]>;
 }
 
 /** An RxClass class or MED-RT disease. */
@@ -419,6 +421,16 @@ export function createRxNavClient({
           products.find((c) => / Oral Capsule$/.test(c.name)) ??
           products[0];
         return pick ? { rxcui: pick.rxcui, name: pick.name } : null;
+      });
+    },
+
+    ndcs(rxcui) {
+      if (!isId(rxcui)) return Promise.resolve([]);
+      return cached(`ndcs:${rxcui}`, DETAILS_TTL, async () => {
+        const body = (await get(`/rxcui/${rxcui}/ndcs.json`)) as {
+          ndcGroup?: { ndcList?: { ndc?: string[] } };
+        };
+        return (body.ndcGroup?.ndcList?.ndc ?? []).filter((ndc) => /^\d{11}$/.test(ndc));
       });
     },
 

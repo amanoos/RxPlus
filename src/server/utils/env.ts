@@ -41,6 +41,9 @@ const envSchema = z.object({
   CTGOV_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://clinicaltrials.gov/api/v2'),
+  COSTPLUS_BASE_URL: z
+    .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
+    .default('https://us-central1-costplusdrugs-publicapi.cloudfunctions.net/main'),
   MEDLINEPLUS_BASE_URL: z
     .url({ protocol: /^https?$/, error: 'must be an http(s) URL' })
     .default('https://connect.medlineplus.gov/service'),

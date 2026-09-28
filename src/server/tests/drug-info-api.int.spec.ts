@@ -50,6 +50,7 @@ describe('drug-info API (integration)', () => {
     diseaseDescendants: vi.fn<RxNavClient['diseaseDescendants']>(),
     toIngredient: vi.fn<RxNavClient['toIngredient']>(),
     usProduct: vi.fn<RxNavClient['usProduct']>(),
+    ndcs: vi.fn<RxNavClient['ndcs']>(),
   };
   const openFda = {
     interactionLabel: vi.fn(),

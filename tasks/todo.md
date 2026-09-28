@@ -6,7 +6,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Server
 
-- [ ] **Task 1: Cost Plus client and RxNav NDCs** (S)
+- [x] **Task 1: Cost Plus client and RxNav NDCs** (S)
   - Acceptance: `costPlus.items(ingredient)` → `{ ndc, strength, form, brandGeneric, unitPrice, unitBillingPrice, url }[]` (dollar strings parsed, empty results → [], errors → `CostPlusUnavailableError`, 24 h cache, calls spaced); RxNav `ndcs(rxcui)` → 11-digit NDCs (7 days)
   - Verify: unit tests with recorded fixtures
   - Files: `src/server/costplus/{client,index}.ts` (+ spec, fixtures), `src/server/rxnorm/client.ts`, `src/server/utils/env.ts`

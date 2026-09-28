@@ -14,6 +14,7 @@ function fixtureFetch(overrides: Record<string, () => Promise<Response>> = {}) {
     '/Prescribe/drugs.json?name=lisinopril': 'drugs-lisinopril',
     '/Prescribe/drugs.json?name=zzqqxx': 'drugs-empty',
   };
+  routes['/rxcui/314076/ndcs.json'] = 'ndcs-314076';
   for (const id of ['314076', '104377', '197885', '29046']) {
     routes[`/rxcui/${id}/properties.json`] = `properties-${id}`;
     routes[`/rxcui/${id}/related.json?tty=IN+BN+DF`] = `related-${id}`;
@@ -280,6 +281,15 @@ describe('RxNav client', () => {
       expect(forms).toContainEqual({ id: 'D006976', name: 'Hypertension, Pulmonary' });
       expect(forms).toContainEqual({ id: 'D006978', name: 'Hypertension, Renovascular' });
       expect(forms.map((f) => f.id)).not.toContain('D006973');
+    });
+
+    it('lists a product’s NDCs as 11 digits, and none for a bad id', async () => {
+      const client = create(fixtureFetch().fetchFn);
+      const ndcs = await client.ndcs('314076');
+      expect(ndcs).toContain('68180098003');
+      expect(ndcs.every((n) => /^\d{11}$/.test(n))).toBe(true);
+      expect(await client.ndcs('999')).toEqual([]);
+      expect(await client.ndcs('x')).toEqual([]);
     });
 
     it('maps a salt form to its ingredient', async () => {
