@@ -27,8 +27,22 @@ export interface PaperSearch {
   rcts: string[];
 }
 
+export interface RecentPapers {
+  /** Most relevant first, at most `limit`. */
+  pmids: string[];
+  /** All matches in the window. */
+  total: number;
+  /** The same search on the PubMed website. */
+  searchUrl: string;
+}
+
 export interface PubMedClient {
   searchPapers(ingredient: string): Promise<PaperSearch>;
+  /** Papers entered in PubMed between `from` and `to` (YYYY-MM-DD, inclusive). */
+  recentPapers(
+    ingredient: string,
+    window: { from: string; to: string; limit: number },
+  ): Promise<RecentPapers>;
   /** Details for the given PMIDs, in the same order (unknown ones left out). */
   paperDetails(pmids: string[]): Promise<PaperDetails[]>;
   /** Abstract text by PMID; papers without one are left out. */
@@ -139,20 +153,41 @@ export function createPubMedClient({
     return body;
   }
 
-  async function search(term: string): Promise<string[]> {
+  async function esearch(
+    term: string,
+    extra: Record<string, string> = {},
+    retmax = CANDIDATES_PER_TIER,
+  ): Promise<{ ids: string[]; count: number }> {
     const body = (await json('esearch.fcgi', {
       term,
       retmode: 'json',
-      retmax: String(CANDIDATES_PER_TIER),
+      retmax: String(retmax),
       sort: 'relevance',
-    })) as { esearchresult?: { idlist?: string[]; ERROR?: string } } | null;
+      ...extra,
+    })) as { esearchresult?: { idlist?: string[]; count?: string; ERROR?: string } } | null;
     const result = body?.esearchresult;
     if (!result || result.ERROR)
       throw unavailable(`search failed${result?.ERROR ? `: ${result.ERROR}` : ''}`);
-    return result.idlist ?? [];
+    return { ids: result.idlist ?? [], count: Number(result.count ?? 0) };
   }
+  const search = async (term: string) => (await esearch(term)).ids;
 
   return {
+    async recentPapers(ingredient, { from, to, limit }) {
+      const name = searchName(ingredient);
+      const mindate = from.replace(/-/g, '/');
+      const maxdate = to.replace(/-/g, '/');
+      const term = `"${name}"[tiab] AND hasabstract`;
+      const searchUrl = `https://pubmed.ncbi.nlm.nih.gov/?${new URLSearchParams({
+        term: `${term} AND ("${mindate}"[edat] : "${maxdate}"[edat])`,
+        sort: 'relevance',
+      })}`;
+      if (!name) return { pmids: [], total: 0, searchUrl };
+      // New entries aren't MeSH- or type-indexed for weeks: title/abstract, by entry date.
+      const { ids, count } = await esearch(term, { datetype: 'edat', mindate, maxdate }, limit);
+      return { pmids: ids, total: count, searchUrl };
+    },
+
     async searchPapers(ingredient) {
       const name = searchName(ingredient);
       if (!name) return { reviews: [], rcts: [] };

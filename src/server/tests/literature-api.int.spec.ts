@@ -76,8 +76,12 @@ describe('literature API (integration)', () => {
     searchPapers: vi.fn<PubMedClient['searchPapers']>(),
     paperDetails: vi.fn<PubMedClient['paperDetails']>(),
     abstracts: vi.fn<PubMedClient['abstracts']>(),
+    recentPapers: vi.fn<PubMedClient['recentPapers']>(),
   };
-  const ctgov = { trials: vi.fn<CtGovClient['trials']>() };
+  const ctgov = {
+    trials: vi.fn<CtGovClient['trials']>(),
+    recentUpdates: vi.fn<CtGovClient['recentUpdates']>(),
+  };
   let handle: (req: Request) => Promise<Response>;
   const call = (method: string, path: string) =>
     handle(new Request(`http://localhost${path}`, { method }));

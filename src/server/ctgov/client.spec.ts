@@ -84,4 +84,46 @@ describe('ClinicalTrials.gov client', () => {
     const down = vi.fn(async () => new Response('', { status: 400 }));
     await expect(create(down).trials('lisinopril')).rejects.toBeInstanceOf(CtGovUnavailableError);
   });
+  describe('recentUpdates', () => {
+    const recent = () => {
+      const calls: URL[] = [];
+      const fetchFn = vi.fn(async (input: string | URL | Request) => {
+        calls.push(new URL(String(input)));
+        return new Response(fixture('recent-lisinopril.json'), { status: 200 });
+      });
+      return { fetchFn, calls };
+    };
+
+    it('asks for trials updated since the date, with first-posted and results dates', async () => {
+      const { fetchFn, calls } = recent();
+      await create(fetchFn).recentUpdates('Lisinopril', '2026-06-01');
+      expect(Object.fromEntries(calls[0].searchParams)).toEqual({
+        'query.intr': 'lisinopril',
+        sort: 'LastUpdatePostDate:desc',
+        fields:
+          'NCTId,BriefTitle,OverallStatus,Phase,HasResults,StartDate,LastUpdatePostDate,StudyFirstPostDate,ResultsFirstPostDate',
+        'filter.advanced': 'AREA[LastUpdatePostDate]RANGE[2026-06-01,MAX]',
+        pageSize: '100',
+      });
+    });
+
+    it('returns each trial with when it was first posted and when results were', async () => {
+      const { fetchFn } = recent();
+      const updates = await create(fetchFn).recentUpdates('lisinopril', '2026-06-01');
+      expect(updates.map((u) => [u.nctId, u.firstPosted, u.resultsFirstPosted])).toEqual([
+        ['NCT07685938', '2026-07-06', null],
+        ['NCT05530655', '2022-09-07', null],
+        ['NCT07594535', '2026-05-18', null],
+        ['NCT04550481', expect.any(String), '2026-08-14'],
+      ]);
+      expect(updates[0]).toMatchObject({ status: 'RECRUITING', phases: ['PHASE2'] });
+    });
+
+    it('asks nothing for a bad date or a name without letters', async () => {
+      const { fetchFn } = recent();
+      expect(await create(fetchFn).recentUpdates('lisinopril', '2026-6-1')).toEqual([]);
+      expect(await create(fetchFn).recentUpdates('()', '2026-06-01')).toEqual([]);
+      expect(fetchFn).not.toHaveBeenCalled();
+    });
+  });
 });

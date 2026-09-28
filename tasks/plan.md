@@ -28,7 +28,7 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 
 ### Phase 1: Server
 
-- [ ] Task 1: PubMed recent papers and ClinicalTrials.gov recent updates
+- [x] Task 1: PubMed recent papers and ClinicalTrials.gov recent updates
 - [ ] Task 2: Schema, migration 0005 and repository
 - [ ] Task 3: Papers and trials collectors
 - [ ] Task 4: Approvals and label collectors (baselines)

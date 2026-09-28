@@ -197,6 +197,62 @@ describe('PubMed client', () => {
     const badStatus = vi.fn(async () => new Response('', { status: 400 }));
     await expect(create(badStatus).abstracts(['1'])).rejects.toBeInstanceOf(PubMedUnavailableError);
   });
+
+  describe('recentPapers', () => {
+    const recent = () => {
+      const calls: URL[] = [];
+      const fetchFn = vi.fn(async (input: string | URL | Request) => {
+        calls.push(new URL(String(input)));
+        return new Response(fixture('esearch-recent-atorvastatin.json'), { status: 200 });
+      });
+      return { fetchFn, calls };
+    };
+
+    it('searches title/abstract by entry date, most relevant first, up to the limit', async () => {
+      const { fetchFn, calls } = recent();
+      const result = await create(fetchFn).recentPapers('Atorvastatin', {
+        from: '2026-09-20',
+        to: '2026-09-27',
+        limit: 5,
+      });
+
+      expect(Object.fromEntries(calls[0].searchParams)).toMatchObject({
+        term: '"atorvastatin"[tiab] AND hasabstract',
+        datetype: 'edat',
+        mindate: '2026/09/20',
+        maxdate: '2026/09/27',
+        retmax: '5',
+        sort: 'relevance',
+      });
+      expect(result.pmids).toEqual(['42779940', '42793522', '42769353', '42794645', '42764572']);
+      expect(result.total).toBe(14);
+    });
+
+    it('links to the same search on the PubMed website', async () => {
+      const { fetchFn } = recent();
+      const { searchUrl } = await create(fetchFn).recentPapers('atorvastatin', {
+        from: '2026-09-20',
+        to: '2026-09-27',
+        limit: 5,
+      });
+      const url = new URL(searchUrl);
+      expect(url.origin).toBe('https://pubmed.ncbi.nlm.nih.gov');
+      expect(url.searchParams.get('term')).toBe(
+        '"atorvastatin"[tiab] AND hasabstract AND ("2026/09/20"[edat] : "2026/09/27"[edat])',
+      );
+    });
+
+    it('asks nothing for a name without letters', async () => {
+      const { fetchFn } = recent();
+      const result = await create(fetchFn).recentPapers('()', {
+        from: '2026-09-20',
+        to: '2026-09-27',
+        limit: 5,
+      });
+      expect(result).toMatchObject({ pmids: [], total: 0 });
+      expect(fetchFn).not.toHaveBeenCalled();
+    });
+  });
 });
 
 describe('parseAbstracts', () => {

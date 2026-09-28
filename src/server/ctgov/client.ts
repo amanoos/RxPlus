@@ -18,9 +18,18 @@ export interface Trial {
   lastUpdate: string | null;
 }
 
+export interface TrialUpdate extends Trial {
+  /** YYYY-MM-DD */
+  firstPosted: string | null;
+  /** YYYY-MM-DD, when results were first posted */
+  resultsFirstPosted: string | null;
+}
+
 export interface CtGovClient {
   /** Up to 3 completed trials with posted results, then recruiting ones, 5 in all. */
   trials(ingredient: string): Promise<Trial[]>;
+  /** Trials updated on or after `since` (YYYY-MM-DD), most recently updated first. */
+  recentUpdates(ingredient: string, since: string): Promise<TrialUpdate[]>;
 }
 
 export class CtGovUnavailableError extends Error {
@@ -39,6 +48,9 @@ export const MAX_TRIALS = 5;
 const MAX_COMPLETED = 3;
 const WEEK = 7 * 24 * 60 * 60 * 1000;
 const FIELDS = 'NCTId,BriefTitle,OverallStatus,Phase,HasResults,StartDate,LastUpdatePostDate';
+const UPDATE_FIELDS = `${FIELDS},StudyFirstPostDate,ResultsFirstPostDate`;
+/** Updates kept per ingredient and window. */
+export const MAX_UPDATES = 100;
 
 interface Study {
   hasResults?: boolean;
@@ -48,6 +60,8 @@ interface Study {
       overallStatus?: string;
       startDateStruct?: { date?: string };
       lastUpdatePostDateStruct?: { date?: string };
+      studyFirstPostDateStruct?: { date?: string };
+      resultsFirstPostDateStruct?: { date?: string };
     };
     designModule?: { phases?: string[] };
   };
@@ -87,7 +101,7 @@ export function createCtGovClient({
   const unavailable = (message: string) =>
     new CtGovUnavailableError(`ClinicalTrials.gov ${message}`);
 
-  async function studies(name: string, params: Record<string, string>): Promise<Trial[]> {
+  async function studies(name: string, params: Record<string, string>): Promise<Study[]> {
     const search = new URLSearchParams({
       'query.intr': name,
       sort: 'LastUpdatePostDate:desc',
@@ -100,9 +114,9 @@ export function createCtGovClient({
       unavailable,
     });
     if (status !== 200) throw unavailable(`responded ${status}`);
-    const list = (body as { studies?: Study[] } | null)?.studies ?? [];
-    return list.map(toTrial).filter((t): t is Trial => t !== null);
+    return (body as { studies?: Study[] } | null)?.studies ?? [];
   }
+  const trialsOf = (list: Study[]) => list.map(toTrial).filter((t): t is Trial => t !== null);
 
   return {
     trials(ingredient) {
@@ -114,8 +128,11 @@ export function createCtGovClient({
             'filter.overallStatus': 'COMPLETED',
             aggFilters: 'results:with',
             pageSize: String(MAX_COMPLETED),
-          }),
-          studies(name, { 'filter.overallStatus': 'RECRUITING', pageSize: String(MAX_TRIALS) }),
+          }).then(trialsOf),
+          studies(name, {
+            'filter.overallStatus': 'RECRUITING',
+            pageSize: String(MAX_TRIALS),
+          }).then(trialsOf),
         ]);
         const picked = completed.slice(0, MAX_COMPLETED);
         for (const trial of recruiting) {
@@ -123,6 +140,28 @@ export function createCtGovClient({
           if (!picked.some((t) => t.nctId === trial.nctId)) picked.push(trial);
         }
         return picked;
+      });
+    },
+
+    async recentUpdates(ingredient, since) {
+      const name = searchName(ingredient);
+      if (!name || !/^\d{4}-\d{2}-\d{2}$/.test(since)) return [];
+      const list = await studies(name, {
+        'filter.advanced': `AREA[LastUpdatePostDate]RANGE[${since},MAX]`,
+        fields: UPDATE_FIELDS,
+        pageSize: String(MAX_UPDATES),
+      });
+      return list.flatMap((study) => {
+        const trial = toTrial(study);
+        if (!trial) return [];
+        const status = study.protocolSection?.statusModule;
+        return [
+          {
+            ...trial,
+            firstPosted: status?.studyFirstPostDateStruct?.date ?? null,
+            resultsFirstPosted: status?.resultsFirstPostDateStruct?.date ?? null,
+          },
+        ];
       });
     },
   };

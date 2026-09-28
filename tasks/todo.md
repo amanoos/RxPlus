@@ -6,7 +6,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 1: Server
 
-- [ ] **Task 1: PubMed recent papers and ClinicalTrials.gov recent updates** (S)
+- [x] **Task 1: PubMed recent papers and ClinicalTrials.gov recent updates** (S)
   - Acceptance:
     - PubMed `recentPapers(ingredient, { from, to, limit })` → `{ pmids (relevance order, ≤ limit), total, searchUrl }` with `"<name>"[tiab] AND hasabstract`, `datetype=edat`, both dates; `searchUrl` opens the same search on pubmed.ncbi.nlm.nih.gov
     - ClinicalTrials.gov `recentUpdates(ingredient, since)` → trials updated since the date with `firstPosted` and `resultsFirstPosted` dates
