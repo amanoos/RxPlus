@@ -196,3 +196,25 @@ Notes:
 - `docker compose down` keeps the data. `docker compose down -v` **deletes the database**.
 - `POSTGRES_PASSWORD` is fixed when the volume is first created. Changing it later in `.env` doesn't change the database password.
 - Changing `VITE_PRIMEUI_LICENSE` needs a rebuild (`--build`), because it is baked in at build time.
+
+## Backups
+
+The `backup` service in Docker Compose dumps the database with `pg_dump` into `backups/` (or `BACKUP_DIR`): once when it starts if there's no dump for today, then every night at 3:00 AM (`BACKUP_HOUR`, server time zone). It keeps the newest 30 (`BACKUP_KEEP`). Each file is a complete copy (medications, research, digests, interaction data) in PostgreSQL's custom format, e.g. `rxplus-2026-09-28-175538.dump`.
+
+- `backups/` holds personal data: it is gitignored; never commit or share it.
+- The default folder is on the same disk as the database. That protects against a deleted volume or a bad update, not a failed disk: point `BACKUP_DIR` at another drive or a synced folder (e.g. `BACKUP_DIR=D:/RxPlus-backups`) for that.
+
+```bash
+docker compose logs backup                     # "[backup] wrote rxplus-….dump (92K)"
+docker compose exec backup sh /backup.sh once  # back up now (e.g. before an update)
+```
+
+Restore a dump (this **replaces** the current data with the dump's):
+
+```bash
+docker compose stop app
+docker compose exec -T db pg_restore -U rxplus -d rxplus --clean --if-exists --no-owner < backups/rxplus-2026-09-28-175538.dump
+docker compose start app
+```
+
+To check a dump without touching the live data, restore it into a scratch database instead (`createdb -U rxplus restore_check`, then `-d restore_check`), look, and `dropdb` it.

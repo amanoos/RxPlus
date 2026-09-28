@@ -41,5 +41,26 @@ services:
       timeout: 3s
       retries: 10
 
+  # Nightly pg_dump of the database to BACKUP_DIR, keeping the newest BACKUP_KEEP.
+  # See README "Backups" for running one now and restoring.
+  backup:
+    image: postgres:18
+    restart: unless-stopped
+    entrypoint: ['sh', '/backup.sh']
+    environment:
+      PGHOST: db
+      PGUSER: rxplus
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      PGDATABASE: rxplus
+      TZ: ${TZ:-America/New_York}
+      BACKUP_KEEP: ${BACKUP_KEEP:-30}
+      BACKUP_HOUR: ${BACKUP_HOUR:-3}
+    volumes:
+      - ${BACKUP_DIR:-./backups}:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   db-data:

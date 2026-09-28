@@ -32,3 +32,6 @@ Thumbs.db
 
 # Local Claude Code skills/settings (not part of RxPlus)
 .claude/
+
+# Database backups (personal data; never commit)
+backups/
