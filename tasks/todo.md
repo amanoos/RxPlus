@@ -55,7 +55,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Verification
 
-- [ ] **Task 7: E2E with a Cost Plus stub** (S)
+- [x] **Task 7: E2E with a Cost Plus stub** (S)
   - Acceptance: the stub serves Cost Plus and RxNav NDCs; the spec sets units and a copay and sees the Prices section and Costs totals
   - Verify: `npm run e2e` (3 repeats stable)
   - Files: `e2e/stub-upstream.ts`, `e2e/pricing.spec.ts`, `playwright.config.ts`

@@ -1,5 +1,5 @@
-// Stand-in for RxNav, openFDA, MedlinePlus Connect, PubMed, ClinicalTrials.gov and
-// Ollama during e2e runs:
+// Stand-in for RxNav, openFDA, MedlinePlus Connect, PubMed, ClinicalTrials.gov,
+// Cost Plus Drugs and Ollama during e2e runs:
 // serves the recorded fixtures used by the unit tests. Started by Playwright
 // (see playwright.config.ts).
 import { readFileSync } from 'node:fs';
@@ -9,6 +9,7 @@ import { join } from 'node:path';
 const PORT = Number(process.env['STUB_UPSTREAM_PORT'] ?? 4399);
 const SERVER = join(import.meta.dirname, '..', 'src', 'server');
 const RXNORM_FIXTURES = join(SERVER, 'rxnorm', 'fixtures');
+const COSTPLUS_FIXTURES = join(SERVER, 'costplus', 'fixtures');
 const OPENFDA_FIXTURES = join(SERVER, 'openfda', 'fixtures');
 const MEDLINEPLUS_FIXTURES = join(SERVER, 'medlineplus', 'fixtures');
 const PUBMED_FIXTURES = join(SERVER, 'pubmed', 'fixtures');
@@ -127,6 +128,7 @@ const alternatives: Record<string, unknown> = {
   ),
   '/REST/Prescribe/rxcui/75207/related.json?tty=SCD': scd('656659', 'bosentan 62.5 MG Oral Tablet'),
 };
+rxnav['/REST/rxcui/314076/ndcs.json'] = 'ndcs-314076';
 rxnav['/REST/rxclass/class/byRxcui.json?rxcui=3827&relaSource=DAILYMED&relas=has_epc'] = 'epc-3827';
 rxnav['/REST/rxclass/classTree.json?classId=D006973&relaSource=MEDRT'] = 'class-tree-D006973';
 rxnav['/REST/Prescribe/rxcui/3827/related.json?tty=SCD'] = 'prescribe-scd-3827';
@@ -239,6 +241,13 @@ createServer((req, res) => {
         ? 'completed-lisinopril.json'
         : 'recruiting-lisinopril.json';
     return res.end(readFileSync(join(CTGOV_FIXTURES, fixture)));
+  }
+
+  if (url.startsWith('/costplus')) {
+    // Cost Plus Drugs sells lisinopril (recorded answer); nothing else in the e2e world.
+    const name = new URL(url, 'http://stub').searchParams.get('medication_name');
+    const fixture = name === 'lisinopril' ? 'lisinopril.json' : 'none.json';
+    return res.end(readFileSync(join(COSTPLUS_FIXTURES, fixture)));
   }
 
   if (url.startsWith('/medlineplus')) {

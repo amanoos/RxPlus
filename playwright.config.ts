@@ -28,7 +28,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      // Recorded RxNav, openFDA, MedlinePlus, PubMed, ClinicalTrials.gov and Ollama
+      // Recorded RxNav, openFDA, MedlinePlus, PubMed, ClinicalTrials.gov, Cost Plus and Ollama
       // responses, so e2e never depends on NLM, FDA or a local model.
       command: 'node e2e/stub-upstream.ts',
       url: `http://localhost:${STUB_UPSTREAM_PORT}/health`,
@@ -53,6 +53,7 @@ export default defineConfig({
         MEDLINEPLUS_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/medlineplus`,
         PUBMED_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/pubmed`,
         CTGOV_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/ctgov`,
+        COSTPLUS_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/costplus`,
         SUMMARY_PROVIDER: 'ollama',
         OLLAMA_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/ollama`,
         OLLAMA_MODEL: 'qwen2.5:7b',
