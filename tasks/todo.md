@@ -94,7 +94,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `trial-list.component.ts`, `paper-list.component.ts`, `research-section.component.ts` (+ specs)
   - Depends on: 9
 
-- [ ] **Task 10b: Summary panel "Show quotes" toggle** (S)
+- [x] **Task 10b: Summary panel "Show quotes" toggle** (S)
   - Acceptance: a toggle on the drug summary panel shows every sentence's quote inline below it (markers and popovers stay); remembered per session
   - Verify: component tests; browser check
   - Files: `src/app/features/drug-info/summary-panel.component.ts` (+ spec)
@@ -102,7 +102,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Browser: Research section states, takeaways, hide/undo, trials; 375px and desktop
+- [x] Browser: Research section states, takeaways, hide/undo, trials; 375px and desktop
 
 ## Phase 3: Verification
 

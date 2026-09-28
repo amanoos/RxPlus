@@ -134,6 +134,35 @@ describe('SummaryPanelComponent', () => {
     );
   });
 
+  it('shows every quote inline on request and remembers it for the session', async () => {
+    sessionStorage.clear();
+    const { fixture, el, q } = await render({});
+    expect(el.querySelector('[data-testid="inline-quote"]')).toBeNull();
+    const toggle = q('toggle-quotes') as HTMLButtonElement;
+    expect(toggle.textContent?.trim()).toBe('Show quotes');
+
+    toggle.click();
+    await fixture.whenStable();
+    const quotes = [...el.querySelectorAll('[data-testid="inline-quote"]')];
+    expect(quotes.map((b) => b.textContent?.replace(/\s+/g, ' ').trim())).toEqual([
+      '[1] Indications and usage: “treatment of hypertension”',
+    ]);
+    // Markers stay; uncited sentences get no quote.
+    expect(el.querySelectorAll('[data-testid="citation-marker"]')).toHaveLength(1);
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    expect(sessionStorage.getItem('rxplus.summary.showQuotes')).toBe('1');
+
+    TestBed.resetTestingModule();
+    const again = await render({});
+    expect(again.el.querySelectorAll('[data-testid="inline-quote"]')).toHaveLength(1);
+    sessionStorage.clear();
+  });
+
+  it('offers the quotes toggle only for a ready summary', async () => {
+    const { q } = await render({ status: 'none', data: null });
+    expect(q('toggle-quotes')).toBeNull();
+  });
+
   it('names Claude as the provider when it wrote the summary', async () => {
     const { q } = await render({
       data: summaryFixture({ provider: 'claude', model: 'claude-opus-5' }),

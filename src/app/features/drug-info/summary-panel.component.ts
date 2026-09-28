@@ -17,6 +17,25 @@ import { LABEL_SECTION_NAMES, type SummaryCitation, type DrugSummary } from './d
 import { DrugInfoActions } from './store/drug-info.actions';
 import type { SummaryState } from './store/drug-info.reducer';
 
+const SHOW_QUOTES_KEY = 'rxplus.summary.showQuotes';
+
+/** Session storage can be unavailable (private mode, blocked storage): default to off. */
+function readSessionFlag(key: string): boolean {
+  try {
+    return sessionStorage.getItem(key) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writeSessionFlag(key: string, on: boolean): void {
+  try {
+    sessionStorage.setItem(key, on ? '1' : '0');
+  } catch {
+    // Not remembered; the toggle still works for this page.
+  }
+}
+
 interface Marker {
   n: number;
   citation: SummaryCitation;
@@ -29,7 +48,20 @@ interface Marker {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section aria-labelledby="summary-heading" data-testid="summary-panel">
-      <h2 id="summary-heading" class="text-lg font-semibold">Plain-language summary</h2>
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="summary-heading" class="text-lg font-semibold">Plain-language summary</h2>
+        @if (state().status === 'ready') {
+          <button
+            type="button"
+            class="text-xs underline"
+            [attr.aria-pressed]="showQuotes()"
+            data-testid="toggle-quotes"
+            (click)="toggleQuotes()"
+          >
+            {{ showQuotes() ? 'Hide quotes' : 'Show quotes' }}
+          </button>
+        }
+      </div>
 
       @let s = state();
       @if (s.error && s.status !== 'failed' && s.status !== 'error') {
@@ -125,6 +157,18 @@ interface Marker {
                           [{{ m.n }}]
                         </button>
                       }
+                      @if (showQuotes()) {
+                        @for (m of sentence.markers; track m.n) {
+                          <blockquote
+                            class="mt-1 mb-2 border-l-2 border-surface-300 pl-2 text-xs text-surface-700 dark:border-surface-600 dark:text-surface-300"
+                            data-testid="inline-quote"
+                          >
+                            <span class="font-medium"
+                              >[{{ m.n }}] {{ sectionName(m.citation) }}:</span
+                            >&ngsp;<span class="italic">“{{ m.citation.text }}”</span>
+                          </blockquote>
+                        }
+                      }
                     }
                   </li>
                 } @empty {
@@ -206,6 +250,8 @@ export class SummaryPanelComponent {
   readonly state = input.required<SummaryState>();
 
   readonly selected = signal<Marker | null>(null);
+  /** Every sentence's quotes shown inline (remembered for the browser session). */
+  readonly showQuotes = signal(false);
   /** Ticks every second in the browser (never during SSR, which must settle). */
   private readonly now = signal(Date.now());
 
@@ -231,9 +277,15 @@ export class SummaryPanelComponent {
   constructor() {
     const destroyRef = inject(DestroyRef);
     afterNextRender(() => {
+      this.showQuotes.set(readSessionFlag(SHOW_QUOTES_KEY));
       const timer = setInterval(() => this.now.set(Date.now()), 1000);
       destroyRef.onDestroy(() => clearInterval(timer));
     });
+  }
+
+  toggleQuotes(): void {
+    this.showQuotes.update((on) => !on);
+    writeSessionFlag(SHOW_QUOTES_KEY, this.showQuotes());
   }
 
   start(refresh = false): void {
