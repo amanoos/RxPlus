@@ -109,6 +109,12 @@ async function writeTakeaways(
     const { raw } = await choice.provider.generate(input);
     const { byPmid } = verifyTakeaways(raw, input, { ignoreWords: [ingredient.name] });
     await checkTakeawaySupport(byPmid, choice.provider);
+    const written = [...byPmid.values()].filter((t) => t.text).length;
+    if (written < input.length) {
+      notes.push(
+        `Takeaways for ${ingredient.name}: ${written} of ${input.length} papers got one; the model's answer didn't match the rest.`,
+      );
+    }
     return byPmid;
   } catch (error) {
     const known =

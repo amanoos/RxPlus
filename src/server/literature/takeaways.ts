@@ -33,6 +33,21 @@ export const TakeawaysSchema = z.object({
 });
 export type RawTakeaways = z.infer<typeof TakeawaysSchema>;
 
+/**
+ * What the local model is asked to generate: the PMID must be digits, so the grammar
+ * keeps the model from writing a sentence there (qwen2.5:7b did, shifting every field;
+ * live digest run 2026-09-28). Parsing still uses the lenient TakeawaysSchema.
+ */
+export const TakeawaysFormat = z.object({
+  takeaways: z.array(
+    z.object({
+      pmid: z.string().regex(/^[0-9]{1,9}$/),
+      quote: z.string(),
+      text: z.string().min(1),
+    }),
+  ),
+});
+
 /** The user message: only abstracts, each headed by its PMID. */
 export function buildAbstractsMessage(papers: PaperInput[]): string {
   return papers.map((p) => `### PMID ${p.pmid}\n${p.abstract}`).join('\n\n');
@@ -97,6 +112,7 @@ export function createOllamaTakeawayProvider(
         system: TAKEAWAY_SYSTEM_PROMPT,
         user: buildAbstractsMessage(papers),
         schema: TakeawaysSchema,
+        format: TakeawaysFormat,
         inputName: 'abstracts',
       });
       return { raw: data, inputTokens, outputTokens };
@@ -216,8 +232,24 @@ export function verifyTakeaways(
   const byPmid = new Map<string, PaperTakeaway>();
   let removedAdvice = 0;
 
-  for (const { pmid, text, quote } of raw.takeaways) {
-    const id = pmid.replace(/\D/g, '');
+  /** The one requested paper whose abstract contains the quote, when the PMID is wrong. */
+  const byQuote = (quote: string): string | undefined => {
+    const q = normalizeText(quote);
+    if (q.length < MIN_QUOTE_CHARS) return undefined;
+    const found = [...abstracts].filter(([, abstract]) => abstract.includes(q));
+    return found.length === 1 ? found[0][0] : undefined;
+  };
+
+  for (const entry of raw.takeaways) {
+    const { pmid, text } = entry;
+    let { quote } = entry;
+    const digits = /^\D*(\d{1,9})\D*$/.exec(pmid)?.[1] ?? '';
+    let id = abstracts.has(digits) ? digits : (byQuote(quote) ?? '');
+    // Fields shifted by one (the abstract sentence where the PMID belongs): use it as the quote.
+    if (!id && byQuote(pmid)) {
+      id = byQuote(pmid)!;
+      quote = pmid;
+    }
     const abstract = abstracts.get(id);
     if (!abstract || byPmid.has(id)) continue;
     if (isAdvice(text)) {

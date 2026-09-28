@@ -68,6 +68,8 @@ describe('takeaway prompt', () => {
       { role: 'user', content: buildAbstractsMessage(papers) },
     ]);
     expect(body.format).toHaveProperty('properties.takeaways');
+    // The grammar only lets the model write digits for the PMID.
+    expect(body.format.properties.takeaways.items.properties.pmid.pattern).toBe('^[0-9]{1,9}$');
   });
 });
 
@@ -132,6 +134,36 @@ describe('verifyTakeaways', () => {
     expect([...result.byPmid.keys()]).toEqual(['222']);
     expect(result.byPmid.get('222')?.uncited).toBe(false);
     expect(result.removedAdvice).toBe(1);
+  });
+
+  it('recovers a takeaway with a wrong PMID, or with its fields shifted, by its quote', () => {
+    const result = verifyTakeaways(
+      {
+        takeaways: [
+          // Wrong PMID, right quote.
+          {
+            pmid: '999',
+            quote: 'Lisinopril reduced systolic blood pressure by 12 mmHg compared with placebo.',
+            text: 'In this trial, lisinopril lowered systolic blood pressure by 12 mmHg.',
+          },
+          // Shifted (qwen2.5:7b, live): the sentence where the PMID belongs.
+          {
+            pmid: 'Cough occurred in 11% of patients taking ACE inhibitors versus 3% on placebo.',
+            quote: 'Cough was more common with ACE inhibitors than placebo.',
+            text: 'In this study, cough affected 11% of patients on ACE inhibitors.',
+          },
+          // Neither matches any abstract: dropped.
+          { pmid: 'a sentence', quote: 'not in any abstract here', text: 'Something.' },
+        ],
+      },
+      papers,
+    );
+    expect([...result.byPmid.keys()]).toEqual(['111', '222']);
+    expect(result.byPmid.get('111')).toMatchObject({ uncited: false });
+    expect(result.byPmid.get('222')).toMatchObject({
+      quote: 'Cough occurred in 11% of patients taking ACE inhibitors versus 3% on placebo.',
+      uncited: false,
+    });
   });
 
   it('keeps takeaways that speak to the reader or recommend, marked as such', () => {

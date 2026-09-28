@@ -19,6 +19,11 @@ export interface JsonRequest<T> {
   system: string;
   user: string;
   schema: z.ZodType<T>;
+  /**
+   * A stricter schema for generation only (e.g. digit patterns the grammar enforces),
+   * while the answer is still parsed with the lenient `schema`. Defaults to `schema`.
+   */
+  format?: z.ZodType;
   /** What the input is, for the too-large message (e.g. "label"). */
   inputName: string;
 }
@@ -51,7 +56,7 @@ export function createOllamaJson({
 }: OllamaOptions): OllamaJson {
   return {
     model,
-    async generateJson<T>({ system, user, schema, inputName }: JsonRequest<T>) {
+    async generateJson<T>({ system, user, schema, format, inputName }: JsonRequest<T>) {
       const promptTokens = estimateTokens(system + user);
       if (promptTokens + OUTPUT_RESERVE_TOKENS > numCtx) {
         throw new InputTooLargeError(
@@ -76,7 +81,7 @@ export function createOllamaJson({
             body: JSON.stringify({
               model,
               stream: false,
-              format: z.toJSONSchema(schema),
+              format: z.toJSONSchema(format ?? schema),
               options: { num_ctx: numCtx, temperature: 0.2 },
               messages: [
                 { role: 'system', content: system },

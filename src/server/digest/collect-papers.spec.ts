@@ -161,8 +161,11 @@ describe('collectPapers', () => {
         ],
       },
     });
-    const { items } = await collectPapers(ATORVASTATIN, WINDOW, deps);
+    const { items, notes } = await collectPapers(ATORVASTATIN, WINDOW, deps);
     expect(items.map((i) => i.takeaway)).toEqual([null, null]);
+    expect(notes).toEqual([
+      "Takeaways for atorvastatin: 0 of 2 papers got one; the model's answer didn't match the rest.",
+    ]);
   });
 
   it('notes a PubMed failure instead of failing the run', async () => {
