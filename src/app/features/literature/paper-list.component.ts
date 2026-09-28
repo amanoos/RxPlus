@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TagModule } from 'primeng/tag';
 
-import type { Paper, StudyType } from './literature';
+import { studySubjectLabel, type Paper, type StudyType } from './literature';
 
 const STUDY_TYPES: Record<StudyType, string> = {
   'meta-analysis': 'Meta-analysis',
@@ -21,6 +21,13 @@ const STUDY_TYPES: Record<StudyType, string> = {
         <li data-testid="paper" [attr.data-pmid]="paper.pmid">
           <div class="flex flex-wrap items-center gap-2 text-xs">
             <p-tag [value]="studyType(paper.studyType)" severity="secondary" />
+            @if (subjectTag(paper); as subject) {
+              <p-tag
+                [value]="subject"
+                [severity]="notInPeople(paper) ? 'warn' : 'secondary'"
+                data-testid="study-subject"
+              />
+            }
             <span class="text-surface-600 dark:text-surface-300">
               {{ source(paper) }}
             </span>
@@ -119,6 +126,19 @@ export class PaperListComponent {
   /** "Circulation · 1999" */
   source(paper: Paper): string {
     return [paper.journal, paper.year].filter((part) => part != null && part !== '').join(' · ');
+  }
+
+  /** Who was studied, when it adds to the study type: animal and lab work, or an unknown type. */
+  subjectTag(paper: Paper): string | null {
+    if (this.notInPeople(paper) || paper.studyType === 'other') {
+      return studySubjectLabel(paper.studySubject);
+    }
+    return null;
+  }
+
+  /** Animal or lab work: its results aren't findings in people. */
+  notInPeople(paper: Paper): boolean {
+    return paper.studySubject === 'animal' || paper.studySubject === 'lab';
   }
 
   studyType(type: StudyType): string {

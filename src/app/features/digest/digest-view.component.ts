@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { studySubjectLabel } from '../literature/literature';
 import type { Digest, DigestItem } from './digest';
 
 /** "Sep 15, 2026" for a YYYY-MM-DD date, whatever the viewer's time zone. */
@@ -71,9 +72,18 @@ export function formatDay(date: string, withYear = true): string {
                     rel="noopener noreferrer"
                     >{{ item.title }}</a
                   >
-                  @if (source(item); as s) {
-                    <p class="text-xs text-surface-600 dark:text-surface-300">{{ s }}</p>
-                  }
+                  <div class="flex flex-wrap items-center gap-2 text-xs">
+                    @if (subject(item); as label) {
+                      <p-tag
+                        [value]="label"
+                        [severity]="notInPeople(item) ? 'warn' : 'secondary'"
+                        data-testid="study-subject"
+                      />
+                    }
+                    @if (source(item); as s) {
+                      <span class="text-surface-600 dark:text-surface-300">{{ s }}</span>
+                    }
+                  </div>
                   @if (item.takeaway?.text) {
                     <div class="mt-1 text-sm" data-testid="takeaway">
                       @if (item.takeaway!.uncited) {
@@ -188,6 +198,17 @@ export class DigestViewComponent {
   source(item: DigestItem): string {
     const { journal, year } = item.details ?? {};
     return [journal, year].filter((part) => part != null && part !== '').join(' · ');
+  }
+
+  /** "Animal study" etc., from the paper's title and abstract. */
+  subject(item: DigestItem): string | null {
+    return studySubjectLabel(item.details?.studySubject);
+  }
+
+  /** Animal or lab work: its results aren't findings in people. */
+  notInPeople(item: DigestItem): boolean {
+    const s = item.details?.studySubject;
+    return s === 'animal' || s === 'lab';
   }
 
   day(date: string): string {

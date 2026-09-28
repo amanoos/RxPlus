@@ -14,10 +14,26 @@ export interface PaperTakeaway {
   readerDirected?: boolean;
 }
 
+/** Who or what a paper studied, from its title and abstract. */
+export type StudySubject = 'review' | 'animal' | 'lab' | 'human';
+
+const SUBJECT_LABELS: Record<StudySubject, string> = {
+  review: 'Review of studies',
+  animal: 'Animal study',
+  lab: 'Lab study',
+  human: 'Study in people',
+};
+
+/** "Animal study"; null when unknown. */
+export const studySubjectLabel = (subject: StudySubject | null | undefined) =>
+  subject ? SUBJECT_LABELS[subject] : null;
+
 export interface Paper {
   pmid: string;
   tier: 'review' | 'rct';
   studyType: StudyType;
+  /** Who or what was studied (optional: older answers lack it). */
+  studySubject?: StudySubject | null;
   title: string;
   journal: string | null;
   year: number | null;

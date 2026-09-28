@@ -13,6 +13,7 @@ export interface DigestItemDetails {
   journal?: string | null;
   year?: number | null;
   studyType?: string;
+  studySubject?: 'review' | 'animal' | 'lab' | 'human' | null;
   count?: number;
   nctId?: string;
   event?: 'new' | 'results';

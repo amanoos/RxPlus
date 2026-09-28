@@ -6,6 +6,7 @@
 import { InputTooLargeError, ProviderOutputError, ProviderUnavailableError } from '../ai/errors';
 import type { PaperTakeaway } from '../db/schema';
 import type { TakeawayChoice } from '../literature/providers';
+import { studySubject } from '../literature/study-subject';
 import { checkTakeawaySupport, verifyTakeaways } from '../literature/takeaways';
 import type { PubMedClient } from '../pubmed/client';
 import {
@@ -65,7 +66,12 @@ export async function collectPapers(
       subject: name,
       title: paper.title,
       url: `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`,
-      details: { journal: paper.journal, year: paper.year, studyType: paper.studyType },
+      details: {
+        journal: paper.journal,
+        year: paper.year,
+        studyType: paper.studyType,
+        studySubject: studySubject(paper.title, abstracts.get(paper.pmid) ?? '', paper.studyType),
+      },
       takeaway: takeaway?.text ? takeaway : null,
       externalId: paper.pmid,
     };

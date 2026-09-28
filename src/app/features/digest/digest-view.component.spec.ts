@@ -101,6 +101,19 @@ describe('DigestViewComponent', () => {
     expect(listed?.querySelector('a')?.getAttribute('href')).toBe('/drugs/p2679059');
   });
 
+  it('labels who was studied, highlighting animal and lab work', async () => {
+    const items = [
+      digestItemFixture({ id: 'a', details: { journal: 'J', year: 2026, studySubject: 'animal' } }),
+      digestItemFixture({ id: 'b', details: { journal: 'J', year: 2026, studySubject: 'human' } }),
+      digestItemFixture({ id: 'c', details: { journal: 'J', year: 2026 } }),
+    ];
+    const { el } = await setup(digestFixture({ groups: [{ subject: 'metformin', items }] }));
+    const labels = [...el.querySelectorAll('[data-testid="digest-item"]')].map((i) =>
+      text(i.querySelector('[data-testid="study-subject"]')),
+    );
+    expect(labels).toEqual(['Animal study', 'Study in people', undefined]);
+  });
+
   it('marks a takeaway that could not be linked to its abstract', async () => {
     const item = digestItemFixture({
       takeaway: { text: 'Lisinopril helped.', quote: null, uncited: true },

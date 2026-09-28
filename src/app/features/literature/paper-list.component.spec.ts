@@ -51,11 +51,17 @@ describe('PaperListComponent', () => {
           supported: false,
           readerDirected: true,
         },
+        studySubject: 'animal',
       }),
       paperFixture({ pmid: '3', takeaway: { text: '', quote: null, uncited: true } }),
     ]);
     const [one, two, three] = [...el.querySelectorAll('[data-testid="paper"]')];
     expect(one.querySelector('[data-testid="reader-directed"]')).toBeNull();
+    // Who was studied is shown for animal work, not for a review already tagged as one.
+    expect(one.querySelector('[data-testid="study-subject"]')).toBeNull();
+    expect(two.querySelector('[data-testid="study-subject"]')?.textContent?.trim()).toBe(
+      'Animal study',
+    );
     expect(two.querySelector('[data-testid="reader-directed"]')?.textContent).toContain(
       'Worded as if about you',
     );

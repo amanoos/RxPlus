@@ -44,6 +44,8 @@ export interface DigestItemDetails {
   journal?: string | null;
   year?: number | null;
   studyType?: string;
+  /** Who or what was studied, from the title and abstract (review, animal, lab, human). */
+  studySubject?: 'review' | 'animal' | 'lab' | 'human' | null;
   /** more-papers: papers in the window not listed */
   count?: number;
   /** trial */

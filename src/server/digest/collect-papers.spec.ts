@@ -81,7 +81,7 @@ describe('collectPapers', () => {
       subject: 'atorvastatin',
       title: 'Paper 1',
       url: 'https://pubmed.ncbi.nlm.nih.gov/1/',
-      details: { journal: 'Lancet', year: 2026, studyType: 'other' },
+      details: { journal: 'Lancet', year: 2026, studyType: 'other', studySubject: 'human' },
       takeaway: {
         text: 'In this study, atorvastatin lowered LDL cholesterol.',
         quote: 'In paper 1, atorvastatin lowered LDL cholesterol by 40 percent in adults.',

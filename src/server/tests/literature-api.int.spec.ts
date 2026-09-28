@@ -163,6 +163,7 @@ describe('literature API (integration)', () => {
       pmid: '100',
       tier: 'review',
       studyType: 'meta-analysis',
+      studySubject: 'review',
       title: 'Title 100',
       journal: 'Lancet',
       year: 2020,

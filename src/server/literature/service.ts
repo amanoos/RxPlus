@@ -22,6 +22,7 @@ import {
   type LiteratureRepository,
   type LiteratureTrial,
 } from './repository';
+import { studySubject, type StudySubject } from './study-subject';
 import { checkTakeawaySupport, verifyTakeaways, type TakeawayProvider } from './takeaways';
 
 export const REFRESH_AFTER_MS = 30 * 24 * 60 * 60 * 1000;
@@ -35,6 +36,8 @@ export interface PaperView {
   pmid: string;
   tier: LiteraturePaper['tier'];
   studyType: LiteraturePaper['studyType'];
+  /** Who or what was studied, from the title and abstract. */
+  studySubject: StudySubject | null;
   title: string;
   journal: string | null;
   year: number | null;
@@ -109,6 +112,7 @@ function paperView(p: LiteraturePaper): PaperView {
     pmid: p.pmid,
     tier: p.tier,
     studyType: p.studyType,
+    studySubject: studySubject(p.title, p.abstract, p.studyType),
     title: p.title,
     journal: p.journal,
     year: p.year,
