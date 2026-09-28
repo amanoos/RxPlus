@@ -56,6 +56,8 @@ describe('Ollama JSON generation', () => {
     const [url, init] = fetchFn.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe('http://ollama.test/api/chat');
     expect(JSON.parse(String(init.body)).format).toHaveProperty('properties.answer');
+    // Thinking models answer directly.
+    expect(JSON.parse(String(init.body)).think).toBe(false);
 
     const wrong = createOllamaJson({
       baseUrl: 'http://ollama.test',

@@ -82,6 +82,9 @@ export function createOllamaJson({
               model,
               stream: false,
               format: z.toJSONSchema(format ?? schema),
+              // Answer only: thinking models (qwen3) otherwise reason first, slower and
+              // no better for these short JSON answers. Other models ignore it.
+              think: false,
               options: { num_ctx: numCtx, temperature: 0.2 },
               messages: [
                 { role: 'system', content: system },

@@ -22,6 +22,8 @@ For each paper (marked "### PMID <id>"), work in two steps:
 2. "text": rewrite that quote in plain language, as one sentence. Say only what the quote says: no sample sizes, drugs, numbers or other findings that are not in the quote.
 
 Rules:
+- Keep the quote's meaning exactly: the same comparison and its direction (more or less, better or worse, higher or lower), the same groups, and whether the difference was significant. Do not reword a finding into a different claim (for example "more cost-effective" is not "cheaper").
+- Say who or what was studied when the abstract says so: people (for example "adults with type 2 diabetes"), animals ("in rats"), or cells ("in lab-grown cells"). For a review, start with "This review".
 - Describe it as a study ("In this trial, ..."), never as a fact about the reader.
 - Use only that paper's abstract. Never add outside knowledge or mix papers.
 - Do not give dosing instructions. Do not advise starting, stopping or changing any medication.

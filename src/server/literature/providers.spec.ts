@@ -16,7 +16,9 @@ async function choiceFor(overrides: Record<string, string | undefined>) {
   }
   for (const key of [
     'SUMMARY_PROVIDER',
+    'TAKEAWAY_PROVIDER',
     'OLLAMA_MODEL',
+    'OLLAMA_TAKEAWAY_MODEL',
     'OLLAMA_CHECK_MODEL',
     'ANTHROPIC_API_KEY',
   ]) {
@@ -41,6 +43,10 @@ describe('takeawayProvider', () => {
       OLLAMA_CHECK_MODEL: 'qwen2.5:14b',
     });
     expect(checked.provider?.checkSupport).toBeTypeOf('function');
+
+    // Takeaways can use their own local model (qwen3:8b made no meaning errors on 29 papers).
+    const own = await choiceFor({ OLLAMA_MODEL: 'qwen2.5:7b', OLLAMA_TAKEAWAY_MODEL: 'qwen3:8b' });
+    expect(own.provider).toMatchObject({ name: 'ollama', model: 'qwen3:8b' });
   });
 
   it('explains what is missing', async () => {
@@ -53,5 +59,20 @@ describe('takeawayProvider', () => {
   it('uses Claude when chosen and a key is set', async () => {
     const choice = await choiceFor({ SUMMARY_PROVIDER: 'claude', ANTHROPIC_API_KEY: 'test-key' });
     expect(choice.provider).toMatchObject({ name: 'claude', model: 'claude-opus-5' });
+  });
+
+  it('can use Claude for takeaways only, or the local model while summaries use Claude', async () => {
+    const claude = await choiceFor({
+      TAKEAWAY_PROVIDER: 'claude',
+      OLLAMA_MODEL: 'qwen2.5:7b',
+      ANTHROPIC_API_KEY: 'test-key',
+    });
+    expect(claude.provider?.name).toBe('claude');
+    const local = await choiceFor({
+      SUMMARY_PROVIDER: 'claude',
+      TAKEAWAY_PROVIDER: 'ollama',
+      OLLAMA_MODEL: 'qwen2.5:7b',
+    });
+    expect(local.provider?.name).toBe('ollama');
   });
 });

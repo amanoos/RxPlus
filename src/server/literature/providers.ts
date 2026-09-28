@@ -11,17 +11,21 @@ export type TakeawayChoice =
 
 let override: TakeawayChoice | undefined;
 
-/** The configured takeaway provider (same settings as summaries), or why none is available. */
+/**
+ * The configured takeaway provider (TAKEAWAY_PROVIDER, else the summaries' provider),
+ * or why none is available.
+ */
 export function takeawayProvider(): TakeawayChoice {
   if (override) return override;
   const config = env();
-  if (config.SUMMARY_PROVIDER === 'ollama') {
-    if (!config.OLLAMA_MODEL) return { unavailable: 'No local model configured (OLLAMA_MODEL).' };
+  if ((config.TAKEAWAY_PROVIDER ?? config.SUMMARY_PROVIDER) === 'ollama') {
+    const model = config.OLLAMA_TAKEAWAY_MODEL ?? config.OLLAMA_MODEL;
+    if (!model) return { unavailable: 'No local model configured (OLLAMA_MODEL).' };
     return {
       provider: createOllamaTakeawayProvider(
         {
           baseUrl: config.OLLAMA_BASE_URL,
-          model: config.OLLAMA_MODEL,
+          model,
           numCtx: config.OLLAMA_NUM_CTX,
           timeoutMs: config.OLLAMA_TIMEOUT_MS,
         },
