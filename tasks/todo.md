@@ -95,5 +95,5 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint C: alternatives complete
 
-- [ ] Spec success criteria 1–8; live counts reported
-- [ ] Human review, then `SPEC-digest.md`
+- [x] Spec success criteria 1–8; live counts reported
+- [x] Human review, then `SPEC-digest.md`

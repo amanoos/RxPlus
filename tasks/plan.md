@@ -58,8 +58,8 @@ An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly ap
 
 ### Checkpoint C: alternatives complete
 
-- [ ] Spec success criteria 1–8; live counts reported
-- [ ] Human review, then `SPEC-digest.md`
+- [x] Spec success criteria 1–8; live counts reported
+- [x] Human review, then `SPEC-digest.md`
 
 ## Risks and Mitigations
 
