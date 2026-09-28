@@ -16,6 +16,11 @@ export interface Medication {
   /** The condition it's taken for (MED-RT id and name), if set. */
   takenForId: string | null;
   takenForName: string | null;
+  /** Units used a month (default 30). */
+  unitsPerMonth: number;
+  /** What a fill costs with insurance, and its size (both null when not entered). */
+  copayCents: number | null;
+  copayUnits: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -26,7 +31,11 @@ export interface NewMedication {
   startedOn?: string | null;
 }
 
-export type MedicationChanges = Partial<Pick<Medication, 'notes' | 'startedOn' | 'stoppedOn'>> & {
+export type MedicationChanges = Partial<
+  Pick<Medication, 'notes' | 'startedOn' | 'stoppedOn' | 'unitsPerMonth'>
+> & {
   /** null clears it. */
   takenFor?: { id: string; name: string } | null;
+  /** null clears it. */
+  copay?: { amountCents: number; units: number } | null;
 };

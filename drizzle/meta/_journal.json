@@ -43,6 +43,13 @@
       "when": 1790565977407,
       "tag": "0005_create_digest",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790590066918,
+      "tag": "0006_medication_costs",
+      "breakpoints": true
     }
   ]
 }

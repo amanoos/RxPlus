@@ -12,7 +12,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/costplus/{client,index}.ts` (+ spec, fixtures), `src/server/rxnorm/client.ts`, `src/server/utils/env.ts`
   - Depends on: none
 
-- [ ] **Task 2: Migration 0006 and medication cost fields** (S)
+- [x] **Task 2: Migration 0006 and medication cost fields** (S)
   - Acceptance: `units_per_month` (default 30), `copay_cents`, `copay_units`; PATCH accepts `unitsPerMonth` (> 0, ≤ 1000, 0.5 steps) and `copay: { amountCents, units } | null`; responses include them
   - Verify: integration tests
   - Files: `src/server/db/schema/medications.ts`, `drizzle/0006_*`, `src/server/medications/service.ts` (+ tests), client medication type

@@ -30,12 +30,26 @@ const takenFor = z
   .strict()
   .nullable();
 
+/** Units: more than 0, at most 1000, in steps of 0.5 (half tablets). */
+const units = z
+  .number()
+  .positive()
+  .max(1000)
+  .refine((n) => Number.isInteger(n * 2), 'must be a multiple of 0.5');
+/** What the owner pays with insurance for one fill of `units`. */
+const copay = z
+  .object({ amountCents: z.number().int().min(0).max(1_000_000), units })
+  .strict()
+  .nullable();
+
 export const UpdateMedicationBody = z
   .object({
     notes: notes.optional(),
     startedOn: isoDate.optional(),
     stoppedOn: isoDate.optional(),
     takenFor: takenFor.optional(),
+    unitsPerMonth: units.optional(),
+    copay: copay.optional(),
   })
   .strict();
 export const MedicationIdParams = z.object({ id: z.uuid() });
@@ -91,11 +105,16 @@ export function createMedicationsService(repo: MedicationsRepository, rxnavClien
           statusMessage: 'The stop date can’t be before the start date.',
         });
       }
-      const { takenFor, ...dates } = patch;
-      const changes =
-        takenFor === undefined
-          ? dates
-          : { ...dates, takenForId: takenFor?.id ?? null, takenForName: takenFor?.name ?? null };
+      const { takenFor, copay, ...rest } = patch;
+      const changes = {
+        ...rest,
+        ...(takenFor === undefined
+          ? {}
+          : { takenForId: takenFor?.id ?? null, takenForName: takenFor?.name ?? null }),
+        ...(copay === undefined
+          ? {}
+          : { copayCents: copay?.amountCents ?? null, copayUnits: copay?.units ?? null }),
+      };
       try {
         const updated = await repo.update(id, changes);
         if (!updated) throw notFound();

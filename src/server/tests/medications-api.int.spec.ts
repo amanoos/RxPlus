@@ -147,6 +147,34 @@ describe('medications API (integration)', () => {
     expect(await edited.json()).toMatchObject({ notes: null });
   });
 
+  it('sets units per month and a copay, and clears the copay', async () => {
+    const { id, unitsPerMonth, copayCents } = await (await add({ rxcui: '314076' })).json();
+    expect({ unitsPerMonth, copayCents }).toEqual({ unitsPerMonth: 30, copayCents: null });
+
+    const set = await call('PATCH', `/api/medications/${id}`, {
+      unitsPerMonth: 60,
+      copay: { amountCents: 1000, units: 90 },
+    });
+    expect(await set.json()).toMatchObject({ unitsPerMonth: 60, copayCents: 1000, copayUnits: 90 });
+
+    const half = await call('PATCH', `/api/medications/${id}`, { unitsPerMonth: 15.5 });
+    expect(await half.json()).toMatchObject({ unitsPerMonth: 15.5, copayCents: 1000 });
+
+    const cleared = await call('PATCH', `/api/medications/${id}`, { copay: null });
+    expect(await cleared.json()).toMatchObject({ copayCents: null, copayUnits: null });
+
+    for (const body of [
+      { unitsPerMonth: 0 },
+      { unitsPerMonth: 1.25 },
+      { unitsPerMonth: 5000 },
+      { copay: { amountCents: 10.5, units: 30 } },
+      { copay: { amountCents: 1000 } },
+      { copay: { amountCents: -1, units: 30 } },
+    ]) {
+      expect((await call('PATCH', `/api/medications/${id}`, body)).status).toBe(400);
+    }
+  });
+
   it('sets, keeps and clears what a medication is taken for', async () => {
     const { id } = await (await add({ rxcui: '314076' })).json();
     const set = await call('PATCH', `/api/medications/${id}`, {

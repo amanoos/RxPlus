@@ -6,10 +6,28 @@ import { medications, type MedicationRow } from '../db/schema';
 export type Medication = MedicationRow;
 export type NewMedication = Omit<
   MedicationRow,
-  'id' | 'stoppedOn' | 'createdAt' | 'updatedAt' | 'takenForId' | 'takenForName'
+  | 'id'
+  | 'stoppedOn'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'takenForId'
+  | 'takenForName'
+  | 'unitsPerMonth'
+  | 'copayCents'
+  | 'copayUnits'
 >;
 export type MedicationPatch = Partial<
-  Pick<MedicationRow, 'notes' | 'startedOn' | 'stoppedOn' | 'takenForId' | 'takenForName'>
+  Pick<
+    MedicationRow,
+    | 'notes'
+    | 'startedOn'
+    | 'stoppedOn'
+    | 'takenForId'
+    | 'takenForName'
+    | 'unitsPerMonth'
+    | 'copayCents'
+    | 'copayUnits'
+  >
 >;
 
 /** The product is already on the active list (unique index medications_active_rxcui_idx). */
