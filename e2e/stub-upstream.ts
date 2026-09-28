@@ -37,6 +37,39 @@ for (const id of ['29046', '9997']) {
 
 const OPENFDA_LABELS = ['314076', '313096', '617310'];
 
+// ── Digest: two weeks of news, switched by POST /stub/digest-week/:n ─────────────
+// Week 0 is the default world the other specs use. Week 1 leaves aprocitentan off the
+// hypertension list; week 2 lists it and publishes a new lisinopril label version.
+let digestWeek = 0;
+/** Two of the four fixture papers with details and abstracts; the rest are only counted. */
+const DIGEST_PMIDS = ['37417783', '29971804'];
+const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000).toISOString().slice(0, 10);
+const study = (nctId: string, title: string, dates: { first: string; results?: string }) => ({
+  protocolSection: {
+    identificationModule: { nctId, briefTitle: title },
+    statusModule: {
+      overallStatus: dates.results ? 'COMPLETED' : 'RECRUITING',
+      startDateStruct: { date: '2025-01-15' },
+      studyFirstPostDateStruct: { date: dates.first },
+      ...(dates.results ? { resultsFirstPostDateStruct: { date: dates.results } } : {}),
+      lastUpdatePostDateStruct: { date: daysAgo(1) },
+    },
+    designModule: { phases: ['PHASE4'] },
+  },
+  hasResults: !!dates.results,
+});
+/** Trials updated this week: one newly posted, one with results, one other update. */
+const trialUpdates = () => ({
+  studies: [
+    study('NCT07685938', 'Lisinopril to Protect the Heart During Radiation', { first: daysAgo(2) }),
+    study('NCT04550481', 'Lisinopril in Fatty Liver Disease', {
+      first: '2020-09-16',
+      results: daysAgo(3),
+    }),
+    study('NCT05530655', 'Lisinopril Dose for Urinary Toxicity', { first: '2022-09-07' }),
+  ],
+});
+
 // ── Alternatives: a small world for lisinopril taken for hypertension ──────────
 const concept = (rxcui: string, name: string, tty = 'IN') => ({
   minConcept: { rxcui, name, tty },
@@ -141,6 +174,12 @@ createServer((req, res) => {
   res.setHeader('content-type', 'application/json');
   if (url === '/health') return res.end('{"ok":true}');
 
+  const week = /^\/stub\/digest-week\/(\d)$/.exec(url);
+  if (week && req.method === 'POST') {
+    digestWeek = Number(week[1]);
+    return res.end(JSON.stringify({ digestWeek }));
+  }
+
   if (url === '/ollama/api/chat' && req.method === 'POST') {
     let body = '';
     req.on('data', (chunk: Buffer) => (body += chunk));
@@ -165,6 +204,14 @@ createServer((req, res) => {
 
   if (url.startsWith('/pubmed/')) {
     const { pathname, searchParams } = new URL(url, 'http://stub');
+    if (pathname.endsWith('/esearch.fcgi') && searchParams.get('datetype') === 'edat') {
+      // The digest's entry-date search: two new papers, six in all. A week later the
+      // window starts on the last run's day, which holds just those two again.
+      const found = searchParams.get('term')?.includes('"lisinopril"');
+      const idlist = found ? DIGEST_PMIDS : [];
+      const count = !found ? '0' : digestWeek === 2 ? '2' : '6';
+      return res.end(JSON.stringify({ esearchresult: { count, idlist } }));
+    }
     if (pathname.endsWith('/esearch.fcgi')) {
       const lisinopril = searchParams.get('term')?.includes('"lisinopril"');
       const tier = searchParams.get('term')?.includes('[tiab]') ? 'reviews' : 'rcts';
@@ -182,6 +229,9 @@ createServer((req, res) => {
   if (url.startsWith('/ctgov/studies')) {
     const params = new URL(url, 'http://stub').searchParams;
     const lisinopril = params.get('query.intr') === 'lisinopril';
+    if (params.has('filter.advanced')) {
+      return res.end(JSON.stringify(lisinopril ? trialUpdates() : { studies: [] }));
+    }
     const status = params.get('filter.overallStatus');
     const fixture = !lisinopril
       ? 'none.json'
@@ -207,6 +257,13 @@ createServer((req, res) => {
     return res.end(readFileSync(join(OPENFDA_FIXTURES, `${fixture}.json`)));
   }
 
+  const hypertension =
+    '/REST/rxclass/classMembers.json?classId=D006973&relaSource=MEDRT&rela=may_treat';
+  if (url === hypertension && digestWeek === 1) {
+    const { drugMemberGroup } = alternatives[url] as ReturnType<typeof members>;
+    const listed = drugMemberGroup.drugMember.filter((m) => m.minConcept.name !== 'aprocitentan');
+    return res.end(JSON.stringify(members(...listed)));
+  }
   if (alternatives[url]) return res.end(JSON.stringify(alternatives[url]));
 
   if (url.startsWith('/openfda/drug/drugsfda.json')) {
@@ -233,7 +290,13 @@ createServer((req, res) => {
     // The summary asks for the newest label that has the sections it summarizes.
     if (search.includes('_exists_:indications_and_usage')) {
       if (rxcui === '314076') {
-        return res.end(readFileSync(join(OPENFDA_FIXTURES, 'summary-label-314076.json')));
+        const label = readFileSync(join(OPENFDA_FIXTURES, 'summary-label-314076.json'), 'utf8');
+        if (digestWeek < 2) return res.end(label);
+        // A new version of the same label, effective this week.
+        const body = JSON.parse(label);
+        body.results[0].version = '3';
+        body.results[0].effective_time = daysAgo(2).replace(/-/g, '');
+        return res.end(JSON.stringify(body));
       }
     } else if (rxcui && OPENFDA_LABELS.includes(rxcui)) {
       return res.end(readFileSync(join(OPENFDA_FIXTURES, `label-${rxcui}.json`)));

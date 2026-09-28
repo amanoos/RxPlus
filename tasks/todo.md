@@ -69,7 +69,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Verification
 
-- [ ] **Task 9: E2E with stub entry-date search, trial updates, label and approval changes** (M)
+- [x] **Task 9: E2E with stub entry-date search, trial updates, label and approval changes** (M)
   - Acceptance: the stub serves an entry-date PubMed search, trial updates, a second label version and a newly listed drug; the spec adds a medication, runs the digest, sees the badge, opens What's new, sees each kind of item, and the badge clears
   - Verify: `npm run e2e` (3 repeats stable)
   - Files: `e2e/stub-upstream.ts`, `e2e/digest.spec.ts`, fixtures

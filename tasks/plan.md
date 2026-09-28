@@ -51,7 +51,7 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 
 ### Phase 3: Verification
 
-- [ ] Task 9: E2E with stub entry-date search, trial updates, label and approval changes
+- [x] Task 9: E2E with stub entry-date search, trial updates, label and approval changes
 - [ ] Task 10: Coverage, README
 
 ### Checkpoint C: digest complete
