@@ -75,6 +75,7 @@ Cost Plus answers are not stored in Postgres (cache in memory only): they are pu
 - **Integration (test DB):** migration; PATCH with the new fields (validation: units > 0, copay both-or-neither); `/api/costs` with stubbed Cost Plus and RxNav.
 - **E2E:** the stub server gains Cost Plus answers; set units and a copay, see the drug page Prices section and the Costs page totals.
 - **Live check:** prices for the current medications (matches, not-sold cases).
+  - Result (2026-09-28, real RxNav and Cost Plus): lisinopril 10 MG $0.0131/tablet (30/month: $0.39), atorvastatin 20 MG $0.0137 ($0.41), metformin 500 MG $0.0106 ($0.32), spironolactone 25 MG $0.0297 ($0.89), amlodipine 5 MG $0.0068 ($0.20), all matched by NDC; apixaban 5 MG: not sold. Six products in 2.8 s.
 - **Coverage:** ≥ 80% lines on the new server and client code.
 
 ## Boundaries

@@ -32,8 +32,8 @@ Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] Live: prices for current medications (matches, not-sold cases)
+- [x] Unit and integration tests pass; migration applies
+- [x] Live: prices for current medications (matches, not-sold cases)
 
 ### Phase 2: Client
 
