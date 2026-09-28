@@ -1,6 +1,6 @@
 # Implementation Plan: pricing
 
-Spec: [SPEC-pricing.md](../SPEC-pricing.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [digest](digest/plan.md), [alternatives](alternatives/plan.md), [literature](literature/plan.md), [drug-info](drug-info/plan.md), [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
+Spec: [SPEC-pricing.md](../../SPEC-pricing.md) · Research: [free-data-sources](../../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [digest](../digest/plan.md), [alternatives](../alternatives/plan.md), [literature](../literature/plan.md), [drug-info](../drug-info/plan.md), [interactions](../interactions/plan.md), [medications](../medications/plan.md), [foundation](../foundation/plan.md)
 
 ## Overview
 
@@ -53,7 +53,7 @@ Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the
 ### Checkpoint C: pricing complete
 
 - [x] Spec success criteria 1–5
-- [ ] Human review
+- [x] Human review
 
 ## Risks and Mitigations
 

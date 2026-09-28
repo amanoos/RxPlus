@@ -1,6 +1,6 @@
 # Tasks: pricing
 
-Plan: [plan.md](plan.md) · Spec: [SPEC-pricing.md](../SPEC-pricing.md)
+Plan: [plan.md](plan.md) · Spec: [SPEC-pricing.md](../../SPEC-pricing.md)
 
 Every task also meets the Definition of Done: lint and tests pass, no regressions, behavior checked at runtime, docs updated.
 
@@ -70,4 +70,4 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 ### Checkpoint C: pricing complete
 
 - [x] Spec success criteria 1–5
-- [ ] Human review
+- [x] Human review

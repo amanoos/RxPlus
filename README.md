@@ -4,8 +4,7 @@ A personal, single-user medication watchlist. Built with [Analog](https://analog
 
 - What and why: [docs/intent/rx-tracker.md](docs/intent/rx-tracker.md)
 - Modules and build order: [CAPABILITY-MAP.md](CAPABILITY-MAP.md)
-- Current spec: [SPEC-pricing.md](SPEC-pricing.md) · Tasks: [tasks/todo.md](tasks/todo.md)
-- Done: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md)) · [medications](SPEC-medications.md) ([tasks](tasks/medications/todo.md)) · [interactions](SPEC-interactions.md) ([tasks](tasks/interactions/todo.md)) · [drug-info](SPEC-drug-info.md) ([tasks](tasks/drug-info/todo.md)) · [literature](SPEC-literature.md) ([tasks](tasks/literature/todo.md)) · [alternatives](SPEC-alternatives.md) ([tasks](tasks/alternatives/todo.md)) · [digest](SPEC-digest.md) ([tasks](tasks/digest/todo.md))
+- All modules built: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md)) · [medications](SPEC-medications.md) ([tasks](tasks/medications/todo.md)) · [interactions](SPEC-interactions.md) ([tasks](tasks/interactions/todo.md)) · [drug-info](SPEC-drug-info.md) ([tasks](tasks/drug-info/todo.md)) · [literature](SPEC-literature.md) ([tasks](tasks/literature/todo.md)) · [alternatives](SPEC-alternatives.md) ([tasks](tasks/alternatives/todo.md)) · [digest](SPEC-digest.md) ([tasks](tasks/digest/todo.md)) · [pricing](SPEC-pricing.md) ([tasks](tasks/pricing/todo.md))
 
 ## Configuration
 
