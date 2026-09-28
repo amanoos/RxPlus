@@ -128,7 +128,9 @@ export const routeMeta: RouteMeta = { title: 'Costs · RxPlus' };
                   }
                 </p>
                 <p>Your copay: {{ money(row.insuredCents) }}</p>
-                <p class="font-medium">{{ cheaper(row) }}</p>
+                @if (row.cheaper) {
+                  <p class="font-medium">{{ cheaper(row) }}</p>
+                }
                 <p-button
                   label="Edit"
                   size="small"

@@ -43,7 +43,7 @@ Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the
 
 ### Checkpoint B
 
-- [ ] Browser: Prices section, edit fields, Costs page totals; 375px and desktop
+- [x] Browser: Prices section, edit fields, Costs page totals; 375px and desktop
 
 ### Phase 3: Verification
 

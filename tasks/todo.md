@@ -51,7 +51,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Browser: Prices section, edit fields, Costs page totals; 375px and desktop
+- [x] Browser: Prices section, edit fields, Costs page totals; 375px and desktop
 
 ## Phase 3: Verification
 
