@@ -11,31 +11,31 @@ A personal, single-user medication watchlist. Built with [Analog](https://analog
 
 Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit it.
 
-| Variable                            | How to set it                                                                                                                |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `POSTGRES_PASSWORD`                 | Any strong password. Use letters and digits only: it is embedded in a connection URL.                                        |
-| `DATABASE_URL`                      | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own.                |
-| `APP_PASSWORD_HASH`                 | `npm run hash-password` (asks for your login password, at least 12 characters).                                              |
-| `SESSION_SECRET`                    | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                                        |
-| `COOKIE_SECURE`                     | `false` on the LAN over plain HTTP.                                                                                          |
-| `VITE_PRIMEUI_LICENSE`              | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                                |
-| `DB_DEV_PORT`                       | Host port for the dev database (default 5432; change it if that port is taken).                                              |
-| `APP_PORT`                          | Host port for the app in Docker (default 3000).                                                                              |
-| `RXNAV_BASE_URL`                    | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub.                |
-| `OPENFDA_BASE_URL`                  | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                                        |
-| `OPENFDA_API_KEY`                   | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.                              |
-| `MEDLINEPLUS_BASE_URL`              | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                                      |
-| `SUMMARY_PROVIDER`                  | `ollama` (default, local model) or `claude`. See [AI summaries](#ai-summaries).                                              |
-| `OLLAMA_BASE_URL`                   | Local dev: `http://127.0.0.1:11434` (not `localhost`, which Node may resolve to IPv6). Compose sets its own.                 |
-| `OLLAMA_MODEL`                      | The Ollama model to use, e.g. `qwen2.5:7b`. Without it, summaries are unavailable (the rest of the page works).              |
-| `OLLAMA_NUM_CTX`                    | Optional. Context window in tokens (default 16384); long labels need it.                                                     |
-| `OLLAMA_TIMEOUT_MS`                 | Optional. Per-attempt time limit (default 600000, 10 minutes).                                                               |
-| `ANTHROPIC_API_KEY`                 | Only for `SUMMARY_PROVIDER=claude`. Never logged.                                                                            |
-| `AI_DAILY_LIMIT`                    | Optional. Claude requests per day, summaries and research takeaways together (default 20). Doesn't apply to the local model. |
-| `OLLAMA_CHECK_MODEL`                | Optional. A (stronger) local model that checks each research takeaway against its quote. Off when unset.                     |
-| `NCBI_API_KEY`                      | Optional, free from an NCBI account. Raises PubMed's limit from 3 to 10 requests/s. Never logged.                            |
-| `NCBI_EMAIL`                        | Optional. Your contact address, sent to PubMed with `tool=rxplus` as NCBI asks.                                              |
-| `PUBMED_BASE_URL`, `CTGOV_BASE_URL` | Optional. PubMed E-utilities and ClinicalTrials.gov API bases; the e2e tests point them at a local stub.                     |
+| Variable                            | How to set it                                                                                                               |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `POSTGRES_PASSWORD`                 | Any strong password. Use letters and digits only: it is embedded in a connection URL.                                       |
+| `DATABASE_URL`                      | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own.               |
+| `APP_PASSWORD_HASH`                 | `npm run hash-password` (asks for your login password, at least 12 characters).                                             |
+| `SESSION_SECRET`                    | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                                       |
+| `COOKIE_SECURE`                     | `false` on the LAN over plain HTTP.                                                                                         |
+| `VITE_PRIMEUI_LICENSE`              | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                               |
+| `DB_DEV_PORT`                       | Host port for the dev database (default 5432; change it if that port is taken).                                             |
+| `APP_PORT`                          | Host port for the app in Docker (default 3000).                                                                             |
+| `RXNAV_BASE_URL`                    | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub.               |
+| `OPENFDA_BASE_URL`                  | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                                       |
+| `OPENFDA_API_KEY`                   | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.                             |
+| `MEDLINEPLUS_BASE_URL`              | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                                     |
+| `SUMMARY_PROVIDER`                  | `ollama` (default, local model) or `claude`. See [AI summaries](#ai-summaries).                                             |
+| `OLLAMA_BASE_URL`                   | Local dev: `http://127.0.0.1:11434` (not `localhost`, which Node may resolve to IPv6). Compose sets its own.                |
+| `OLLAMA_MODEL`                      | The Ollama model to use, e.g. `qwen2.5:7b`. Without it, summaries are unavailable (the rest of the page works).             |
+| `OLLAMA_NUM_CTX`                    | Optional. Context window in tokens (default 16384); long labels need it.                                                    |
+| `OLLAMA_TIMEOUT_MS`                 | Optional. Per-attempt time limit (default 600000, 10 minutes).                                                              |
+| `ANTHROPIC_API_KEY`                 | Only for `SUMMARY_PROVIDER=claude`. Never logged.                                                                           |
+| `AI_DAILY_LIMIT`                    | Optional. Claude requests per day: summaries, research and digest takeaways together (default 20). Not for the local model. |
+| `OLLAMA_CHECK_MODEL`                | Optional. A (stronger) local model that checks each research takeaway against its quote. Off when unset.                    |
+| `NCBI_API_KEY`                      | Optional, free from an NCBI account. Raises PubMed's limit from 3 to 10 requests/s. Never logged.                           |
+| `NCBI_EMAIL`                        | Optional. Your contact address, sent to PubMed with `tool=rxplus` as NCBI asks.                                             |
+| `PUBMED_BASE_URL`, `CTGOV_BASE_URL` | Optional. PubMed E-utilities and ClinicalTrials.gov API bases; the e2e tests point them at a local stub.                    |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
 
@@ -97,7 +97,7 @@ Each drug page has a **Research** section per ingredient:
 - **Trials:** up to 5 from ClinicalTrials.gov: completed with posted results, then recruiting.
 - **Hide** a paper you don't find useful and the next one takes its place (Show hidden → Show again to undo).
 
-Lists are stored and refreshed after 30 days, or with "Check for new research". New papers week to week belong to the upcoming digest.
+Lists are stored and refreshed after 30 days, or with "Check for new research". New papers week to week are in [What's new](#whats-new).
 
 ### Alternatives
 
@@ -110,6 +110,18 @@ Each drug page has an **Alternatives** section: other drugs used for the same pu
 - Each drug shows its first US approval year and whether a generic exists, and links to its own drug page. **Hide** removes one you don't care about ("Show hidden" to undo).
 
 How the lists are made: MED-RT's drugs for the condition, reduced to ingredients with a US prescribable single-ingredient product. Drugs also listed for a more specific form (e.g. pulmonary arterial hypertension) are kept only if their FDA label mentions the plain condition. Lists are built in the background (about a minute the first time for a common condition), stored, shared by every drug taken for that condition, and refreshed after 30 days or with "Check for new approvals". Known gaps: combination-only drugs (e.g. sacubitril/valsartan) are not listed, some drugs lack an FDA class and appear under "Other", and MED-RT can lag new approvals.
+
+### What's new
+
+Once a week the app collects what changed for the medications you take (stopped ones are skipped) and shows it on **What's new**, with the number of unread items in the navigation (a dot on the menu button on phones). Opening the page marks them read. No email or notifications.
+
+- **New papers:** papers entered in PubMed since the last digest with the ingredient in the title or abstract (new entries aren't indexed by topic or study type for weeks). The 5 most relevant per ingredient get a takeaway with its quote, as in Research; the rest are counted, with a link to the same search on PubMed.
+- **Trials:** trials first posted, or with results first posted, on ClinicalTrials.gov since the last digest.
+- **Newly listed drugs:** each condition your medications are taken for is rebuilt as in Alternatives; drugs that newly appear and were first approved in the last 5 years are reported.
+- **Label changes:** a new FDA label version for a product you take (the drug page then writes a new summary).
+- Nothing is reported twice. The first digest records the current condition lists and label versions without reporting them.
+
+**When:** every Monday at 6:00 AM in the server's time zone (`TZ`). If the server was off then, the digest runs at the next start once the last one is more than a week old; a run cut off by a restart is marked failed and run again. **Run now** on the page starts one at any time (one at a time). A run takes a few minutes: about a minute per condition, plus one takeaway call per ingredient with new papers (live, four medications: 5 minutes with `qwen2.5:7b`). If a source or the model fails, the digest says what couldn't be checked; if the run itself fails, the page offers Try again.
 
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 

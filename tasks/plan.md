@@ -37,8 +37,8 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] Live: a run over current medications (duration, counts per kind); a second run reports no repeats
+- [x] Unit and integration tests pass; migration applies
+- [x] Live: a run over current medications (duration, counts per kind); a second run reports no repeats
 
 ### Phase 2: Client
 
@@ -47,16 +47,16 @@ A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, f
 
 ### Checkpoint B
 
-- [ ] Browser: badge, page groups, read tracking, Run now; 375px and desktop
+- [x] Browser: badge, page groups, read tracking, Run now; 375px and desktop
 
 ### Phase 3: Verification
 
 - [x] Task 9: E2E with stub entry-date search, trial updates, label and approval changes
-- [ ] Task 10: Coverage, README
+- [x] Task 10: Coverage, README
 
 ### Checkpoint C: digest complete
 
-- [ ] Spec success criteria 1–8; live run reported
+- [x] Spec success criteria 1–8; live run reported
 - [ ] Human review, then `SPEC-pricing.md`
 
 ## Risks and Mitigations

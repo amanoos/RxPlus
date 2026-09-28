@@ -46,8 +46,8 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] Live: a run over current medications (duration, counts per kind); a second run reports no repeats
+- [x] Unit and integration tests pass; migration applies
+- [x] Live: a run over current medications (duration, counts per kind); a second run reports no repeats
 
 ## Phase 2: Client
 
@@ -65,7 +65,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Browser: badge, page groups, read tracking, Run now; 375px and desktop
+- [x] Browser: badge, page groups, read tracking, Run now; 375px and desktop
 
 ## Phase 3: Verification
 
@@ -75,7 +75,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `e2e/stub-upstream.ts`, `e2e/digest.spec.ts`, fixtures
   - Depends on: 8
 
-- [ ] **Task 10: Coverage, README** (S)
+- [x] **Task 10: Coverage, README** (S)
   - Acceptance: coverage ≥ 80% on `src/server/digest`, `src/app/features/digest`; README section on the digest (what, when, catch-up, Run now)
   - Verify: `npm run test:coverage`; production build
   - Files: `vite.config.ts`, `README.md`
@@ -83,5 +83,5 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint C: digest complete
 
-- [ ] Spec success criteria 1–8; live run reported
+- [x] Spec success criteria 1–8; live run reported
 - [ ] Human review, then `SPEC-pricing.md`

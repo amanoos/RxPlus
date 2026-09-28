@@ -54,6 +54,7 @@ export default defineConfig(() => ({
         'src/server/alternatives/**',
         'src/app/features/alternatives/**',
         'src/server/digest/**',
+        'src/app/features/digest/**',
       ],
       exclude: ['**/*.spec.ts', '**/fixtures/**', '**/*.fixture.ts'],
       reporter: ['text-summary', 'html'],
