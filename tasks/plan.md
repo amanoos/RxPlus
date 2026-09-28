@@ -66,8 +66,8 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 
 ### Checkpoint C: literature complete
 
-- [ ] Spec success criteria 1–8; live takeaways with the verified rate reported
-- [ ] Human review, then `SPEC-alternatives.md`
+- [x] Spec success criteria 1–8; live takeaways with the verified rate reported (8/10 linked; background-refresh failures show no note)
+- [x] Human review, then `SPEC-alternatives.md`
 
 ## Risks and Mitigations
 

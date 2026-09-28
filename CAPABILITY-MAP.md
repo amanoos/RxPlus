@@ -33,4 +33,5 @@ Build order: foundation → medications → interactions → drug-info → liter
 - [SPEC-medications.md](SPEC-medications.md) (done, awaiting review)
 - [SPEC-interactions.md](SPEC-interactions.md) (done, awaiting review)
 - [SPEC-drug-info.md](SPEC-drug-info.md) (done, awaiting review)
-- [SPEC-literature.md](SPEC-literature.md) (approved)
+- [SPEC-literature.md](SPEC-literature.md) (done, awaiting review)
+- [SPEC-alternatives.md](SPEC-alternatives.md) (approved)
