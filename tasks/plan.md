@@ -1,73 +1,68 @@
-# Implementation Plan: digest
+# Implementation Plan: pricing
 
-Spec: [SPEC-digest.md](../SPEC-digest.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [alternatives](alternatives/plan.md), [literature](literature/plan.md), [drug-info](drug-info/plan.md), [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
+Spec: [SPEC-pricing.md](../SPEC-pricing.md) · Research: [free-data-sources](../docs/research/free-data-sources.md) · Tasks: [todo.md](todo.md) · Previous: [digest](digest/plan.md), [alternatives](alternatives/plan.md), [literature](literature/plan.md), [drug-info](drug-info/plan.md), [interactions](interactions/plan.md), [medications](medications/plan.md), [foundation](foundation/plan.md)
 
 ## Overview
 
-A weekly run (Monday 6:00 AM, catch-up after downtime, or "Run now") collects, for the active medications: new PubMed papers (5 per ingredient with takeaways, the rest counted), newly posted trials or results, drugs newly listed for the conditions they're taken for, and new FDA label versions. Shown on "What's new" with an unread badge.
+Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the owner's units per month and copay per fill, shown as monthly cash vs insured on each drug page (Prices) and on a Costs page with totals.
 
 ## Architecture Decisions
 
-- **Collectors are separate and small**, one per kind (papers, trials, approvals, labels), each `(context) → items + notes`. The run orchestrates them per ingredient/condition/product and stores one digest in a single transaction at the end, so a digest is never half-written.
-- **Reuse, don't copy:** PubMed and ClinicalTrials.gov clients gain one "recent" query each; takeaways come from the literature takeaway provider and checks; approvals rebuild the alternatives condition lists through the existing builder and diff `alternative_drugs` before/after; labels use the openFDA client's `summaryLabel(rxcui, { refresh: true })`.
-- **De-duplication by external id** (PMID, NCT id + event, ingredient for approvals, set id + version for labels) across digests.
-- **Baselines** for approvals and labels: the first time a condition/product is seen, record it without reporting.
-- **Scheduling** with Nitro scheduled tasks (`experimental.tasks`, cron `0 6 * * 1`, server `TZ`), plus a startup plugin for catch-up and interrupted runs. A run holds a row in `digests` with status `running` (one at a time by a partial unique index).
-- **The page reads, the server runs:** `GET` never starts work; `POST /run` does.
+- **One client per upstream:** `src/server/costplus/client.ts` (query by ingredient, parse dollar strings, 24 h cache, spacing, `COSTPLUS_BASE_URL` for the e2e stub); RxNav client gains `ndcs(rxcui)` (7 days).
+- **Match by NDC only:** a product's price is the Cost Plus item whose NDC is in the product's RxNorm NDCs (normalized to 11 digits). No name fallback.
+- **Pure math in one place:** `src/server/pricing/math.ts` (monthly cash, insured, difference, totals, cents rounding) shared by both routes.
+- **Owner entries live on `medications`** (migration 0006), edited through the existing PATCH route and edit dialog.
+- **No price storage:** Cost Plus answers stay in memory; pages always read through the server.
 
 ## Dependency Graph
 
 ```
-1 Client queries ─┐
-2 Schema + repo ──┼─ 3 Papers + trials collectors ─┐
-                  └─ 4 Approvals + labels collectors┴─ 5 Run, schedule, catch-up ── 6 Routes ── 7 NgRx ── 8 Page + badge
-                                                                                               9 E2E ── 10 Coverage, README
+1 Cost Plus client + RxNav ndcs ─┐
+2 Migration + medication fields ─┼─ 3 Pricing service + routes ── 4 NgRx pricing ── 5 Prices section + edit fields ── 6 Costs page
+                                 │                                                                                    7 E2E ── 8 Coverage, README
 ```
 
 ## Task List
 
 ### Phase 1: Server
 
-- [x] Task 1: PubMed recent papers and ClinicalTrials.gov recent updates
-- [x] Task 2: Schema, migration 0005 and repository
-- [x] Task 3: Papers and trials collectors
-- [x] Task 4: Approvals and label collectors (baselines)
-- [x] Task 5: Run orchestration, weekly schedule and catch-up
-- [x] Task 6: Digest routes
+- [ ] Task 1: Cost Plus client and RxNav NDCs
+- [ ] Task 2: Migration 0006 and medication cost fields
+- [ ] Task 3: Pricing math, service and routes
 
 ### Checkpoint A
 
-- [x] Unit and integration tests pass; migration applies
-- [x] Live: a run over current medications (duration, counts per kind); a second run reports no repeats
+- [ ] Unit and integration tests pass; migration applies
+- [ ] Live: prices for current medications (matches, not-sold cases)
 
 ### Phase 2: Client
 
-- [x] Task 7: NgRx `digest` feature and API service
-- [x] Task 8: "What's new" page and navigation badge
+- [ ] Task 4: NgRx pricing feature and API service
+- [ ] Task 5: Drug page Prices section and cost fields in the edit dialog
+- [ ] Task 6: Costs page and navigation
 
 ### Checkpoint B
 
-- [x] Browser: badge, page groups, read tracking, Run now; 375px and desktop
+- [ ] Browser: Prices section, edit fields, Costs page totals; 375px and desktop
 
 ### Phase 3: Verification
 
-- [x] Task 9: E2E with stub entry-date search, trial updates, label and approval changes
-- [x] Task 10: Coverage, README
+- [ ] Task 7: E2E with a Cost Plus stub
+- [ ] Task 8: Coverage, README
 
-### Checkpoint C: digest complete
+### Checkpoint C: pricing complete
 
-- [x] Spec success criteria 1–8; live run reported
-- [x] Human review, then `SPEC-pricing.md`
+- [ ] Spec success criteria 1–5
+- [ ] Human review
 
 ## Risks and Mitigations
 
-| Risk                                             | Impact | Mitigation                                                                                           |
-| ------------------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------- |
-| Nitro scheduled tasks are experimental           | Med    | Catch-up on startup covers missed runs; "Run now"; the task is a thin wrapper over a tested function |
-| Long runs on the local model                     | Med    | 5 papers per ingredient, one call each; run in the background; one at a time                         |
-| Weekly condition rebuilds are slow (~1 min each) | Low    | Only for conditions set as "taken for"; they refresh the alternatives lists too                      |
-| Noisy trial updates                              | Low    | Only newly posted trials and newly posted results                                                    |
-| Restart during a run                             | Low    | Startup marks it failed and catches up                                                               |
+| Risk                                                                      | Impact | Mitigation                                                                            |
+| ------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| Cost Plus API is unofficial-looking (cloud function URL) and could change | Med    | One client, base URL configurable, errors shown as "Prices are unavailable right now" |
+| NDC formats differ (10 vs 11 digits, hyphens)                             | Med    | Normalize both sides to 11 digits; unit tests with real fixtures                      |
+| Monthly figures without fees understate cash cost                         | Low    | Fee note with product link on every price                                             |
+| Fractional units (0.5) and cents rounding                                 | Low    | Numeric columns; math in cents with one rounding step                                 |
 
 ## Open Questions
 
