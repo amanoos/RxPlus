@@ -31,7 +31,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 4: NgRx pricing feature and API service** (S)
+- [x] **Task 4: NgRx pricing feature and API service** (S)
   - Acceptance: load prices per product, load costs; reload after a medication update
   - Verify: reducer, selector and effect tests
   - Files: `src/app/features/pricing/**`, `src/app/store/app.store.ts`
