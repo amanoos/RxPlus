@@ -52,7 +52,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 
 - [x] Task 8: NgRx `literature` feature and API service
 - [x] Task 9: Research section: papers with takeaways and quotes shown inline
-- [ ] Task 10: Hide and undo, trials list, footer and "Check for new research"
+- [x] Task 10: Hide and undo, trials list, footer and "Check for new research"
 - [ ] Task 10b: Summary panel "Show quotes" toggle
 
 ### Checkpoint B

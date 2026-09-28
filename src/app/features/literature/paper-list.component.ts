@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TagModule } from 'primeng/tag';
 
 import type { Paper, StudyType } from './literature';
@@ -24,6 +24,17 @@ const STUDY_TYPES: Record<StudyType, string> = {
             <span class="text-surface-600 dark:text-surface-300">
               {{ source(paper) }}
             </span>
+            @if (action(); as a) {
+              <button
+                type="button"
+                class="ml-auto text-xs text-surface-600 hover:underline dark:text-surface-300"
+                [attr.aria-label]="(a === 'hide' ? 'Hide: ' : 'Show again: ') + paper.title"
+                data-testid="paper-action"
+                (click)="act.emit(paper.pmid)"
+              >
+                {{ a === 'hide' ? 'Hide' : 'Show again' }}
+              </button>
+            }
           </div>
           <a
             class="mt-1 block font-medium hover:underline"
@@ -92,6 +103,10 @@ export class PaperListComponent {
   readonly papers = input.required<Paper[]>();
   /** Takeaways are being written right now. */
   readonly writing = input(false);
+  /** Button on each paper: hide it, or show a hidden one again. */
+  readonly action = input<'hide' | 'unhide' | null>(null);
+  /** The PMID whose button was pressed. */
+  readonly act = output<string>();
 
   /** "Circulation · 1999" */
   source(paper: Paper): string {

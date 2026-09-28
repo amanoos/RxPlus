@@ -68,3 +68,30 @@ describe('PaperListComponent', () => {
     expect(el.textContent).toContain('Writing a takeaway…');
   });
 });
+
+describe('PaperListComponent actions', () => {
+  it('offers Hide or Show again and reports the paper', async () => {
+    TestBed.configureTestingModule({ providers: [providePrimeNG()] });
+    const fixture = TestBed.createComponent(PaperListComponent);
+    fixture.componentRef.setInput('papers', [paperFixture()]);
+    const acted: string[] = [];
+    fixture.componentInstance.act.subscribe((pmid) => acted.push(pmid));
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('[data-testid="paper-action"]')).toBeNull();
+
+    fixture.componentRef.setInput('action', 'hide');
+    await fixture.whenStable();
+    const button = el.querySelector('[data-testid="paper-action"]') as HTMLButtonElement;
+    expect(button.textContent?.trim()).toBe('Hide');
+    expect(button.getAttribute('aria-label')).toMatch(/^Hide: ACE inhibitor induced cough/);
+    button.click();
+    expect(acted).toEqual(['37417783']);
+
+    fixture.componentRef.setInput('action', 'unhide');
+    await fixture.whenStable();
+    expect(el.querySelector('[data-testid="paper-action"]')?.textContent?.trim()).toBe(
+      'Show again',
+    );
+  });
+});

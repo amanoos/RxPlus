@@ -88,7 +88,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/literature/research-section.component.ts`, `paper-list.component.ts` (+ specs), drug page
   - Depends on: 8
 
-- [ ] **Task 10: Hide, trials, footer and refresh** (S)
+- [x] **Task 10: Hide, trials, footer and refresh** (S)
   - Acceptance: Hide button per paper and "Show hidden (n)" with Unhide; trials list (NCT id, title → ClinicalTrials.gov, status tag, phase); footer with sources, date, AI model; "Check for new research"
   - Verify: component tests; browser check
   - Files: `trial-list.component.ts`, `paper-list.component.ts`, `research-section.component.ts` (+ specs)

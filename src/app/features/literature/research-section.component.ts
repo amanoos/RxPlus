@@ -18,6 +18,7 @@ import { MessageModule } from 'primeng/message';
 
 import type { IngredientLiterature } from './literature';
 import { PaperListComponent } from './paper-list.component';
+import { TrialListComponent } from './trial-list.component';
 import { LiteratureActions } from './store/literature.actions';
 import { literatureFeature } from './store/literature.reducer';
 
@@ -27,7 +28,7 @@ import { literatureFeature } from './store/literature.reducer';
  */
 @Component({
   selector: 'app-research-section',
-  imports: [ButtonModule, MessageModule, PaperListComponent],
+  imports: [ButtonModule, MessageModule, PaperListComponent, TrialListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section aria-labelledby="research-heading" data-testid="research">
@@ -91,13 +92,75 @@ import { literatureFeature } from './store/literature.reducer';
                 <app-paper-list
                   [papers]="lit.papers"
                   [writing]="lit.takeaways.status === 'pending'"
+                  action="hide"
+                  (act)="hide(lit.rxcui, $event)"
                 />
               </div>
             } @else {
               <p class="mt-2 text-sm">No reviews or randomized trials with abstracts were found.</p>
             }
+
+            @if (lit.hidden.length) {
+              <button
+                type="button"
+                class="mt-3 text-xs underline"
+                [attr.aria-expanded]="showingHidden().has(lit.rxcui)"
+                data-testid="toggle-hidden"
+                (click)="toggleHidden(lit.rxcui)"
+              >
+                {{
+                  showingHidden().has(lit.rxcui)
+                    ? 'Hide the hidden papers'
+                    : 'Show hidden (' + lit.hidden.length + ')'
+                }}
+              </button>
+              @if (showingHidden().has(lit.rxcui)) {
+                <div class="mt-2 opacity-80" data-testid="hidden-papers">
+                  <app-paper-list
+                    [papers]="lit.hidden"
+                    action="unhide"
+                    (act)="unhide(lit.rxcui, $event)"
+                  />
+                </div>
+              }
+            }
+
+            @if (lit.trials.length) {
+              <h4 class="mt-6 text-sm font-semibold" [id]="'trials-' + lit.rxcui">
+                Clinical trials
+              </h4>
+              <div class="mt-2" [attr.aria-labelledby]="'trials-' + lit.rxcui">
+                <app-trial-list [trials]="lit.trials" />
+              </div>
+            }
           </div>
         }
+
+        @if (e.hideError) {
+          <p-message severity="warn" styleClass="mt-3" data-testid="hide-error">{{
+            e.hideError
+          }}</p-message>
+        }
+        @if (e.error && e.data) {
+          <p-message severity="warn" styleClass="mt-3" data-testid="refresh-error">{{
+            e.error
+          }}</p-message>
+        }
+
+        <footer
+          class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-surface-200 pt-3 text-xs text-surface-600 dark:border-surface-800 dark:text-surface-300"
+        >
+          <p data-testid="research-footer">{{ footer() }}</p>
+          <p-button
+            label="Check for new research"
+            size="small"
+            severity="secondary"
+            [text]="true"
+            [loading]="e.refreshing"
+            data-testid="refresh-research"
+            (onClick)="refresh()"
+          />
+        </footer>
       }
     </section>
   `,
@@ -111,6 +174,29 @@ export class ResearchSectionComponent {
   private readonly entities = this.store.selectSignal(literatureFeature.selectEntities);
   readonly entry = computed(() => this.entities()[this.rxcui()] ?? null);
   readonly multiple = computed(() => (this.entry()?.data?.ingredients.length ?? 0) > 1);
+
+  /** Ingredients whose hidden papers are listed. */
+  readonly showingHidden = signal(new Set<string>());
+
+  /** "Papers from PubMed, trials from ClinicalTrials.gov, found Sep 27, 2026. …" */
+  readonly footer = computed(() => {
+    const lits = this.entry()?.data?.ingredients ?? [];
+    const found = lits[0]?.fetchedAt
+      ? new Date(lits[0].fetchedAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })
+      : null;
+    const job = lits.find((l) => l.takeaways.model)?.takeaways;
+    const ai = job
+      ? ` Takeaways written by AI (${job.model}, ${job.provider === 'claude' ? 'Claude' : 'local'}) from the abstracts.`
+      : '';
+    return (
+      `Papers from PubMed, trials from ClinicalTrials.gov${found ? `, found ${found}` : ''}.` +
+      `${ai} Check anything important with your pharmacist.`
+    );
+  });
 
   /** Ticks every second in the browser (never during SSR, which must settle). */
   private readonly now = signal(Date.now());
@@ -146,5 +232,25 @@ export class ResearchSectionComponent {
 
   startTakeaways(): void {
     this.store.dispatch(LiteratureActions.startTakeaways({ rxcui: this.rxcui() }));
+  }
+
+  refresh(): void {
+    this.store.dispatch(LiteratureActions.refresh({ rxcui: this.rxcui() }));
+  }
+
+  hide(ingredient: string, pmid: string): void {
+    this.store.dispatch(LiteratureActions.hidePaper({ rxcui: this.rxcui(), ingredient, pmid }));
+  }
+
+  unhide(ingredient: string, pmid: string): void {
+    this.store.dispatch(LiteratureActions.unhidePaper({ rxcui: this.rxcui(), ingredient, pmid }));
+  }
+
+  toggleHidden(ingredient: string): void {
+    this.showingHidden.update((shown) => {
+      const next = new Set(shown);
+      if (!next.delete(ingredient)) next.add(ingredient);
+      return next;
+    });
   }
 }

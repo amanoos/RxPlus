@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
 
-import { ingredientFixture, literatureFixture } from './literature.fixture';
+import { ingredientFixture, literatureFixture, paperFixture } from './literature.fixture';
 import type { LiteratureResponse } from './literature';
 import { ResearchSectionComponent } from './research-section.component';
 import { LiteratureActions } from './store/literature.actions';
@@ -123,5 +123,58 @@ describe('ResearchSectionComponent', () => {
       ),
     );
     expect(q('research-error')?.textContent).toContain('PubMed is unavailable right now.');
+  });
+
+  it('hides a paper, lists hidden ones on request, and shows them again', async () => {
+    const data = literatureFixture(
+      ingredientFixture({ hidden: [paperFixture({ pmid: '999', title: 'Hidden paper' })] }),
+    );
+    const { store, el, q, fixture } = await render(stateWith(data));
+    (el.querySelector('[data-testid="paper-action"]') as HTMLButtonElement).click();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      LiteratureActions.hidePaper({ rxcui, ingredient: '29046', pmid: '37417783' }),
+    );
+
+    expect(q('toggle-hidden')?.textContent?.trim()).toBe('Show hidden (1)');
+    (q('toggle-hidden') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    const hidden = q('hidden-papers')!;
+    expect(hidden.textContent).toContain('Hidden paper');
+    (hidden.querySelector('[data-testid="paper-action"]') as HTMLButtonElement).click();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      LiteratureActions.unhidePaper({ rxcui, ingredient: '29046', pmid: '999' }),
+    );
+  });
+
+  it('shows trials, the sources and model, and checks for new research', async () => {
+    const { store, el, q } = await render(stateWith(literatureFixture()));
+    expect(el.textContent).toContain('Clinical trials');
+    expect(el.querySelectorAll('[data-testid="trial"]')).toHaveLength(2);
+    expect(q('research-footer')?.textContent).toBe(
+      'Papers from PubMed, trials from ClinicalTrials.gov, found Sep 27, 2026. ' +
+        'Takeaways written by AI (qwen2.5:7b, local) from the abstracts. ' +
+        'Check anything important with your pharmacist.',
+    );
+    (q('refresh-research')?.querySelector('button') as HTMLButtonElement).click();
+    expect(store.dispatch).toHaveBeenCalledWith(LiteratureActions.refresh({ rxcui }));
+  });
+
+  it('explains failed hides and refreshes while keeping the lists', async () => {
+    const { q } = await render(
+      stateWith(literatureFixture(), (s) => {
+        let next = literatureFeature.reducer(
+          s,
+          LiteratureActions.hideFailure({ rxcui, error: 'Paper not found.' }),
+        );
+        next = literatureFeature.reducer(
+          next,
+          LiteratureActions.refreshFailure({ rxcui, error: 'PubMed is unavailable right now.' }),
+        );
+        return next;
+      }),
+    );
+    expect(q('hide-error')?.textContent).toContain('Paper not found.');
+    expect(q('refresh-error')?.textContent).toContain('PubMed is unavailable right now.');
+    expect(q('research-ingredient')).not.toBeNull();
   });
 });
