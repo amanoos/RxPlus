@@ -10,6 +10,7 @@ import { TagModule } from 'primeng/tag';
 import { ReportedReactionsComponent } from '../../../features/drug-info/reported-reactions.component';
 import { DrugInfoActions } from '../../../features/drug-info/store/drug-info.actions';
 import { SummaryPanelComponent } from '../../../features/drug-info/summary-panel.component';
+import { AlternativesSectionComponent } from '../../../features/alternatives/alternatives-section.component';
 import { ResearchSectionComponent } from '../../../features/literature/research-section.component';
 import { drugInfoFeature } from '../../../features/drug-info/store/drug-info.reducer';
 
@@ -23,6 +24,7 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
     ReportedReactionsComponent,
     SummaryPanelComponent,
     ResearchSectionComponent,
+    AlternativesSectionComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -101,6 +103,10 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
       </div>
 
       <div class="mt-8">
+        <app-alternatives-section [rxcui]="rxcui()" [drugName]="drugName()" />
+      </div>
+
+      <div class="mt-8">
         <app-reported-reactions
           [reactions]="entry()?.reactions?.data ?? null"
           [status]="entry()?.reactions?.status ?? 'loading'"
@@ -165,6 +171,11 @@ export default class DrugPage {
   readonly classes = computed(() => {
     const f = this.facts();
     return f ? [...new Set([...f.epcClasses, ...f.atcClasses])] : [];
+  });
+  /** "lisinopril" or "lisinopril and hydrochlorothiazide", for questions about the drug. */
+  readonly drugName = computed(() => {
+    const names = this.facts()?.ingredients.map((i) => i.name) ?? [];
+    return names.length ? names.join(' and ') : 'it';
   });
   /** "10 MG · Oral Tablet · Zestril" */
   readonly details = computed(() => {

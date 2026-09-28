@@ -69,7 +69,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/app/features/alternatives/**`, `src/app/store/app.store.ts`
   - Depends on: 5
 
-- [ ] **Task 8: Alternatives section** (M)
+- [x] **Task 8: Alternatives section** (M)
   - Acceptance: after Research; the always-visible note; condition chooser (buttons from the drug's uses) and "For <condition> (change)"; groups "New for …", "Same class (…)", "Other classes for …" (collapsible per class, with counts); rows with link, "New (year)", first approved, generic, Hide; "Show hidden"; building / failed / skipped states; footer with sources, date, "Check for new approvals"; per ingredient for combinations
   - Verify: component tests; browser check
   - Files: `src/app/features/alternatives/*.component.ts` (+ specs), drug page
@@ -77,7 +77,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint B
 
-- [ ] Browser: chooser, groups, links, hide/undo, building state; 375px and desktop
+- [x] Browser: chooser, groups, links, hide/undo, building state; 375px and desktop
 
 ## Phase 3: Verification
 

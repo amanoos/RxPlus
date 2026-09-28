@@ -45,11 +45,11 @@ An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly ap
 
 - [x] Task 6: "Taken for" in the medication edit dialog and card
 - [x] Task 7: NgRx `alternatives` feature and API service
-- [ ] Task 8: Alternatives section: chooser, groups, drug rows, hide, states, footer
+- [x] Task 8: Alternatives section: chooser, groups, drug rows, hide, states, footer
 
 ### Checkpoint B
 
-- [ ] Browser: chooser, groups, links, hide/undo, building state; 375px and desktop
+- [x] Browser: chooser, groups, links, hide/undo, building state; 375px and desktop
 
 ### Phase 3: Verification
 

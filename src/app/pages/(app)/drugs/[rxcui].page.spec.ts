@@ -12,6 +12,7 @@ import {
   initialDrugInfoState,
   type DrugInfoState,
 } from '../../../features/drug-info/store/drug-info.reducer';
+import { initialAlternativesState } from '../../../features/alternatives/store/alternatives.reducer';
 import { initialLiteratureState } from '../../../features/literature/store/literature.reducer';
 import DrugPage from './[rxcui].page';
 
@@ -42,7 +43,13 @@ describe('DrugPage', () => {
       imports: [DrugPage],
       providers: [
         providePrimeNG(),
-        provideMockStore({ initialState: { drugInfo, literature: initialLiteratureState } }),
+        provideMockStore({
+          initialState: {
+            drugInfo,
+            literature: initialLiteratureState,
+            alternatives: initialAlternativesState,
+          },
+        }),
         { provide: ActivatedRoute, useValue: { paramMap: params } },
       ],
     }).compileComponents();
@@ -104,6 +111,9 @@ describe('DrugPage', () => {
     const { el } = await setup(stateWith(factsFixture()));
     expect(el.querySelector('app-summary-panel')?.textContent).toContain('Loading summary…');
     expect(el.querySelector('app-research-section')?.textContent).toContain('Research');
+    expect(el.querySelector('app-alternatives-section')?.textContent).toContain(
+      'Not a recommendation',
+    );
   });
 
   it('says which optional sources were unavailable', async () => {
