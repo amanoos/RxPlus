@@ -43,7 +43,7 @@ An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly ap
 
 ### Phase 2: Client
 
-- [ ] Task 6: "Taken for" in the medication edit dialog and card
+- [x] Task 6: "Taken for" in the medication edit dialog and card
 - [ ] Task 7: NgRx `alternatives` feature and API service
 - [ ] Task 8: Alternatives section: chooser, groups, drug rows, hide, states, footer
 

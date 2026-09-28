@@ -57,7 +57,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 2: Client
 
-- [ ] **Task 6: "Taken for" on medications** (S)
+- [x] **Task 6: "Taken for" on medications** (S)
   - Acceptance: the edit dialog has a "Taken for" select filled from the drug's known uses (loaded from `/api/drugs/:rxcui`), with "Not set"; the card shows "For: <condition>"; NgRx medications update carries `takenFor`
   - Verify: component and store tests
   - Files: `edit-medication-dialog.component.ts`, `medication-card.component.ts`, `medication.ts`, medications store (+ specs)

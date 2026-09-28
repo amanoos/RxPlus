@@ -26,6 +26,8 @@ export interface DrugFactsResponse extends Product {
   mayTreat: string[];
   mayPrevent: string[];
   avoidWith: string[];
+  /** Known uses with their MED-RT ids (for "taken for"), across ingredients. */
+  uses: { id: string; name: string }[];
   label: {
     setId: string;
     version: string;
@@ -117,6 +119,9 @@ export function createDrugFactsService({ medications, rxnav, openFda, medlinePlu
         mayTreat: union(known.map((f) => f.mayTreat)),
         mayPrevent: union(known.map((f) => f.mayPrevent)),
         avoidWith: union(known.map((f) => f.avoidWith)),
+        uses: [...new Map(known.flatMap((f) => f.uses).map((u) => [u.id, u])).values()].sort(
+          (a, b) => a.name.localeCompare(b.name),
+        ),
         label: label
           ? {
               setId: label.setId,

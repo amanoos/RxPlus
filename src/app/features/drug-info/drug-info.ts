@@ -17,6 +17,8 @@ export interface DrugFacts {
   mayTreat: string[];
   mayPrevent: string[];
   avoidWith: string[];
+  /** Known uses with their MED-RT ids, for "taken for". */
+  uses: { id: string; name: string }[];
   label: {
     setId: string;
     version: string;

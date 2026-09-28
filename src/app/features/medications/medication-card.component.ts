@@ -47,6 +47,10 @@ import type { Medication } from './medication';
         </p>
       }
 
+      @if (med.takenForName) {
+        <p class="text-sm" data-testid="taken-for">For: {{ med.takenForName }}</p>
+      }
+
       @if (med.notes) {
         <p data-testid="notes" class="whitespace-pre-line text-sm">{{ med.notes }}</p>
       }

@@ -30,6 +30,11 @@ describe('MedicationCardComponent', () => {
     expect(el.textContent).toContain('with breakfast');
   });
 
+  it('shows what it is taken for', async () => {
+    const el = await render({ takenForId: 'D006973', takenForName: 'Hypertension' });
+    expect(el.querySelector('[data-testid="taken-for"]')?.textContent).toBe('For: Hypertension');
+  });
+
   it('links to the drug page', async () => {
     const el = await render();
     expect(el.querySelector('[data-testid="about-drug"]')?.getAttribute('href')).toBe(

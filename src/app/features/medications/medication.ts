@@ -13,6 +13,9 @@ export interface Medication {
   startedOn: string | null;
   /** YYYY-MM-DD; null while taking it. */
   stoppedOn: string | null;
+  /** The condition it's taken for (MED-RT id and name), if set. */
+  takenForId: string | null;
+  takenForName: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,4 +26,7 @@ export interface NewMedication {
   startedOn?: string | null;
 }
 
-export type MedicationChanges = Partial<Pick<Medication, 'notes' | 'startedOn' | 'stoppedOn'>>;
+export type MedicationChanges = Partial<Pick<Medication, 'notes' | 'startedOn' | 'stoppedOn'>> & {
+  /** null clears it. */
+  takenFor?: { id: string; name: string } | null;
+};

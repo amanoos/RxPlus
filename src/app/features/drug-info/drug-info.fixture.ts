@@ -15,6 +15,10 @@ export function factsFixture(overrides: Partial<DrugFacts> = {}): DrugFacts {
     mayTreat: ['Heart Failure', 'Hypertension'],
     mayPrevent: [],
     avoidWith: ['Angioedema', 'Pregnancy'],
+    uses: [
+      { id: 'D006333', name: 'Heart Failure' },
+      { id: 'D006973', name: 'Hypertension' },
+    ],
     label: {
       setId: 'set-1',
       version: '2',

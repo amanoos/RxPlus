@@ -89,7 +89,10 @@ describe('drug-info API (integration)', () => {
             mayTreat: ['Heart Failure', 'Hypertension'],
             mayPrevent: [],
             avoidWith: ['Angioedema'],
-            uses: [],
+            uses: [
+              { id: 'D006333', name: 'Heart Failure' },
+              { id: 'D006973', name: 'Hypertension' },
+            ],
           }
         : {
             epcClasses: ['Thiazide Diuretic'],
@@ -97,7 +100,10 @@ describe('drug-info API (integration)', () => {
             mayTreat: ['Edema', 'Hypertension'],
             mayPrevent: [],
             avoidWith: ['Anuria'],
-            uses: [],
+            uses: [
+              { id: 'D004487', name: 'Edema' },
+              { id: 'D006973', name: 'Hypertension' },
+            ],
           },
     );
     openFda.summaryLabel.mockResolvedValue({
@@ -133,6 +139,11 @@ describe('drug-info API (integration)', () => {
       epcClasses: ['Angiotensin Converting Enzyme Inhibitor', 'Thiazide Diuretic'],
       mayTreat: ['Edema', 'Heart Failure', 'Hypertension'],
       avoidWith: ['Angioedema', 'Anuria'],
+      uses: [
+        { id: 'D004487', name: 'Edema' },
+        { id: 'D006333', name: 'Heart Failure' },
+        { id: 'D006973', name: 'Hypertension' },
+      ],
       label: {
         setId: '00000000-0000-0000-0000-000000000001',
         version: '3',

@@ -14,6 +14,8 @@ export function medicationFixture(overrides: Partial<Medication> = {}): Medicati
     notes: null,
     startedOn: '2026-01-15',
     stoppedOn: null,
+    takenForId: null,
+    takenForName: null,
     createdAt: '2026-01-15T12:00:00.000Z',
     updatedAt: '2026-01-15T12:00:00.000Z',
     ...overrides,
