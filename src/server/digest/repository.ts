@@ -183,6 +183,24 @@ export function createDigestRepository(db: Db) {
       return new Map(rows.map((r) => [r.productRxcui, r]));
     },
 
+    /** Records a Claude call before it's made, so the daily limit sees it. */
+    async countClaudeCall(id: string): Promise<void> {
+      await db
+        .update(digests)
+        .set({ claudeCalls: sql`${digests.claudeCalls} + 1` })
+        .where(eq(digests.id, id));
+    },
+
+    /** Claude calls made by digests started today (in `timeZone`). */
+    async claudeCallsToday(timeZone: string): Promise<number> {
+      const startOfDay = sql`(date_trunc('day', now() at time zone ${timeZone}) at time zone ${timeZone})`;
+      const [row] = await db
+        .select({ n: sql<number>`coalesce(sum(${digests.claudeCalls}), 0)::int` })
+        .from(digests)
+        .where(gte(digests.startedAt, startOfDay));
+      return row?.n ?? 0;
+    },
+
     /** At startup nothing is running, so a running digest was cut off by a restart. */
     async failInterrupted(): Promise<number> {
       const rows = await db

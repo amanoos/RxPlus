@@ -28,6 +28,8 @@ export const digests = pgTable(
     error: text('error'),
     /** e.g. "Takeaways for metformin couldn't be written". */
     notes: jsonb('notes').$type<string[]>(),
+    /** Claude takeaway calls made by the run; they count toward AI_DAILY_LIMIT. */
+    claudeCalls: integer('claude_calls').notNull().default(0),
   },
   // One run at a time.
   (t) => [
@@ -45,6 +47,7 @@ export interface DigestItemDetails {
   /** more-papers: papers in the window not listed */
   count?: number;
   /** trial */
+  nctId?: string;
   event?: 'new' | 'results';
   status?: string;
   phases?: string[];

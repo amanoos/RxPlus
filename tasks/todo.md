@@ -20,7 +20,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/db/schema/digest.ts`, `drizzle/0005_*`, `src/server/digest/repository.ts` (+ int spec)
   - Depends on: none
 
-- [ ] **Task 3: Papers and trials collectors** (M)
+- [x] **Task 3: Papers and trials collectors** (M)
   - Acceptance: papers: up to 5 per ingredient not seen before, details, takeaways (literature provider and checks; failure → papers without takeaways + a note), "N more on PubMed" item when the total is larger; trials: newly posted or results newly posted in the window, not seen before
   - Verify: unit tests with stubbed clients and provider
   - Files: `src/server/digest/collect-papers.ts`, `collect-trials.ts` (+ specs)

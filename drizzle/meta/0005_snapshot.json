@@ -1,5 +1,5 @@
 {
-  "id": "7c8750e4-022c-4745-971a-1f55f77d0817",
+  "id": "6d3a56e7-1154-4793-bdb9-323e976c8238",
   "prevId": "d0335f9b-5402-49af-aae3-8b963614c38e",
   "version": "7",
   "dialect": "postgresql",
@@ -421,6 +421,13 @@
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false
+        },
+        "claude_calls": {
+          "name": "claude_calls",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {

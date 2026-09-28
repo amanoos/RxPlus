@@ -228,3 +228,29 @@ export function verifyTakeaways(
   const uncitedCount = values.filter((t) => t.uncited).length;
   return { byPmid, verifiedCount: values.length - uncitedCount, uncitedCount, removedAdvice };
 }
+
+/**
+ * Asks whether each linked takeaway's quote supports it, and records the answer.
+ * A quote from the right abstract can still be misread (e.g. which drug ranked
+ * first), so this is a second, stricter check. A failed check leaves `supported`
+ * null rather than failing the takeaways.
+ */
+export async function checkTakeawaySupport(
+  byPmid: Map<string, PaperTakeaway>,
+  provider: TakeawayProvider,
+): Promise<void> {
+  const items = [...byPmid]
+    .filter(([, t]) => !t.uncited && t.quote)
+    .map(([pmid, t]) => ({ pmid, takeaway: t.text, quote: t.quote! }));
+  if (!provider.checkSupport || !items.length) return;
+  try {
+    const answers = await provider.checkSupport(items);
+    for (const { pmid } of items) {
+      const takeaway = byPmid.get(pmid)!;
+      takeaway.supported = answers.get(pmid) ?? null;
+    }
+  } catch (error) {
+    console.warn(`[takeaways] support check failed: ${(error as Error).message}`);
+    for (const { pmid } of items) byPmid.get(pmid)!.supported = null;
+  }
+}

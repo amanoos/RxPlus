@@ -142,4 +142,13 @@ describe('digest repository (integration)', () => {
     });
     expect(await repo.lastSuccessful()).toBeNull();
   });
+
+  it('counts Claude calls made by digests today', async () => {
+    const run = (await repo.start({ trigger: 'schedule', ...WINDOW }))!;
+    await repo.countClaudeCall(run.id);
+    await repo.countClaudeCall(run.id);
+    expect(await repo.claudeCallsToday('America/New_York')).toBe(2);
+    await db.execute(sql`update digests set started_at = now() - interval '2 days'`);
+    expect(await repo.claudeCallsToday('America/New_York')).toBe(0);
+  });
 });

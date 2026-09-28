@@ -31,7 +31,8 @@ CREATE TABLE "digests" (
 	"started_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"finished_at" timestamp with time zone,
 	"error" text,
-	"notes" jsonb
+	"notes" jsonb,
+	"claude_calls" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "digest_items" ADD CONSTRAINT "digest_items_digest_id_digests_id_fk" FOREIGN KEY ("digest_id") REFERENCES "public"."digests"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
