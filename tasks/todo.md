@@ -38,7 +38,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/digest/run.ts` (+ int spec), `src/server/tasks/digest/weekly.ts`, `src/server/plugins/digest.ts`, `vite.config.ts`
   - Depends on: 3, 4
 
-- [ ] **Task 6: Digest routes** (S)
+- [x] **Task 6: Digest routes** (S)
   - Acceptance: `GET /api/digests` (12 weeks, items grouped by subject, running status, next scheduled time), `GET /api/digests/unread-count`, `POST /api/digests/run` (202, 409 when running), `POST /api/digests/:id/read` (204)
   - Verify: route integration tests
   - Files: `src/server/digest/service.ts`, `src/server/routes/api/digests/**`, tests
