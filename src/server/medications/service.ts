@@ -24,8 +24,19 @@ export const AddMedicationBody = z.object({
   notes: notes.optional(),
   startedOn: isoDate.optional(),
 });
+/** The condition a medication is taken for: a MED-RT disease from the drug's known uses. */
+const takenFor = z
+  .object({ id: z.string().regex(/^D\d{6,9}$/), name: z.string().trim().min(1).max(200) })
+  .strict()
+  .nullable();
+
 export const UpdateMedicationBody = z
-  .object({ notes: notes.optional(), startedOn: isoDate.optional(), stoppedOn: isoDate.optional() })
+  .object({
+    notes: notes.optional(),
+    startedOn: isoDate.optional(),
+    stoppedOn: isoDate.optional(),
+    takenFor: takenFor.optional(),
+  })
   .strict();
 export const MedicationIdParams = z.object({ id: z.uuid() });
 
@@ -80,8 +91,13 @@ export function createMedicationsService(repo: MedicationsRepository, rxnavClien
           statusMessage: 'The stop date can’t be before the start date.',
         });
       }
+      const { takenFor, ...dates } = patch;
+      const changes =
+        takenFor === undefined
+          ? dates
+          : { ...dates, takenForId: takenFor?.id ?? null, takenForName: takenFor?.name ?? null };
       try {
-        const updated = await repo.update(id, patch);
+        const updated = await repo.update(id, changes);
         if (!updated) throw notFound();
         return updated;
       } catch (error) {

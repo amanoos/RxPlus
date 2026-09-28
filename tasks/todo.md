@@ -41,7 +41,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/alternatives/{builder,group,clean}.ts` (+ specs), `src/server/plugins/summaries.ts`
   - Depends on: 1, 2, 3
 
-- [ ] **Task 5: Routes and "Taken for"** (M)
+- [x] **Task 5: Routes and "Taken for"** (M)
   - Acceptance:
     - `GET /api/drugs/:rxcui/alternatives?condition=` per ingredient: uses (for the chooser), the chosen condition (medication `takenFor`, else the query), groups, list statuses, `builtAt`, skipped count, hidden; starts missing builds
     - `POST /api/drugs/:rxcui/alternatives/refresh` → 202; `POST|DELETE /api/alternatives/:ingredient/hidden/:rxcui` → 204

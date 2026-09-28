@@ -146,6 +146,28 @@ describe('medications API (integration)', () => {
     expect(await edited.json()).toMatchObject({ notes: null });
   });
 
+  it('sets, keeps and clears what a medication is taken for', async () => {
+    const { id } = await (await add({ rxcui: '314076' })).json();
+    const set = await call('PATCH', `/api/medications/${id}`, {
+      takenFor: { id: 'D006973', name: 'Hypertension' },
+    });
+    expect(await set.json()).toMatchObject({ takenForId: 'D006973', takenForName: 'Hypertension' });
+
+    // Other edits leave it alone.
+    const edited = await call('PATCH', `/api/medications/${id}`, { notes: 'morning' });
+    expect(await edited.json()).toMatchObject({ takenForId: 'D006973', notes: 'morning' });
+
+    const cleared = await call('PATCH', `/api/medications/${id}`, { takenFor: null });
+    expect(await cleared.json()).toMatchObject({ takenForId: null, takenForName: null });
+
+    for (const takenFor of [
+      { id: 'hypertension', name: 'x' },
+      { id: 'D006973', name: '' },
+    ]) {
+      expect((await call('PATCH', `/api/medications/${id}`, { takenFor })).status).toBe(400);
+    }
+  });
+
   it('refuses a stop date before the start date', async () => {
     const { id } = await (await add({ rxcui: '314076', startedOn: '2026-01-15' })).json();
     const res = await call('PATCH', `/api/medications/${id}`, { stoppedOn: '2026-01-01' });
