@@ -11,27 +11,31 @@ A personal, single-user medication watchlist. Built with [Analog](https://analog
 
 Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit it.
 
-| Variable               | How to set it                                                                                                   |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `POSTGRES_PASSWORD`    | Any strong password. Use letters and digits only: it is embedded in a connection URL.                           |
-| `DATABASE_URL`         | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own.   |
-| `APP_PASSWORD_HASH`    | `npm run hash-password` (asks for your login password, at least 12 characters).                                 |
-| `SESSION_SECRET`       | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                           |
-| `COOKIE_SECURE`        | `false` on the LAN over plain HTTP.                                                                             |
-| `VITE_PRIMEUI_LICENSE` | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                   |
-| `DB_DEV_PORT`          | Host port for the dev database (default 5432; change it if that port is taken).                                 |
-| `APP_PORT`             | Host port for the app in Docker (default 3000).                                                                 |
-| `RXNAV_BASE_URL`       | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub.   |
-| `OPENFDA_BASE_URL`     | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                           |
-| `OPENFDA_API_KEY`      | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.                 |
-| `MEDLINEPLUS_BASE_URL` | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                         |
-| `SUMMARY_PROVIDER`     | `ollama` (default, local model) or `claude`. See [AI summaries](#ai-summaries).                                 |
-| `OLLAMA_BASE_URL`      | Local dev: `http://127.0.0.1:11434` (not `localhost`, which Node may resolve to IPv6). Compose sets its own.    |
-| `OLLAMA_MODEL`         | The Ollama model to use, e.g. `qwen2.5:7b`. Without it, summaries are unavailable (the rest of the page works). |
-| `OLLAMA_NUM_CTX`       | Optional. Context window in tokens (default 16384); long labels need it.                                        |
-| `OLLAMA_TIMEOUT_MS`    | Optional. Per-attempt time limit (default 600000, 10 minutes).                                                  |
-| `ANTHROPIC_API_KEY`    | Only for `SUMMARY_PROVIDER=claude`. Never logged.                                                               |
-| `AI_DAILY_LIMIT`       | Optional. Claude summaries per day (default 20). Doesn't apply to the local model.                              |
+| Variable                            | How to set it                                                                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `POSTGRES_PASSWORD`                 | Any strong password. Use letters and digits only: it is embedded in a connection URL.                                        |
+| `DATABASE_URL`                      | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own.                |
+| `APP_PASSWORD_HASH`                 | `npm run hash-password` (asks for your login password, at least 12 characters).                                              |
+| `SESSION_SECRET`                    | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                                        |
+| `COOKIE_SECURE`                     | `false` on the LAN over plain HTTP.                                                                                          |
+| `VITE_PRIMEUI_LICENSE`              | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                                |
+| `DB_DEV_PORT`                       | Host port for the dev database (default 5432; change it if that port is taken).                                              |
+| `APP_PORT`                          | Host port for the app in Docker (default 3000).                                                                              |
+| `RXNAV_BASE_URL`                    | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub.                |
+| `OPENFDA_BASE_URL`                  | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                                        |
+| `OPENFDA_API_KEY`                   | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.                              |
+| `MEDLINEPLUS_BASE_URL`              | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                                      |
+| `SUMMARY_PROVIDER`                  | `ollama` (default, local model) or `claude`. See [AI summaries](#ai-summaries).                                              |
+| `OLLAMA_BASE_URL`                   | Local dev: `http://127.0.0.1:11434` (not `localhost`, which Node may resolve to IPv6). Compose sets its own.                 |
+| `OLLAMA_MODEL`                      | The Ollama model to use, e.g. `qwen2.5:7b`. Without it, summaries are unavailable (the rest of the page works).              |
+| `OLLAMA_NUM_CTX`                    | Optional. Context window in tokens (default 16384); long labels need it.                                                     |
+| `OLLAMA_TIMEOUT_MS`                 | Optional. Per-attempt time limit (default 600000, 10 minutes).                                                               |
+| `ANTHROPIC_API_KEY`                 | Only for `SUMMARY_PROVIDER=claude`. Never logged.                                                                            |
+| `AI_DAILY_LIMIT`                    | Optional. Claude requests per day, summaries and research takeaways together (default 20). Doesn't apply to the local model. |
+| `OLLAMA_CHECK_MODEL`                | Optional. A (stronger) local model that checks each research takeaway against its quote. Off when unset.                     |
+| `NCBI_API_KEY`                      | Optional, free from an NCBI account. Raises PubMed's limit from 3 to 10 requests/s. Never logged.                            |
+| `NCBI_EMAIL`                        | Optional. Your contact address, sent to PubMed with `tool=rxplus` as NCBI asks.                                              |
+| `PUBMED_BASE_URL`, `CTGOV_BASE_URL` | Optional. PubMed E-utilities and ClinicalTrials.gov API bases; the e2e tests point them at a local stub.                     |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
 
@@ -81,6 +85,19 @@ sudo systemctl restart ollama
 This also opens port 11434 to your LAN. Ollama has no authentication, so keep the server LAN-only (or firewall the port to the Docker bridge). Then set `OLLAMA_MODEL=qwen2.5:7b` in `.env` and restart the app. For development on your PC, run Ollama locally and set `OLLAMA_BASE_URL=http://127.0.0.1:11434`.
 
 **Claude (optional).** Set `SUMMARY_PROVIDER=claude` and `ANTHROPIC_API_KEY`. Summaries then use Claude Opus 5 with the label cited through the API's citations feature (about $0.10–0.20 each), capped at `AI_DAILY_LIMIT` per day. There is no automatic fallback between providers.
+
+"Show quotes" on the summary shows every sentence's label quote inline.
+
+### Research
+
+Each drug page has a **Research** section per ingredient:
+
+- **Papers:** up to 10 from PubMed, strongest evidence first: up to 4 meta-analyses or systematic reviews (the ingredient in the title or abstract), then randomized trials (the ingredient as a main topic), in PubMed's relevance order. Only papers with an abstract are listed, with links to PubMed and to the free full text when there is one.
+- **Takeaways:** one plain-language line per paper, written by the same AI provider as the summaries from the paper's abstract (only abstracts are sent). The model picks one results or conclusion sentence and rewrites only that; the server checks that the sentence really is in that paper's abstract, and the page shows it right under the takeaway ("In the study: …") so you can compare. Takeaways it can't link are marked, and advice sentences are removed. All takeaways for a drug are written in one background call (about 4–5 minutes with `qwen2.5:7b`).
+- **Trials:** up to 5 from ClinicalTrials.gov: completed with posted results, then recruiting.
+- **Hide** a paper you don't find useful and the next one takes its place (Show hidden → Show again to undo).
+
+Lists are stored and refreshed after 30 days, or with "Check for new research". New papers week to week belong to the upcoming digest.
 
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 

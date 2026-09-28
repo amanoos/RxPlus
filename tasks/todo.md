@@ -112,7 +112,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `e2e/stub-upstream.ts`, `e2e/literature.spec.ts`, fixtures, `playwright.config.ts`
   - Depends on: 10
 
-- [ ] **Task 12: Coverage, README, `.env.example`** (S)
+- [x] **Task 12: Coverage, README, `.env.example`** (S)
   - Acceptance: coverage ≥ 80% on `src/server/literature`, `src/server/pubmed`, `src/server/ctgov`, `src/app/features/literature`; README section on Research (sources, how papers are chosen, takeaways, NCBI key); env table and `.env.example` updated
   - Verify: `npm run test:coverage`; production build
   - Files: `vite.config.ts`, `README.md`, `.env.example`

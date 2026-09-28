@@ -62,7 +62,7 @@ A **Research** section on `/drugs/:rxcui`, per ingredient:
 ### Phase 3: Verification
 
 - [x] Task 11: E2E with stub PubMed, ClinicalTrials.gov and Ollama
-- [ ] Task 12: Coverage, README, `.env.example`
+- [x] Task 12: Coverage, README, `.env.example`
 
 ### Checkpoint C: literature complete
 
