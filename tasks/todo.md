@@ -106,7 +106,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ## Phase 3: Verification
 
-- [ ] **Task 11: E2E with stub PubMed, ClinicalTrials.gov and Ollama** (M)
+- [x] **Task 11: E2E with stub PubMed, ClinicalTrials.gov and Ollama** (M)
   - Acceptance: the stub serves esearch (by tier), esummary, efetch, CT.gov studies and an Ollama takeaway reply (chosen by the request's system prompt); the spec opens Research, sees papers and trials, a verified takeaway with its source, hides a paper and sees the next one, and undoes it
   - Verify: `npm run e2e` (3 repeats stable)
   - Files: `e2e/stub-upstream.ts`, `e2e/literature.spec.ts`, fixtures, `playwright.config.ts`

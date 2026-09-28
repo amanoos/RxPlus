@@ -1,0 +1,24 @@
+{
+  "takeaways": [
+    {
+      "pmid": "37417783",
+      "quote": "Studies have shown that angiotensin converting enzyme inhibitors (ACEIs) are superior in primary and secondary prevention for cardiac mortality and morbidity to angiotensin receptor blocker (ARBs).",
+      "text": "Earlier studies found ACE inhibitors better than ARBs at preventing heart-related deaths."
+    },
+    {
+      "pmid": "29971804",
+      "quote": "The identified studies showed that lisinopril was highly effective for proteinuric kidney disease with a minor but inconsiderable decrease in GFR.",
+      "text": "The studies found lisinopril worked well for kidney disease with protein in the urine."
+    },
+    {
+      "pmid": "10587334",
+      "quote": "We randomly assigned 3164 patients with New York Heart Association class II to IV heart failure and an ejection fraction < or = 30% to double-blind treatment with either low doses (2.5 to 5.0 mg daily, n=1596) or high doses (32.5 to 35 mg daily, n=1568) of the ACE inhibitor, lisinopril, for 39 to 58 months, while background therapy for heart failure was continued.",
+      "text": "In this trial, 3164 people with heart failure took low or high doses of lisinopril for several years."
+    },
+    {
+      "pmid": "9269212",
+      "quote": "Lisinopril slows the progression of renal disease in normotensive IDDM patients with little or no albuminuria, though greatest effect was in those with microalbuminuria (AER > or = 20 micrograms/min).",
+      "text": "In this trial, lisinopril slowed kidney disease in people with type 1 diabetes and normal blood pressure."
+    }
+  ]
+}

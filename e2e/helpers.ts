@@ -12,12 +12,14 @@ export async function signIn(page: Page, password = E2E_PASSWORD) {
   await page.getByRole('button', { name: 'Sign in' }).click();
 }
 
-/** Empties the medications (and stored summaries) so each test starts clean. */
+/** Empties medications and stored AI output and research, so each test starts clean. */
 export async function resetMedications() {
   const client = new pg.Client({ connectionString: E2E_DATABASE_URL });
   await client.connect();
   try {
-    await client.query('truncate table medications, drug_summaries');
+    await client.query(
+      'truncate table medications, drug_summaries, literature_lists, literature_papers, literature_trials',
+    );
   } finally {
     await client.end();
   }
