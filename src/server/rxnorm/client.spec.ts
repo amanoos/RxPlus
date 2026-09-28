@@ -257,6 +257,24 @@ describe('RxNav client', () => {
       expect(await client.classMembers('not-a-class')).toEqual([]);
     });
 
+    it('keeps member lists for a month, and reads them again on refresh', async () => {
+      const { fetchFn } = fixtureFetch();
+      const client = create(fetchFn);
+      const calls = () => vi.mocked(fetchFn).mock.calls.length;
+      await client.diseaseMembers('D006973');
+      await client.classMembers('N0000175562');
+      await client.diseaseDescendants('D006973');
+      const first = calls();
+      await client.diseaseMembers('D006973');
+      await client.classMembers('N0000175562');
+      await client.diseaseDescendants('D006973');
+      expect(calls()).toBe(first);
+      await client.diseaseMembers('D006973', { refresh: true });
+      await client.classMembers('N0000175562', { refresh: true });
+      await client.diseaseDescendants('D006973', { refresh: true });
+      expect(calls()).toBe(first + 3);
+    });
+
     it('lists the more specific forms of a condition, below the condition itself', async () => {
       const forms = await create(fixtureFetch().fetchFn).diseaseDescendants('D006973');
       expect(forms).toContainEqual({ id: 'D006976', name: 'Hypertension, Pulmonary' });

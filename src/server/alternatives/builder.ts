@@ -151,21 +151,23 @@ export function createAlternativesBuilder({
     return { drugs: results.filter((d) => d !== null), skipped };
   }
 
-  async function buildClass(classId: string, className: string) {
-    const candidates = await available(await ingredientsOf(await rxnav.classMembers(classId)));
+  async function buildClass(classId: string, className: string, refresh: boolean) {
+    const candidates = await available(
+      await ingredientsOf(await rxnav.classMembers(classId, { refresh })),
+    );
     const facts = await withFacts(candidates.drugs, { id: classId, name: className });
     return { drugs: facts.drugs, skipped: candidates.skipped + facts.skipped };
   }
 
-  async function buildCondition(conditionId: string, condition: string) {
+  async function buildCondition(conditionId: string, condition: string, refresh: boolean) {
     const candidates = await available(
-      await ingredientsOf(await rxnav.diseaseMembers(conditionId)),
+      await ingredientsOf(await rxnav.diseaseMembers(conditionId, { refresh })),
     );
 
     // Drugs also listed for a more specific form need a look at their labels.
     const forms: SpecificForm[] = [];
-    for (const form of await rxnav.diseaseDescendants(conditionId)) {
-      const members = await ingredientsOf(await rxnav.diseaseMembers(form.id));
+    for (const form of await rxnav.diseaseDescendants(conditionId, { refresh })) {
+      const members = await ingredientsOf(await rxnav.diseaseMembers(form.id, { refresh }));
       if (members.length) {
         forms.push({ name: form.name, ingredientRxcuis: new Set(members.map((m) => m.rxcui)) });
       }
@@ -187,12 +189,13 @@ export function createAlternativesBuilder({
     return { drugs: facts.drugs, skipped: candidates.skipped + facts.skipped };
   }
 
-  async function build(list: AlternativeList, id: string): Promise<void> {
+  /** `refresh`: a forced build reads the member lists again instead of this month's copy. */
+  async function build(list: AlternativeList, id: string, refresh: boolean): Promise<void> {
     try {
       const { drugs, skipped } =
         list.kind === 'class'
-          ? await buildClass(id, list.name)
-          : await buildCondition(id, list.name);
+          ? await buildClass(id, list.name, refresh)
+          : await buildCondition(id, list.name, refresh);
       await repo.complete(list.key, drugs, skipped);
     } catch (error) {
       const message = (error as Error).message || 'The list could not be built.';
@@ -205,8 +208,8 @@ export function createAlternativesBuilder({
 
   // Builds in flight in this process, by list key.
   const building = new Map<string, Promise<void>>();
-  function start(list: AlternativeList, id: string): Promise<void> {
-    const job = build(list, id);
+  function start(list: AlternativeList, id: string, refresh: boolean): Promise<void> {
+    const job = build(list, id, refresh);
     jobs.add(job);
     building.set(list.key, job);
     void job.finally(() => {
@@ -229,7 +232,7 @@ export function createAlternativesBuilder({
     ): Promise<string> {
       const key = listKey(kind, id);
       const claimed = await repo.claim(key, kind, name, { force });
-      if (claimed) void start(claimed, id);
+      if (claimed) void start(claimed, id, force);
       return key;
     },
 
@@ -240,7 +243,7 @@ export function createAlternativesBuilder({
     async rebuild(kind: AlternativeList['kind'], id: string, name: string): Promise<string> {
       const key = listKey(kind, id);
       const claimed = await repo.claim(key, kind, name, { force: true });
-      await (claimed ? start(claimed, id) : building.get(key));
+      await (claimed ? start(claimed, id, true) : building.get(key));
       return key;
     },
   };

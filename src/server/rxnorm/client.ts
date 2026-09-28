@@ -38,12 +38,15 @@ export interface RxNavClient {
   drugFacts(ingredientRxcui: string): Promise<DrugFacts>;
   /** FDA established pharmacologic classes of an ingredient, with their class ids. */
   epcClasses(ingredientRxcui: string): Promise<RxClassRef[]>;
-  /** Drugs in an FDA established pharmacologic class (ingredients and salt forms). */
-  classMembers(epcClassId: string): Promise<RxConcept[]>;
+  /**
+   * Drugs in an FDA established pharmacologic class (ingredients and salt forms).
+   * Member lists are kept for a month; `refresh` reads them again (a forced rebuild).
+   */
+  classMembers(epcClassId: string, options?: { refresh?: boolean }): Promise<RxConcept[]>;
   /** Drugs MED-RT lists as treating a condition (ingredients and salt forms). */
-  diseaseMembers(diseaseId: string): Promise<RxConcept[]>;
+  diseaseMembers(diseaseId: string, options?: { refresh?: boolean }): Promise<RxConcept[]>;
   /** More specific forms of a condition in MED-RT, e.g. Hypertension → Hypertension, Pulmonary. */
-  diseaseDescendants(diseaseId: string): Promise<RxClassRef[]>;
+  diseaseDescendants(diseaseId: string, options?: { refresh?: boolean }): Promise<RxClassRef[]>;
   /** The ingredient of a salt form (PIN); an ingredient maps to itself; null if unclear. */
   toIngredient(rxcui: string): Promise<RxConcept | null>;
   /**
@@ -334,48 +337,61 @@ export function createRxNavClient({
       });
     },
 
-    classMembers(epcClassId) {
+    classMembers(epcClassId, { refresh = false } = {}) {
       if (!/^N\d{10}$/.test(epcClassId)) return Promise.resolve([]);
-      return cached(`class-members:${epcClassId}`, MONTH, async () =>
-        membersOf(
-          await get(
-            `/rxclass/classMembers.json?classId=${epcClassId}&relaSource=DAILYMED&rela=has_epc`,
+      return cached(
+        `class-members:${epcClassId}`,
+        MONTH,
+        async () =>
+          membersOf(
+            await get(
+              `/rxclass/classMembers.json?classId=${epcClassId}&relaSource=DAILYMED&rela=has_epc`,
+            ),
           ),
-        ),
+        { refresh },
       );
     },
 
-    diseaseMembers(diseaseId) {
+    diseaseMembers(diseaseId, { refresh = false } = {}) {
       if (!isDiseaseId(diseaseId)) return Promise.resolve([]);
-      return cached(`disease-members:${diseaseId}`, MONTH, async () =>
-        membersOf(
-          await get(
-            `/rxclass/classMembers.json?classId=${diseaseId}&relaSource=MEDRT&rela=may_treat`,
+      return cached(
+        `disease-members:${diseaseId}`,
+        MONTH,
+        async () =>
+          membersOf(
+            await get(
+              `/rxclass/classMembers.json?classId=${diseaseId}&relaSource=MEDRT&rela=may_treat`,
+            ),
           ),
-        ),
+        { refresh },
       );
     },
 
-    diseaseDescendants(diseaseId) {
+    diseaseDescendants(diseaseId, { refresh = false } = {}) {
       if (!isDiseaseId(diseaseId)) return Promise.resolve([]);
-      return cached(`disease-tree:${diseaseId}`, MONTH, async () => {
-        const body = (await get(
-          `/rxclass/classTree.json?classId=${diseaseId}&relaSource=MEDRT`,
-        )) as {
-          rxclassTree?: ClassTreeNode[];
-        };
-        const found: RxClassRef[] = [];
-        const walk = (nodes: ClassTreeNode[] | undefined) => {
-          for (const node of nodes ?? []) {
-            const item = node.rxclassMinConceptItem;
-            found.push({ id: item.classId, name: item.className });
-            walk(node.rxclassTree);
-          }
-        };
-        // The root is the condition itself; everything below it is more specific.
-        walk(body.rxclassTree?.[0]?.rxclassTree);
-        return found;
-      });
+      return cached(
+        `disease-tree:${diseaseId}`,
+        MONTH,
+        async () => {
+          const body = (await get(
+            `/rxclass/classTree.json?classId=${diseaseId}&relaSource=MEDRT`,
+          )) as {
+            rxclassTree?: ClassTreeNode[];
+          };
+          const found: RxClassRef[] = [];
+          const walk = (nodes: ClassTreeNode[] | undefined) => {
+            for (const node of nodes ?? []) {
+              const item = node.rxclassMinConceptItem;
+              found.push({ id: item.classId, name: item.className });
+              walk(node.rxclassTree);
+            }
+          };
+          // The root is the condition itself; everything below it is more specific.
+          walk(body.rxclassTree?.[0]?.rxclassTree);
+          return found;
+        },
+        { refresh },
+      );
     },
 
     toIngredient(rxcui) {

@@ -162,11 +162,14 @@ describe('alternatives builder (integration)', () => {
     const { builder, rxnav } = create();
     await builder.ensure('condition', 'D006973', 'Hypertension');
     await settleAlternativeJobs();
+    expect(rxnav.diseaseMembers).toHaveBeenCalledWith('D006973', { refresh: false });
     const calls = rxnav.diseaseMembers.mock.calls.length;
 
     const key = await builder.rebuild('condition', 'D006973', 'Hypertension');
     expect(await repo.list(key)).toMatchObject({ status: 'ready' });
     expect(rxnav.diseaseMembers.mock.calls.length).toBeGreaterThan(calls);
+    // A forced build reads the member lists again rather than this month's copy.
+    expect(rxnav.diseaseMembers).toHaveBeenLastCalledWith(expect.any(String), { refresh: true });
 
     // A second rebuild while one is running waits for that one.
     await builder.ensure('condition', 'D006973', 'Hypertension', { force: true });
