@@ -1,6 +1,6 @@
 # Spec: pricing
 
-Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications`, and reuses `drug-info` (drug page, RxNav client). Status: **approved 2026-09-28**.
+Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md). Depends on: `medications`, and reuses `drug-info` (drug page, RxNav client). Status: **approved 2026-09-28; built 2026-09-28, awaiting review**.
 Research basis: [docs/research/free-data-sources.md](docs/research/free-data-sources.md) §8, plus the queries measured below.
 
 ## Objective

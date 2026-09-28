@@ -61,7 +61,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `e2e/stub-upstream.ts`, `e2e/pricing.spec.ts`, `playwright.config.ts`
   - Depends on: 6
 
-- [ ] **Task 8: Coverage, README** (S)
+- [x] **Task 8: Coverage, README** (S)
   - Acceptance: coverage ≥ 80% on `src/server/costplus`, `src/server/pricing`, `src/app/features/pricing`; README section
   - Verify: `npm run test:coverage`; production build
   - Files: `vite.config.ts`, `README.md`
@@ -69,5 +69,5 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint C: pricing complete
 
-- [ ] Spec success criteria 1–5
+- [x] Spec success criteria 1–5
 - [ ] Human review

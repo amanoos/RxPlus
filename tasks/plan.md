@@ -48,11 +48,11 @@ Cash prices from Cost Plus Drugs matched to each RxNorm product by NDC, plus the
 ### Phase 3: Verification
 
 - [x] Task 7: E2E with a Cost Plus stub
-- [ ] Task 8: Coverage, README
+- [x] Task 8: Coverage, README
 
 ### Checkpoint C: pricing complete
 
-- [ ] Spec success criteria 1–5
+- [x] Spec success criteria 1–5
 - [ ] Human review
 
 ## Risks and Mitigations

@@ -36,6 +36,7 @@ Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit
 | `NCBI_API_KEY`                      | Optional, free from an NCBI account. Raises PubMed's limit from 3 to 10 requests/s. Never logged.                           |
 | `NCBI_EMAIL`                        | Optional. Your contact address, sent to PubMed with `tool=rxplus` as NCBI asks.                                             |
 | `PUBMED_BASE_URL`, `CTGOV_BASE_URL` | Optional. PubMed E-utilities and ClinicalTrials.gov API bases; the e2e tests point them at a local stub.                    |
+| `COSTPLUS_BASE_URL`                 | Optional. Cost Plus Drugs public price API (default: its public endpoint); the e2e tests point it at a local stub.          |
 
 The server refuses to start, naming the variable, if a required value is missing or invalid.
 
@@ -122,6 +123,12 @@ Once a week the app collects what changed for the medications you take (stopped 
 - Nothing is reported twice. The first digest records the current condition lists and label versions without reporting them.
 
 **When:** every Monday at 6:00 AM in the server's time zone (`TZ`). If the server was off then, the digest runs at the next start once the last one is more than a week old; a run cut off by a restart is marked failed and run again. **Run now** on the page starts one at any time (one at a time). A run takes a few minutes: about a minute per condition, plus one takeaway call per ingredient with new papers (live, four medications: 5 minutes with `qwen2.5:7b`). If a source or the model fails, the digest says what couldn't be checked; if the run itself fails, the page offers Try again.
+
+### Prices and costs
+
+- **Cash price:** from Mark Cuban Cost Plus Drug Company's public price API (no key; only ingredient names are sent). A product is priced only when a Cost Plus listing has one of the product's NDCs in RxNorm, never by name; otherwise the page says "Not sold at Cost Plus Drugs" (it carries mostly generics). Prices are Cost Plus's billed price per unit, cached for a day, with the time they were fetched. Cost Plus's per-order fees (pharmacy labor, shipping) are not included; the page says so and links to the product.
+- **With insurance:** you enter your copay per fill (e.g. $10 for 90 tablets) in the medication's edit dialog or from the drug page. No plan rules are modeled.
+- **Per month:** each medication has units per month (default 30, half units allowed). The drug page's **Prices** section and the **Costs** page show cash and copay per month and which is cheaper; the Costs page totals them and says what the totals leave out.
 
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 
