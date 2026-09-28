@@ -63,7 +63,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `edit-medication-dialog.component.ts`, `medication-card.component.ts`, `medication.ts`, medications store (+ specs)
   - Depends on: 5
 
-- [ ] **Task 7: NgRx `alternatives` feature and API service** (M)
+- [x] **Task 7: NgRx `alternatives` feature and API service** (M)
   - Acceptance: entries keyed by product RXCUI + condition; load, choose condition (saves `takenFor` when the product is on the list, else per visit), refresh, poll every 2 s while any list is building (≤ 5 min, stops on leave, browser only), hide/unhide optimistic with rollback
   - Verify: reducer, selector and effect tests
   - Files: `src/app/features/alternatives/**`, `src/app/store/app.store.ts`
