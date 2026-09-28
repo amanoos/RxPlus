@@ -47,9 +47,15 @@ describe('AppShellComponent', () => {
     const { el } = await setup(7);
     const link = el.querySelector('nav[aria-label="Main"] a[href="/digest"]');
     expect(link?.textContent?.replace(/\s+/g, ' ').trim()).toBe('What’s new 7 unread');
+    // Below 768px the menu button carries it.
+    expect(el.querySelector('[data-testid="menu-unread-dot"]')).not.toBeNull();
+    expect(el.querySelector('button[aria-controls="mobile-nav"]')?.getAttribute('aria-label')).toBe(
+      'Open navigation, 7 unread',
+    );
     TestBed.resetTestingModule();
     const none = await setup(0);
     expect(none.el.querySelector('[data-testid="unread-badge"]')).toBeNull();
+    expect(none.el.querySelector('[data-testid="menu-unread-dot"]')).toBeNull();
   });
 
   it('logs out through the store', async () => {

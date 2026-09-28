@@ -33,8 +33,10 @@ export const NAV_ITEMS = [
       <div class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4">
         <button
           type="button"
-          class="-ml-2 rounded p-2 hover:bg-surface-100 md:hidden dark:hover:bg-surface-800"
-          aria-label="Open navigation"
+          class="relative -ml-2 rounded p-2 hover:bg-surface-100 md:hidden dark:hover:bg-surface-800"
+          [attr.aria-label]="
+            unread() ? 'Open navigation, ' + unread() + ' unread' : 'Open navigation'
+          "
           aria-controls="mobile-nav"
           [attr.aria-expanded]="drawerOpen()"
           (click)="drawerOpen.set(true)"
@@ -42,6 +44,13 @@ export const NAV_ITEMS = [
           <svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" fill="none" />
           </svg>
+          @if (unread()) {
+            <!-- Below 768px the navigation is in the drawer: show that there is news. -->
+            <span
+              class="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-primary-600 dark:bg-primary-400"
+              data-testid="menu-unread-dot"
+            ></span>
+          }
         </button>
 
         <a routerLink="/" class="text-lg font-semibold">RxPlus</a>
