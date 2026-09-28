@@ -20,6 +20,9 @@ export const medications = pgTable(
     ingredients: jsonb('ingredients').$type<Ingredient[]>().notNull(),
     notes: text('notes'),
     startedOn: date('started_on'),
+    /** The condition it's taken for (MED-RT disease), e.g. D006973 Hypertension. */
+    takenForId: text('taken_for_id'),
+    takenForName: text('taken_for_name'),
     /** Null while the owner is taking it. */
     stoppedOn: date('stopped_on'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

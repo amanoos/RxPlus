@@ -32,7 +32,7 @@ An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly ap
 
 - [x] Task 1: RxNav extensions (classes with ids, members, ingredient mapping, availability, representative product, uses with ids)
 - [x] Task 2: Drugs@FDA facts and label indications by ingredient
-- [ ] Task 3: Schema, migration 0004 and repository
+- [x] Task 3: Schema, migration 0004 and repository
 - [ ] Task 4: List builder: class and condition lists, cleaning rule, background jobs
 - [ ] Task 5: Alternatives routes (lists, refresh, hide) and "Taken for" on medications
 

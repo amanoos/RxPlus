@@ -25,7 +25,7 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/openfda/client.ts` (+ spec, fixtures)
   - Depends on: none
 
-- [ ] **Task 3: Schema, migration 0004 and repository** (M)
+- [x] **Task 3: Schema, migration 0004 and repository** (M)
   - Acceptance: `medications.taken_for_id/name`; `alternative_lists`, `alternative_drugs`, `alternative_hidden` as in the spec; repository: claim/complete/fail a list build (one at a time per key), save drugs, read lists, stale check, hide/unhide/hidden per ingredient, `failInterrupted`
   - Verify: integration tests (migration, one build at a time, save/replace, hidden)
   - Files: `src/server/db/schema/{alternatives,medications}.ts`, `drizzle/0004_*`, `src/server/alternatives/repository.ts` (+ int spec)

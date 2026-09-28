@@ -4,8 +4,13 @@ import type { Db } from '../db/client';
 import { medications, type MedicationRow } from '../db/schema';
 
 export type Medication = MedicationRow;
-export type NewMedication = Omit<MedicationRow, 'id' | 'stoppedOn' | 'createdAt' | 'updatedAt'>;
-export type MedicationPatch = Partial<Pick<MedicationRow, 'notes' | 'startedOn' | 'stoppedOn'>>;
+export type NewMedication = Omit<
+  MedicationRow,
+  'id' | 'stoppedOn' | 'createdAt' | 'updatedAt' | 'takenForId' | 'takenForName'
+>;
+export type MedicationPatch = Partial<
+  Pick<MedicationRow, 'notes' | 'startedOn' | 'stoppedOn' | 'takenForId' | 'takenForName'>
+>;
 
 /** The product is already on the active list (unique index medications_active_rxcui_idx). */
 export class DuplicateActiveMedicationError extends Error {
