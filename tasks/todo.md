@@ -52,8 +52,8 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] Live: lisinopril for hypertension (build time, counts per group, noise check) and for heart failure
+- [x] Unit and integration tests pass; migration applies
+- [x] Live: lisinopril for hypertension (build time, counts per group, noise check) and for heart failure (2026-09-27: 55 s / 2 new, 9 same class, 60 other; heart failure 29 s / 39; injectables and supplements kept by decision)
 
 ## Phase 2: Client
 

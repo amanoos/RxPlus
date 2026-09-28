@@ -132,6 +132,13 @@ alternativeHidden = pgTable('alternative_hidden', {
 7. No AI is involved (no model calls from this module).
 8. Lint, unit, integration and e2e tests pass; coverage targets are met.
 
+## Checkpoint A (live, 2026-09-27)
+
+- **Hypertension:** built in 55 s, nothing skipped: new aprocitentan (2024) and baxdrostat (2026); 9 same-class drugs; 60 drugs in 17 other classes; no pulmonary-hypertension drugs. **Heart failure:** 29 s, 39 drugs in 18 classes. The shared ACE-inhibitor class list: 7 s.
+- **Kept as is (owner's decision):** injection-only drugs (enalaprilat, clevidipine, esmolol, nitroprusside, milrinone, mannitol, somatropin) and products with neither an FDA class nor an approval (phenylalanine, CoQ10). Hide covers them.
+- **Known gaps:** moexipril has no FDA-class link, so it's under "Other"; combination-only ingredients (sacubitril, as in Entresto) are left out; MED-RT lags new drugs (vericiguat, 2021, isn't listed for heart failure yet).
+- Success criterion 1's "no …prilat" doesn't hold for enalaprilat, which is a real US injectable; kept per the decision above.
+
 ## Open questions
 
 - None blocking. The cleaning rule is measured on hypertension; other conditions (e.g. heart failure) are checked at the live checkpoint and Hide covers the rest.

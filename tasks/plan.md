@@ -38,8 +38,8 @@ An **Alternatives** section on `/drugs/:rxcui`, per ingredient: drugs **newly ap
 
 ### Checkpoint A
 
-- [ ] Unit and integration tests pass; migration applies
-- [ ] Live: lisinopril for hypertension (build time, counts per group, noise check) and for heart failure
+- [x] Unit and integration tests pass; migration applies
+- [x] Live: lisinopril for hypertension (build time, counts per group, noise check) and for heart failure
 
 ### Phase 2: Client
 
