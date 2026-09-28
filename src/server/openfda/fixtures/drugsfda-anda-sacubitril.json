@@ -1,0 +1,831 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-24",
+    "results": {
+      "skip": 0,
+      "limit": 100,
+      "total": 16
+    }
+  },
+  "results": [
+    {
+      "application_number": "ANDA213719",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240709"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA219946",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20260804"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213728",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20241016"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213748",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20250716"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA219983",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20260120"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213764",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240916"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213808",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20250108"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213604",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213605",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240528"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213611",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20250716"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213627",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20250113"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213631",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20260902"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213668",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20250717"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213676",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240528"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213680",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240830"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213682",
+      "products": [
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "SACUBITRIL AND VALSARTAN",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240528"
+        }
+      ]
+    }
+  ]
+}

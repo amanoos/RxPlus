@@ -55,6 +55,8 @@ describe('drug-info API (integration)', () => {
     interactionLabel: vi.fn(),
     summaryLabel: vi.fn<OpenFdaClient['summaryLabel']>(),
     reportedReactions: vi.fn<OpenFdaClient['reportedReactions']>(),
+    approvalFacts: vi.fn(),
+    indications: vi.fn(),
   };
   const medline = { drugPage: vi.fn<MedlinePlusClient['drugPage']>() };
   let handle: (req: Request) => Promise<Response>;

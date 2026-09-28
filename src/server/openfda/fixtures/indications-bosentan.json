@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-25",
+    "results": {
+      "skip": 0,
+      "limit": 10,
+      "total": 8
+    }
+  },
+  "results": [
+    {
+      "effective_time": "20260602",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Bosentan tablets are indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) [see Clinical Studies ( 14.1 )] . in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability. Bosentan tablets are an endothelin receptor antagonist indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) ( 1 ). in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability ( 1 )."
+      ],
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20260214",
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20251222",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Bosentan is indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) [see Clinical Studies (14.1)] . in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability. Bosentan is an endothelin receptor antagonist indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) (1). in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability (1)."
+      ],
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20251130",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Bosentan tablets are indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) [see Clinical Studies (14.1) ] . in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability. Bosentan is an endothelin receptor antagonist indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) ( 1 ). in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability ( 1 )."
+      ],
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20251117",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE TRACLEER is indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) [see Clinical Studies (14.1) ] . in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability. TRACLEER is an endothelin receptor antagonist indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) ( 1 ). in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability ( 1 )."
+      ],
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20251112",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Bosentan tablets for oral suspension are indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%) and PAH associated with congenital heart disease with left-to-right shunts (18%) [see Clinical Studies ( 14.1 )] . in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability. Bosentan is an endothelin receptor antagonist indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%) and PAH associated with congenital heart disease with left-to- right shunts (18%) ( 1 ). in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability ( 1 )."
+      ],
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20251103",
+      "indications_and_usage": [
+        "1. INDICATIONS AND USAGE Bosentan is indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) [see Clinical Studies (14.1) ] . in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability. Bosentan is an endothelin receptor antagonist indicated for the treatment of pulmonary arterial hypertension (PAH) (WHO Group 1): in adults to improve exercise ability and to decrease clinical worsening. Studies establishing effectiveness included predominantly patients with WHO Functional Class II-IV symptoms and etiologies of idiopathic or heritable PAH (60%), PAH associated with connective tissue diseases (21%), and PAH associated with congenital heart disease with left-to-right shunts (18%) ( 1 ). in pediatric patients aged 3 years and older with idiopathic or congenital PAH to improve pulmonary vascular resistance (PVR), which is expected to result in an improvement in exercise ability ( 1 )."
+      ],
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    },
+    {
+      "effective_time": "20241125",
+      "openfda": {
+        "generic_name": ["BOSENTAN"]
+      }
+    }
+  ]
+}

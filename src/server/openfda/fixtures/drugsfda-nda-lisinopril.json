@@ -1,0 +1,1361 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-24",
+    "results": {
+      "skip": 0,
+      "limit": 100,
+      "total": 5
+    }
+  },
+  "results": [
+    {
+      "application_number": "NDA019777",
+      "products": [
+        {
+          "brand_name": "ZESTRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910729"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091106"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120813"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090520"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19901017"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120329"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19991118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070716"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930609"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890720"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060616"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951026"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19981106"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950711"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20001219"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880630"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930331"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970108"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950605"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930429"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951115"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940517"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920625"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19880519"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120502"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19911211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140626"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910411"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050524"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20131105"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20121031"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000727"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071004"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19901108"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021017"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000207"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890905"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040330"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990120"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890411"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950711"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20001215"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930923"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880920"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19980501"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950331"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930526"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19961011"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951124"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170721"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19921118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160421"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920212"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110804"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA019778",
+      "products": [
+        {
+          "brand_name": "PRINZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG **Federal Register determination that product was not discontinued or withdrawn for safety or effectiveness reasons**"
+            }
+          ]
+        },
+        {
+          "brand_name": "PRINZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG **Federal Register determination that product was not discontinued or withdrawn for safety or effectiveness reasons**"
+            }
+          ]
+        },
+        {
+          "brand_name": "PRINZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG **Federal Register determination that product was not discontinued or withdrawn for safety or effectiveness reasons**"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130226"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19890216"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110826"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20061018"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920507"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060616"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081009"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040302"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951101"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910328"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940724"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010823"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900412"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930923"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000609"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890809"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950321"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940114"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950530"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930310"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120606"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20111117"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110610"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920123"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20051005"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19981028"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081009"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020702"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070202"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940310"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021108"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891030"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950608"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940511"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010807"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960903"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA019888",
+      "products": [
+        {
+          "brand_name": "ZESTORETIC",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTORETIC",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ZESTORETIC",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960105"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050524"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19911211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20001215"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960105"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910408"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931209"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19991118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951026"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19901221"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930923"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170721"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900920"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930331"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19921118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110311"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20131105"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091106"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20121031"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090520"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120502"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19980508"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070716"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030417"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19961011"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060616"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920625"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19890720"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20001219"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951214"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910411"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000727"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950711"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910221"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950331"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19901108"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891013"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120813"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120329"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071004"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021017"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110804"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970114"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA208401",
+      "products": [
+        {
+          "brand_name": "QBRELIS",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20160729"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170728"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA019558",
+      "products": [
+        {
+          "brand_name": "PRINIVIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "PRINIVIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "PRINIVIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "PRINIVIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "PRINIVIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20111117"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19871229"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19881025"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20051005"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20161014"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010807"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081009"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040302"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070202"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010823"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951101"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940724"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040505"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950626"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930923"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920507"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950608"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940511"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910107"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930310"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150828"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910909"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930614"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150708"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20061018"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890131"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20211109"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120607"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880819"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060616"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170919"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000609"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110610"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19881025"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990315"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081009"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950321"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030529"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960903"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19951124"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010426"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960903"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940310"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920123"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940114"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900411"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910328"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890809"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890329"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20181012"
+        }
+      ]
+    }
+  ]
+}

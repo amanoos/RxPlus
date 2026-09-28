@@ -1,0 +1,982 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-24",
+    "results": {
+      "skip": 0,
+      "limit": 100,
+      "total": 7
+    }
+  },
+  "results": [
+    {
+      "application_number": "NDA204308",
+      "products": [
+        {
+          "brand_name": "EPANED KIT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML **Federal Register determination that product was not discontinued or withdrawn for safety or effectiveness reasons**"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170728"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160129"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140904"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140203"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20130813"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170322"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140904"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA208686",
+      "products": [
+        {
+          "brand_name": "EPANED",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170728"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20160920"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA018998",
+      "products": [
+        {
+          "brand_name": "VASOTEC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "VASOTEC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "VASOTEC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "VASOTEC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910220"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920507"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900719"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120217"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19851224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890329"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19870128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170721"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900309"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880803"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19861003"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011127"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880425"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19861027"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021010"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19971210"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071031"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950919"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020403"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970723"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940511"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970203"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940516"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960322"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940715"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960731"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910802"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931021"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890418"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931104"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19870710"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19901128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120913"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890110"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880624"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20180801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900612"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19870514"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891130"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010213"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19880726"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19861107"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080925"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950919"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020830"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970721"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950919"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020204"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940114"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970611"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940725"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970109"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930726"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920408"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19941212"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA020507",
+      "products": [
+        {
+          "brand_name": "TECZEM",
+          "active_ingredients": [
+            {
+              "name": "DILTIAZEM MALATE",
+              "strength": "EQ 180MG HYDROCHLORIDE"
+            },
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000303"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19961004"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020204"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990217"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA019221",
+      "products": [
+        {
+          "brand_name": "VASERETIC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "VASERETIC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020204"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011127"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931021"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891130"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19981013"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940114"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890418"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950712"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19870130"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940725"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920507"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170721"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19861031"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071031"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021015"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20120913"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021101"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110311"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900309"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940511"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970611"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950712"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890110"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960731"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080925"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA020668",
+      "products": [
+        {
+          "brand_name": "LEXXEL",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "FELODIPINE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LEXXEL",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "FELODIPINE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071004"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040607"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030611"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050802"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19981028"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970702"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19961227"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20041223"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010918"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20000718"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19980722"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19980303"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA019309",
+      "products": [
+        {
+          "brand_name": "VASOTEC",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML **Federal Register determination that product was not discontinued or withdrawn for safety or effectiveness reasons**"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19970611"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19930224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920930"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920507"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920129"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891130"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890418"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19890110"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940725"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20001206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19931021"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19990217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940114"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "19880209"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19971027"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19960731"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19920513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19910206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19900309"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19891019"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021125"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19950928"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021101"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011127"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "19940511"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-25",
+    "results": {
+      "skip": 0,
+      "limit": 10,
+      "total": 101
+    }
+  },
+  "results": [
+    {
+      "effective_time": "20260908",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260827",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260814",
+      "indications_and_usage": [
+        "INDICATIONS & USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260814",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE: Severe essential hypertension when the drug cannot be given orally or when there is an urgent need to lower blood pressure."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260807",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE: Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260730",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260715",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260622",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260619",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE: Severe essential hypertension when the drug cannot be given orally or when there is an urgent need to lower blood pressure."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    },
+    {
+      "effective_time": "20260612",
+      "indications_and_usage": [
+        "INDICATIONS AND USAGE Essential hypertension, alone or as an adjunct."
+      ],
+      "openfda": {
+        "generic_name": ["HYDRALAZINE HYDROCHLORIDE"]
+      }
+    }
+  ]
+}

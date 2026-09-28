@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-24",
+    "results": {
+      "skip": 0,
+      "limit": 100,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "application_number": "NDA218591",
+      "products": [
+        {
+          "brand_name": "ENTRESTO SPRINKLE",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "6MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "6MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENTRESTO SPRINKLE",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "15MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "16MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240412"
+        }
+      ]
+    },
+    {
+      "application_number": "NDA207620",
+      "products": [
+        {
+          "brand_name": "ENTRESTO",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "97MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "103MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENTRESTO",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "24MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "26MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENTRESTO",
+          "active_ingredients": [
+            {
+              "name": "SACUBITRIL",
+              "strength": "49MG"
+            },
+            {
+              "name": "VALSARTAN",
+              "strength": "51MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240412"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20171122"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20150707"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20191001"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20161221"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160511"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20210216"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20231018"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160212"
+        }
+      ]
+    }
+  ]
+}

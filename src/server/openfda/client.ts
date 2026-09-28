@@ -55,6 +55,21 @@ export interface OpenFdaClient {
   summaryLabel(rxcui: string, options?: { refresh?: boolean }): Promise<SummaryLabel | null>;
   /** FAERS report counts for an ingredient (e.g. "lisinopril"). */
   reportedReactions(ingredient: string): Promise<ReportedReactions>;
+  /** First US approval and generic availability of an ingredient, from Drugs@FDA. */
+  approvalFacts(ingredient: string): Promise<ApprovalFacts>;
+  /**
+   * Indications text of the newest single-ingredient labels for an ingredient (up
+   * to 5, de-duplicated): different labels of one drug can differ (e.g. sildenafil
+   * for erectile dysfunction or for pulmonary arterial hypertension).
+   */
+  indications(ingredient: string): Promise<string[]>;
+}
+
+export interface ApprovalFacts {
+  /** Earliest original NDA approval with this ingredient (YYYY-MM-DD). */
+  firstApproved: string | null;
+  /** An approved generic (ANDA) of this ingredient alone exists. */
+  genericAvailable: boolean;
 }
 
 export class OpenFdaUnavailableError extends Error {
@@ -71,7 +86,31 @@ export interface OpenFdaClientOptions {
 }
 
 const WEEK = 7 * 24 * 60 * 60 * 1000;
+const MONTH = 30 * 24 * 60 * 60 * 1000;
 const TOP_REACTIONS = 10;
+const INDICATION_LABELS = 5;
+
+interface DrugsFdaApplication {
+  application_number: string;
+  products?: { active_ingredients?: { name: string }[] }[];
+  submissions?: {
+    submission_type?: string;
+    submission_status?: string;
+    submission_status_date?: string;
+  }[];
+}
+
+/** "ENALAPRIL" matches "ENALAPRIL" and "ENALAPRIL MALEATE", never "ENALAPRILAT". */
+const sameIngredient = (productIngredient: string, name: string) =>
+  productIngredient === name || productIngredient.startsWith(`${name} `);
+
+/** Letters, digits, spaces and hyphens, upper-cased, for Drugs@FDA and label searches. */
+const searchName = (ingredient: string) =>
+  ingredient
+    .toUpperCase()
+    .replace(/[^A-Z0-9 -]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 interface LabelResult extends Partial<Record<SummarySectionName, string[]>> {
   set_id?: string;
@@ -210,6 +249,67 @@ export function createOpenFdaClient({
             .slice(0, TOP_REACTIONS)
             .map(({ term, count }) => ({ term, count })),
         };
+      });
+    },
+
+    approvalFacts(ingredient) {
+      const name = searchName(ingredient);
+      if (!name) return Promise.resolve({ firstApproved: null, genericAvailable: false });
+      return cached(`approval:${name}`, MONTH, async () => {
+        // The wildcard also finds salts ("ENALAPRIL MALEATE") and metabolites
+        // ("ENALAPRILAT"); sameIngredient() keeps only the former. Multi-word names
+        // are searched as a phrase (a wildcard can't span words).
+        const term = name.includes(' ') ? `"${name}"` : `${name}*`;
+        const apps = async (kind: 'NDA' | 'ANDA') =>
+          (
+            (await query('/drugsfda.json', {
+              search: `products.active_ingredients.name:${term} AND application_number:${kind}*`,
+              limit: '100',
+            })) as { results?: DrugsFdaApplication[] } | null
+          )?.results ?? [];
+        const [ndas, andas] = await Promise.all([apps('NDA'), apps('ANDA')]);
+
+        const approvals = ndas
+          .filter((app) =>
+            app.products?.some((p) =>
+              p.active_ingredients?.some((i) => sameIngredient(i.name, name)),
+            ),
+          )
+          .flatMap((app) =>
+            (app.submissions ?? [])
+              .filter((s) => s.submission_type === 'ORIG' && s.submission_status === 'AP')
+              .map((s) => s.submission_status_date ?? ''),
+          )
+          .filter((date) => /^\d{8}$/.test(date))
+          .sort();
+        const genericAvailable = andas.some((app) =>
+          app.products?.some(
+            (p) =>
+              p.active_ingredients?.length === 1 &&
+              sameIngredient(p.active_ingredients[0].name, name),
+          ),
+        );
+        return { firstApproved: isoDate(approvals[0]), genericAvailable };
+      });
+    },
+
+    indications(ingredient) {
+      const name = searchName(ingredient);
+      if (!name) return Promise.resolve([]);
+      return cached(`indications:${name}`, MONTH, async () => {
+        const body = (await query('/label.json', {
+          search: `openfda.generic_name:"${name}"`,
+          sort: 'effective_time:desc',
+          limit: '10',
+        })) as {
+          results?: { indications_and_usage?: string[]; openfda?: { generic_name?: string[] } }[];
+        } | null;
+        const texts = (body?.results ?? [])
+          // Single-ingredient labels only: a combination's indications are not this drug's.
+          .filter((r) => (r.openfda?.generic_name ?? []).every((g) => !/ AND |,|\//.test(g)))
+          .map((r) => htmlToText(r.indications_and_usage?.join(' ') ?? ''))
+          .filter(Boolean);
+        return [...new Set(texts)].slice(0, INDICATION_LABELS);
       });
     },
   };

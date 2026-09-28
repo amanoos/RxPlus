@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-25",
+    "results": {
+      "skip": 0,
+      "limit": 10,
+      "total": 165
+    }
+  },
+  "results": [
+    {
+      "effective_time": "20260831",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Sildenafil tablets are indicated for the treatment of erectile dysfunction. Sildenafil tablet is a phosphodiesterase-5 (PDE5) inhibitor indicated for the treatment of erectile dysfunction (ED) (1)"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260831",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Sildenafil citrate is indicated for the treatment of erectile dysfunction. Sildenafil citrate is a phosphodiesterase-5 (PDE5) inhibitor indicated for the treatment of erectile dysfunction (ED) ()"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260828",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Adults Sildenafil tablets, USP are indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening [see Clinical Studies ( 14 )]. Pediatric use information is approved for Viatris Specialty LLC's, REVATIO (sildenafil) tablets. However, due to Viatris Specialty LLC's marketing exclusivity rights, this drug product is not labeled with that information. Adults Sildenafil tablets are a phosphodiesterase-5 (PDE-5) inhibitor indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening. ()"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260819",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Sildenafil tablets are indicated for the treatment of erectile dysfunction. Sildenafil tablets are a phosphodiesterase-5 (PDE5) inhibitor indicated for the treatment of erectile dysfunction (ED). ( 1 )"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260812",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Adults Sildenafil citrate is a phosphodiesterase-5 (PDE-5) inhibitor indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening. ( 1 ) Adults Sildenafil tablets are indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening [ see Clinical Studies ( 14 ) ]. Pediatric use information is approved for Viatris Specialty LLC's, REVATIO (sildenafil) tablets. However, due to Viatris Specialty LLC's marketing exclusivity rights, this drug product is not labeled with that information."
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260811",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Sildenafil citrate is indicated for the treatment of erectile dysfunction. Sildenafil citrate is a phosphodiesterase-5 (PDE5) inhibitor indicated for the treatment of erectile dysfunction (ED) ( 1 )"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260811",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Sildenafil tablets are indicated for the treatment of erectile dysfunction. Sildenafil tablets are a phosphodiesterase-5 (PDE5) inhibitor indicated for the treatment of erectile dysfunction (ED). ( 1 )"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260810",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Adults Sildenafil tablets are indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening [see Clinical Studies (14) ] . Pediatric use information is approved for Viatris Specialty LLC’s, REVATIO (sildenafil) tablets. However, due to Viatris Specialty LLC’s marketing exclusivity rights, this drug product is not labeled with that information. Adults Sildenafil tablets are a phosphodiesterase-5 (PDE-5) inhibitor indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening. (1)"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260806",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Adults Sildenafil tablets are indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening [see Clinical Studies (14) ] . Pediatric use information is approved for Viatris Specialty LLC’s, REVATIO (sildenafil) tablets. However, due to Viatris Specialty LLC’s marketing exclusivity rights, this drug product is not labeled with that information. Adults Sildenafil tablets are a phosphodiesterase-5 (PDE-5) inhibitor indicated for the treatment of pulmonary arterial hypertension (PAH) (World Health Organization [WHO] Group I) in adults to improve exercise ability and delay clinical worsening. (1)"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    },
+    {
+      "effective_time": "20260803",
+      "indications_and_usage": [
+        "1 INDICATIONS AND USAGE Sildenafil tablets are indicated for the treatment of erectile dysfunction. Sildenafil tablets are phosphodiesterase-5 (PDE5) inhibitor indicated for the treatment of erectile dysfunction (ED) ( 1 )"
+      ],
+      "openfda": {
+        "generic_name": ["SILDENAFIL"]
+      }
+    }
+  ]
+}

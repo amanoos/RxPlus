@@ -1,0 +1,1949 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-24",
+    "results": {
+      "skip": 0,
+      "limit": 100,
+      "total": 36
+    }
+  },
+  "results": [
+    {
+      "application_number": "ANDA213714",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20220330"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075657",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160225"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141103"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20010123"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160225"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150406"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080724"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20190807"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20190807"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075369",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075370",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075727",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141103"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200528"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030627"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020828"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141103"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110502"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081231"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080724"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20010918"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075736",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20030325"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075456",
+      "products": [
+        {
+          "brand_name": "ENALAPRILAT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075458",
+      "products": [
+        {
+          "brand_name": "ENALAPRILAT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20170905"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100428"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030613"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076486",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090429"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151006"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151006"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151006"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200706"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20041027"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075459",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021001"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010910"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200414"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150817"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020424"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200414"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150817"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA218531",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240919"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075472",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020422"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075178",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20181210"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100806"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150501"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150501"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20181210"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160412"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080904"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150501"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20010323"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075479",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010830"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20210805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080423"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20210805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020813"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20210805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081231"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20210805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020319"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075480",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021219"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160418"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110530"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160418"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150123"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075482",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010912"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010525"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011022"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010221"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010525"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010221"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020729"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010221"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA212408",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20210810"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075483",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150901"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040923"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150901"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080814"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075788",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200414"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141104"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110705"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160524"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20081126"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141104"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20010918"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20220527"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160524"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091030"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150213"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075496",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200414"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020424"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200414"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150817"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021001"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010910"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075501",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080508"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021219"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA216458",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20240108"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076116",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020905"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20010919"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20250725"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110112"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030529"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020108"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151211"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075556",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160412"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160412"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20011001"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010608"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075571",
+      "products": [
+        {
+          "brand_name": "ENALAPRILAT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040618"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010917"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075578",
+      "products": [
+        {
+          "brand_name": "ENALAPRILAT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100427"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040102"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150414"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021219"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075583",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA212894",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20220629"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA078687",
+      "products": [
+        {
+          "brand_name": "ENALAPRILAT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100927"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20081223"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100429"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA214467",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20220224"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA213273",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20220707"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075621",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020822"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075909",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20101130"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070525"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140323"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20011015"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075624",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            },
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200421"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110519"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160426"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020905"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20010918"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110331"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160426"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030606"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075634",
+      "products": [
+        {
+          "brand_name": "ENALAPRILAT",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRILAT",
+              "strength": "1.25MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100527"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20010403"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075048",
+      "products": [
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "ENALAPRIL MALEATE",
+          "active_ingredients": [
+            {
+              "name": "ENALAPRIL MALEATE",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20000822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020730"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020419"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20020510"
+        }
+      ]
+    }
+  ]
+}

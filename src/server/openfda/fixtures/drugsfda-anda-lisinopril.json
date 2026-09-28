@@ -1,0 +1,3409 @@
+{
+  "meta": {
+    "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
+    "terms": "https://open.fda.gov/terms/",
+    "license": "https://open.fda.gov/license/",
+    "last_updated": "2026-09-24",
+    "results": {
+      "skip": 0,
+      "limit": 100,
+      "total": 33
+    }
+  },
+  "results": [
+    {
+      "application_number": "ANDA075944",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030211"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160916"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100308"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070924"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200427"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151125"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100312"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA203508",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200917"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150602"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200917"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160218"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20131029"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150602"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA218419",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "1MG/ML"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20260820"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA077606",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200716"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200716"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20060314"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA077622",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070206"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20060222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150825"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091204"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160913"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160407"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA077912",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070111"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20230317"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20230317"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20230317"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090831"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140228"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20060927"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20230317"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075994",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150415"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20190111"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130219"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150415"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130814"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130219"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070814"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050616"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130219"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20190111"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150415"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150415"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080229"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050830"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA077321",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200427"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20050909"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150409"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060808"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070130"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160218"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150409"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200427"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150409"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20110204"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150409"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090529"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075999",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160908"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150413"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130220"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030117"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160908"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150413"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030325"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076194",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200707"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200707"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130910"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130910"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080129"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040817"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200707"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130910"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080731"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070110"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA208920",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20210304"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076007",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090902"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075743",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160908"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050830"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040609"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080225"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160104"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20041029"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160224"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141211"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200427"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060123"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160104"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075752",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080429"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150424"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150424"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160324"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20050629"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071105"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150424"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150424"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240530"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20101209"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076230",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20041020"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030513"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA212041",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20200915"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075776",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100201"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20191217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20191217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090710"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20191217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130801"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20041026"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075783",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021029"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021029"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070625"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021029"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021029"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200528"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021029"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076059",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130220"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090123"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080508"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060119"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130814"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130220"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076063",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030627"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130805"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240411"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130814"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130228"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070625"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090910"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070216"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030627"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080128"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090821"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060313"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060313"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150604"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160915"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100217"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130228"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076071",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160908"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130301"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100308"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091016"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130301"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130301"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080221"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240411"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076262",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20231020"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160718"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20231020"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080821"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160718"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030613"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160718"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076265",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200803"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150526"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130911"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150526"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020708"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100303"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150526"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130911"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070409"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150526"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200803"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060808"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100303"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130911"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA202554",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160216"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160216"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160216"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20130730"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160216"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160913"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076102",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060608"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160713"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160713"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160713"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20080822"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200429"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160713"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160713"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130816"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020930"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA204058",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240531"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200807"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20170523"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076113",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20040923"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20071204"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030606"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20240529"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20180521"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100225"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130906"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20180521"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100225"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20180521"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20180521"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20130906"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20180521"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075869",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20090327"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070119"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200707"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030714"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060501"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200707"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20041020"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076164",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160202"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141219"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20190926"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200528"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160202"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141031"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA078402",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20070419"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200513"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160324"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20150115"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20141222"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20160324"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075903",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "30MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "2.5MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "40MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL",
+          "active_ingredients": [
+            {
+              "name": "LISINOPRIL",
+              "strength": "5MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091201"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20021025"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20070213"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200427"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100507"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20091201"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20211223"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060703"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20210817"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA075926",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20030321"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20020701"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200730"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060123"
+        }
+      ]
+    },
+    {
+      "application_number": "ANDA076674",
+      "products": [
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "25MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "20MG"
+            }
+          ]
+        },
+        {
+          "brand_name": "LISINOPRIL AND HYDROCHLOROTHIAZIDE",
+          "active_ingredients": [
+            {
+              "name": "HYDROCHLOROTHIAZIDE",
+              "strength": "12.5MG"
+            },
+            {
+              "name": "LISINOPRIL",
+              "strength": "10MG"
+            }
+          ]
+        }
+      ],
+      "submissions": [
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200716"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20100219"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060131"
+        },
+        {
+          "submission_type": "ORIG",
+          "submission_status": "AP",
+          "submission_status_date": "20041005"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20151118"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20200820"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20140226"
+        },
+        {
+          "submission_type": "SUPPL",
+          "submission_status": "AP",
+          "submission_status_date": "20060608"
+        }
+      ]
+    }
+  ]
+}

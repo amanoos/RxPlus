@@ -62,6 +62,8 @@ describe('drug summary API (integration)', () => {
     interactionLabel: vi.fn(),
     summaryLabel: vi.fn<OpenFdaClient['summaryLabel']>(),
     reportedReactions: vi.fn(),
+    approvalFacts: vi.fn(),
+    indications: vi.fn(),
   };
   const rxnav = { product: vi.fn<RxNavClient['product']>() };
   const generate = vi.fn<SummaryProvider['generate']>();

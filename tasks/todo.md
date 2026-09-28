@@ -16,11 +16,11 @@ Every task also meets the Definition of Done: lint and tests pass, no regression
   - Files: `src/server/rxnorm/client.ts` (+ spec, fixtures)
   - Depends on: none
 
-- [ ] **Task 2: Drugs@FDA facts and label indications** (S)
+- [x] **Task 2: Drugs@FDA facts and label indications** (S)
   - Acceptance:
     - `approvalFacts(ingredientName)` → `{ firstApproved: 'YYYY-MM-DD' | null, genericAvailable: boolean }` from `drugsfda.json` (earliest ORIG NDA approval containing the ingredient; ANDA with the ingredient alone); exact "<name>" / "<name> <salt>" matching (enalapril ≠ enalaprilat)
     - `indications(ingredientName)` → newest label's `indications_and_usage` text or `null`
-    - paced ≤ 4/s; cached 30 days; the API key is used and redacted as today
+    - cached 30 days; the API key is used and redacted as today (pacing ≤ 4/s lives in the list builder, the only caller making bursts, so the drug page keeps its parallel requests)
   - Verify: unit tests with recorded fixtures (lisinopril, enalapril, aprocitentan, sacubitril combination-only, bosentan and hydralazine labels)
   - Files: `src/server/openfda/client.ts` (+ spec, fixtures)
   - Depends on: none

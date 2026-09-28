@@ -62,6 +62,8 @@ describe('interactions API (integration)', () => {
     interactionLabel: vi.fn<OpenFdaClient['interactionLabel']>(),
     summaryLabel: vi.fn<OpenFdaClient['summaryLabel']>(),
     reportedReactions: vi.fn<OpenFdaClient['reportedReactions']>(),
+    approvalFacts: vi.fn(),
+    indications: vi.fn(),
   };
   let handle: (req: Request) => Promise<Response>;
   const get = (path: string) => handle(new Request(`http://localhost${path}`));
