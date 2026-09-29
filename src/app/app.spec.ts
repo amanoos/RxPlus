@@ -17,11 +17,4 @@ describe('App', () => {
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
-
-  it('marks the page once the browser app has rendered', async () => {
-    document.documentElement.removeAttribute('data-hydrated');
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    expect(document.documentElement.hasAttribute('data-hydrated')).toBe(true);
-  });
 });

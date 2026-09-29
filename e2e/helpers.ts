@@ -10,9 +10,9 @@ export const E2E_DATABASE_URL =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
 
 /**
- * Waits until the browser app has taken over the server-rendered page (App sets
- * data-hydrated). Keys typed before that can be lost: a PrimeNG autocomplete is
- * re-created on hydration. Call it after page.goto and before typing.
+ * Waits until the browser app has taken over the server-rendered page (AppReady
+ * sets data-hydrated). The login fields and drug search stay disabled until then;
+ * other inputs don't, so call it after page.goto and before typing.
  */
 export async function appReady(page: Page) {
   await expect(page.locator('html[data-hydrated]')).toBeAttached();

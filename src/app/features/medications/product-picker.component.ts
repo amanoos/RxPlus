@@ -5,6 +5,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { MessageModule } from 'primeng/message';
 import { catchError, of, Subject, switchMap, tap } from 'rxjs';
 
+import { AppReady } from '../../core/app-ready';
 import { lookupErrorMessage, RxNormApi, sortProducts, type RxProduct } from './rxnorm-api.service';
 
 /** Drug name search → product (strength and form) choice. Emits the product RXCUI. */
@@ -14,7 +15,8 @@ import { lookupErrorMessage, RxNormApi, sortProducts, type RxProduct } from './r
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-col gap-5">
-      <div class="flex flex-col gap-2">
+      <!-- Disabled until the app has loaded: the search box is re-created then, losing text. -->
+      <fieldset class="flex flex-col gap-2" [disabled]="!appReady()">
         <label [for]="inputId()" class="text-sm font-medium">Drug name</label>
         <p-autocomplete
           [inputId]="inputId()"
@@ -33,7 +35,7 @@ import { lookupErrorMessage, RxNormApi, sortProducts, type RxProduct } from './r
           class="w-full"
           inputStyleClass="w-full"
         />
-      </div>
+      </fieldset>
 
       @if (lookupError(); as message) {
         <p-message severity="warn">{{ message }}</p-message>
@@ -74,6 +76,7 @@ import { lookupErrorMessage, RxNormApi, sortProducts, type RxProduct } from './r
 })
 export class ProductPickerComponent {
   private readonly rxnorm = inject(RxNormApi);
+  protected readonly appReady = inject(AppReady).isReady;
 
   /** Unique per page when several pickers are shown. */
   readonly inputId = input('drug-search');

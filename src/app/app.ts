@@ -1,6 +1,7 @@
-import { DOCUMENT } from '@angular/common';
-import { afterNextRender, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { AppReady } from './core/app-ready';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   constructor() {
-    // Marks the page once the browser app has taken over the server-rendered one.
-    // Text typed into an input before this can be lost (a PrimeNG autocomplete is
-    // re-created on hydration), so the e2e tests wait for it before typing.
-    const html = inject(DOCUMENT).documentElement;
-    afterNextRender(() => html.setAttribute('data-hydrated', ''));
+    // Created here so readiness is tracked from the first render, whatever the page.
+    inject(AppReady);
   }
 }

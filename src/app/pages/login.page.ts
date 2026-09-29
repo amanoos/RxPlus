@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { AuthActions } from '../core/auth/auth.actions';
 import { selectAuthError, selectAuthPending } from '../core/auth/auth.selectors';
+import { AppReady } from '../core/app-ready';
 import { safeNext } from '../core/auth/safe-next';
 
 export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
@@ -27,36 +28,44 @@ export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
         aria-labelledby="login-title"
       >
         <h1 id="login-title" class="text-2xl font-semibold">RxPlus</h1>
-        <label for="username" class="text-sm font-medium">Username</label>
-        <input
-          pInputText
-          id="username"
-          type="text"
-          formControlName="username"
-          autocomplete="username"
-          autocapitalize="none"
-          spellcheck="false"
-          class="w-full"
-        />
-        <label for="password" class="text-sm font-medium">Password</label>
-        <input
-          pInputText
-          id="password"
-          type="password"
-          formControlName="password"
-          autocomplete="current-password"
-          class="w-full"
-        />
-        @if (error(); as error) {
-          <p-message severity="error">{{ error }}</p-message>
-        }
-        <p-button
-          type="submit"
-          label="Sign in"
-          [loading]="pending()"
-          [disabled]="form.invalid || pending()"
-          styleClass="w-full"
-        />
+        <!-- Disabled until the app has loaded: text typed before then would be lost. -->
+        <fieldset
+          class="flex flex-col gap-4"
+          [disabled]="!appReady()"
+          [attr.aria-busy]="!appReady()"
+          data-testid="login-fields"
+        >
+          <label for="username" class="text-sm font-medium">Username</label>
+          <input
+            pInputText
+            id="username"
+            type="text"
+            formControlName="username"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            class="w-full"
+          />
+          <label for="password" class="text-sm font-medium">Password</label>
+          <input
+            pInputText
+            id="password"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            class="w-full"
+          />
+          @if (error(); as error) {
+            <p-message severity="error">{{ error }}</p-message>
+          }
+          <p-button
+            type="submit"
+            label="Sign in"
+            [loading]="pending()"
+            [disabled]="form.invalid || pending()"
+            styleClass="w-full"
+          />
+        </fieldset>
       </form>
     </main>
   `,
@@ -65,6 +74,7 @@ export default class LoginPage {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
 
+  readonly appReady = inject(AppReady).isReady;
   readonly error = this.store.selectSignal(selectAuthError);
   readonly pending = this.store.selectSignal(selectAuthPending);
   readonly form = inject(NonNullableFormBuilder).group({

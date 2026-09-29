@@ -3,12 +3,19 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { providePrimeNG } from 'primeng/config';
 
+import { signal } from '@angular/core';
+
+import { AppReady } from '../core/app-ready';
 import { AuthActions } from '../core/auth/auth.actions';
 import { AuthState, initialAuthState } from '../core/auth/auth.reducer';
 import LoginPage from './login.page';
 
 describe('LoginPage', () => {
-  const setup = async (next: string | null, auth: AuthState = initialAuthState) => {
+  const setup = async (
+    next: string | null,
+    auth: AuthState = initialAuthState,
+    appReady?: { isReady: () => boolean },
+  ) => {
     await TestBed.configureTestingModule({
       imports: [LoginPage],
       providers: [
@@ -18,6 +25,7 @@ describe('LoginPage', () => {
           provide: ActivatedRoute,
           useValue: { snapshot: { queryParamMap: convertToParamMap(next ? { next } : {}) } },
         },
+        ...(appReady ? [{ provide: AppReady, useValue: appReady }] : []),
       ],
     }).compileComponents();
     const fixture = TestBed.createComponent(LoginPage);
@@ -74,6 +82,19 @@ describe('LoginPage', () => {
     expect(el.querySelector('input#password')?.getAttribute('autocomplete')).toBe(
       'current-password',
     );
+  });
+
+  it('keeps the fields disabled until the app has loaded, then enables them', async () => {
+    const ready = signal(false);
+    const { el, fixture } = await setup(null, initialAuthState, { isReady: ready });
+    const fields = el.querySelector<HTMLFieldSetElement>('[data-testid="login-fields"]')!;
+    expect(fields.disabled).toBe(true);
+    expect(fields.getAttribute('aria-busy')).toBe('true');
+
+    ready.set(true);
+    await fixture.whenStable();
+    expect(fields.disabled).toBe(false);
+    expect(fields.getAttribute('aria-busy')).toBe('false');
   });
 
   it('shows the error from the store', async () => {

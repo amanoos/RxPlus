@@ -1,8 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { providePrimeNG } from 'primeng/config';
 import { of, throwError } from 'rxjs';
 
+import { AppReady } from '../../core/app-ready';
 import { ProductPickerComponent } from './product-picker.component';
 import { RxNormApi, type RxProduct } from './rxnorm-api.service';
 
@@ -19,17 +21,36 @@ const products: RxProduct[] = [
 describe('ProductPickerComponent', () => {
   const rxnorm = { search: vi.fn(), products: vi.fn() };
 
-  const setup = async (inputs: Record<string, string> = {}) => {
+  const setup = async (
+    inputs: Record<string, string> = {},
+    appReady?: { isReady: () => boolean },
+  ) => {
     vi.resetAllMocks();
     await TestBed.configureTestingModule({
       imports: [ProductPickerComponent],
-      providers: [providePrimeNG(), { provide: RxNormApi, useValue: rxnorm }],
+      providers: [
+        providePrimeNG(),
+        { provide: RxNormApi, useValue: rxnorm },
+        ...(appReady ? [{ provide: AppReady, useValue: appReady }] : []),
+      ],
     }).compileComponents();
     const fixture = TestBed.createComponent(ProductPickerComponent);
     for (const [name, value] of Object.entries(inputs)) fixture.componentRef.setInput(name, value);
     await fixture.whenStable();
     return { fixture, cmp: fixture.componentInstance, el: fixture.nativeElement as HTMLElement };
   };
+
+  it('keeps the drug search disabled until the app has loaded', async () => {
+    const ready = signal(false);
+    const { el, fixture } = await setup({}, { isReady: ready });
+    const search = () => el.querySelector<HTMLInputElement>('input#drug-search')!;
+    expect(search().closest('fieldset')!.disabled).toBe(true);
+    expect(search().matches(':disabled')).toBe(true);
+
+    ready.set(true);
+    await fixture.whenStable();
+    expect(search().matches(':disabled')).toBe(false);
+  });
 
   it('suggests drug names from the search', async () => {
     const { cmp } = await setup();
