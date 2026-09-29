@@ -133,10 +133,17 @@ describe('auth API (integration)', () => {
     expect((await loginWith('bob', BOB_PASSWORD)).status).toBe(204);
   });
 
-  it('blocks everyone once failures across usernames reach the global cap', async () => {
-    for (let i = 0; i < 20; i++) await loginWith(`guess${i}`, 'nope');
-    expect((await loginWith('bob', BOB_PASSWORD)).status).toBe(429);
-  });
+  // 21 sign-ins, each checking a scrypt hash on purpose: about 2.5 s, so more room than 5 s.
+  it(
+    'blocks everyone once failures across usernames reach the global cap',
+    {
+      timeout: 15_000,
+    },
+    async () => {
+      for (let i = 0; i < 20; i++) await loginWith(`guess${i}`, 'nope');
+      expect((await loginWith('bob', BOB_PASSWORD)).status).toBe(429);
+    },
+  );
 
   it('keeps two users signed in at once, and logout ends only that browser', async () => {
     const alicePhone = await signIn('alice', ALICE_PASSWORD);

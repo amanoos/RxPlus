@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { addMedication, resetMedications, signIn } from './helpers';
+import { addMedication, appReady, resetMedications, signIn } from './helpers';
 
 const LISINOPRIL = 'lisinopril 10 MG Oral Tablet';
 const SPIRONOLACTONE = 'spironolactone 25 MG Oral Tablet';
@@ -17,6 +17,7 @@ test('checks a new prescription against current medications, with FDA label quot
   page,
 }) => {
   await page.goto('/interactions');
+  await appReady(page);
   const check = page.getByRole('region', { name: 'Check a new prescription' });
   await check.locator('#check-drug').pressSequentially('spiro');
   await page.getByRole('option', { name: 'spironolactone', exact: true }).click();

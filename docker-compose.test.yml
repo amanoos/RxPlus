@@ -5,6 +5,9 @@ name: rxplus-test
 services:
   db-test:
     image: postgres:18
+    # A statement stuck behind another connection's lock fails after 3 s with
+    # "canceling statement due to lock timeout" instead of an unexplained test timeout.
+    command: ['postgres', '-c', 'lock_timeout=3s']
     environment:
       POSTGRES_USER: rxplus
       POSTGRES_PASSWORD: rxplus

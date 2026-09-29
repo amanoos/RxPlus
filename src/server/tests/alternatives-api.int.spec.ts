@@ -3,7 +3,9 @@
 import { sql } from 'drizzle-orm';
 import { createApp, createRouter, toWebHandler } from 'h3';
 
-import { settleAlternativeJobs } from '../alternatives/builder';
+import { createAlternativesBuilder, settleAlternativeJobs } from '../alternatives/builder';
+import { createAlternativesRepository } from '../alternatives/repository';
+import { useAlternativesBuilder } from '../alternatives/service';
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
 import { medications } from '../db/schema';
@@ -89,6 +91,15 @@ describe('alternatives API (integration)', () => {
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnav as unknown as RxNavClient);
     useOpenFdaClient(openFda as unknown as OpenFdaClient);
+    // The real openFDA pacing (250-500 ms a call) put these tests near the 5 s timeout.
+    useAlternativesBuilder(
+      createAlternativesBuilder({
+        repo: createAlternativesRepository(db),
+        rxnav: rxnav as never,
+        openFda: openFda as never,
+        sleep: async () => undefined,
+      }),
+    );
     handle = toWebHandler(
       createApp()
         .use(testUserMiddleware(() => users, 'alice'))
@@ -109,6 +120,7 @@ describe('alternatives API (integration)', () => {
     users = await seedTestUsers(db);
   });
   afterAll(async () => {
+    useAlternativesBuilder(undefined);
     useRxNavClient(undefined);
     useOpenFdaClient(undefined);
     await pool.end();

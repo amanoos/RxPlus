@@ -186,6 +186,11 @@ export function sharedAlternativesBuilder(): AlternativesBuilder {
   return sharedBuilder;
 }
 
+/** Tests only: replace the shared builder, e.g. without openFDA pacing (undefined restores it). */
+export function useAlternativesBuilder(builder: AlternativesBuilder | undefined): void {
+  sharedBuilder = builder;
+}
+
 /** Service for the signed-in user, wired to the app database and upstream clients. */
 export function alternativesService(userId: string) {
   const facts = drugFactsService();
