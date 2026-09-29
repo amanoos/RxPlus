@@ -29,7 +29,17 @@ export function takeawayProvider(): TakeawayChoice {
           numCtx: config.OLLAMA_NUM_CTX,
           timeoutMs: config.OLLAMA_TIMEOUT_MS,
         },
-        { checkModel: config.OLLAMA_CHECK_MODEL },
+        {
+          checkModel: config.OLLAMA_CHECK_MODEL,
+          jev: config.JEV_API_KEY
+            ? {
+                provider: config.JEV_PROVIDER,
+                apiKey: config.JEV_API_KEY,
+                baseUrl: config.JEV_BASE_URL,
+                timeoutMs: config.JEV_TIMEOUT_MS,
+              }
+            : undefined,
+        },
       ),
     };
   }

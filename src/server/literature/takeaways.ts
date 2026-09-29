@@ -5,7 +5,16 @@
 import { z } from 'zod';
 
 import { createClaudeCited, type CitedBlock, type ClaudeClient } from '../ai/claude';
-import { ProviderOutputError } from '../ai/errors';
+import { ProviderOutputError, ProviderUnavailableError } from '../ai/errors';
+import {
+  jevBody,
+  jevHeaders,
+  jevUrl,
+  readSupport,
+  SUPPORT_REQUEST,
+  supportQuestions,
+  type JevProvider,
+} from '../ai/jev';
 import { createOllamaJson, type OllamaJson, type OllamaOptions } from '../ai/ollama';
 import { ignoreSet, isAdvice, isRelevant, MIN_QUOTE_CHARS, normalizeText } from '../ai/verify';
 import type { PaperTakeaway } from '../db/schema';
@@ -95,16 +104,18 @@ export function buildSupportMessage(items: SupportItem[]): string {
 }
 
 /**
- * `checkModel` turns on the support check with that model. Off by default: with
- * qwen2.5:7b the check misjudged faithful rewrites as often as it caught errors
- * (live run 2026-09-27), so its warnings would mislead.
+ * The support check turns on with `jev` (TypeSafe's decision model, which wins)
+ * or `checkModel` (a local model). Off by default: with qwen2.5:7b the check
+ * misjudged faithful rewrites as often as it caught errors (live run
+ * 2026-09-27), so its warnings would mislead.
  */
 export function createOllamaTakeawayProvider(
   options: OllamaOptions,
-  { checkModel }: { checkModel?: string } = {},
+  { checkModel, jev }: { checkModel?: string; jev?: JevCheckOptions } = {},
 ): TakeawayProvider {
   const ollama = createOllamaJson(options);
   const checker = checkModel ? createOllamaJson({ ...options, model: checkModel }) : null;
+  const localCheck = checker ? (items: SupportItem[]) => checkWith(checker, items) : undefined;
   return {
     name: 'ollama',
     model: ollama.model,
@@ -118,7 +129,64 @@ export function createOllamaTakeawayProvider(
       });
       return { raw: data, inputTokens, outputTokens };
     },
-    checkSupport: checker ? (items) => checkWith(checker, items) : undefined,
+    checkSupport: jev ? createJevSupportCheck(jev) : localCheck,
+  };
+}
+
+export interface JevCheckOptions {
+  provider: JevProvider;
+  apiKey: string;
+  baseUrl?: string;
+  timeoutMs: number;
+  fetch?: typeof fetch;
+}
+
+/**
+ * The support check as one Jev request: a yes/no per takeaway, with no tokens
+ * spent on a generating model. Throws on any failure, so checkTakeawaySupport
+ * logs it and leaves `supported` null.
+ */
+export function createJevSupportCheck({
+  provider,
+  apiKey,
+  baseUrl,
+  timeoutMs,
+  fetch: fetchFn = fetch,
+}: JevCheckOptions): (items: SupportItem[]) => Promise<Map<string, boolean>> {
+  return async (items) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    // Race the abort too, so the timeout holds even if a fetch ignores the signal.
+    const aborted = new Promise<never>((_, reject) =>
+      controller.signal.addEventListener('abort', () => reject(new Error('aborted'))),
+    );
+    let response: Response;
+    let text: string;
+    try {
+      response = await Promise.race([
+        aborted,
+        fetchFn(jevUrl(provider, baseUrl?.replace(/\/$/, '')), {
+          method: 'POST',
+          headers: jevHeaders(provider, apiKey),
+          signal: controller.signal,
+          body: jevBody(provider, SUPPORT_REQUEST, supportQuestions(provider, items)),
+        }),
+      ]);
+      text = await Promise.race([aborted, response.text()]);
+    } catch (error) {
+      if (controller.signal.aborted) {
+        throw new ProviderUnavailableError(`Jev timed out after ${timeoutMs / 1000}s.`);
+      }
+      throw new ProviderUnavailableError(`Jev is unreachable (${(error as Error).message}).`);
+    } finally {
+      clearTimeout(timer);
+    }
+    if (!response.ok) throw new ProviderUnavailableError(`Jev responded ${response.status}.`);
+
+    const answers = readSupport(text);
+    if (!answers) throw new ProviderOutputError('Jev returned no answers.');
+    const asked = new Set(items.map((i) => i.pmid));
+    return new Map([...answers].filter(([pmid]) => asked.has(pmid)));
   };
 }
 

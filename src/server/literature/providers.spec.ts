@@ -21,6 +21,10 @@ async function choiceFor(overrides: Record<string, string | undefined>) {
     'OLLAMA_TAKEAWAY_MODEL',
     'OLLAMA_CHECK_MODEL',
     'ANTHROPIC_API_KEY',
+    'JEV_API_KEY',
+    'JEV_PROVIDER',
+    'JEV_BASE_URL',
+    'JEV_TIMEOUT_MS',
   ]) {
     if (!(key in overrides)) delete process.env[key];
   }
@@ -74,5 +78,32 @@ describe('takeawayProvider', () => {
       OLLAMA_MODEL: 'qwen2.5:7b',
     });
     expect(local.provider?.name).toBe('ollama');
+  });
+
+  it('checks takeaways with Jev when its key is set, in place of the local check model', async () => {
+    const fetchMock = vi.fn(async () => new Response('{"answers":{}}'));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      const jev = await choiceFor({
+        OLLAMA_MODEL: 'qwen2.5:7b',
+        OLLAMA_CHECK_MODEL: 'qwen2.5:14b',
+        JEV_API_KEY: 'jev-key',
+      });
+      await jev.provider?.checkSupport?.([{ pmid: '1', takeaway: 't', quote: 'q' }]);
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://api.typesafe.ai/v1/systemone',
+        expect.objectContaining({ method: 'POST' }),
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    // Claude's takeaways stay unchecked: their citations already tie them to the abstract.
+    const claude = await choiceFor({
+      TAKEAWAY_PROVIDER: 'claude',
+      ANTHROPIC_API_KEY: 'test-key',
+      JEV_API_KEY: 'jev-key',
+    });
+    expect(claude.provider?.checkSupport).toBeUndefined();
   });
 });

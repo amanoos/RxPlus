@@ -15,9 +15,10 @@
  * `state.request` is one string, so per-item content goes into each question's
  * `instructions`: one request carries every paper's question.
  *
- * Every reader fails open: a malformed body or a missing answer leaves that
- * item out of the map, and the caller keeps its current fallback (support
- * `null`, the regex study subject).
+ * A missing or too-close answer leaves that item out of the map, and the
+ * caller keeps its fallback (support `null`, the regex study subject). The
+ * support check that calls this is `createJevSupportCheck` in
+ * literature/takeaways.ts.
  */
 import type { StudySubject } from '../literature/study-subject';
 import type { SupportItem } from '../literature/takeaways';
@@ -151,11 +152,14 @@ function byPrefix(answers: Answers | null, prefix: string): [string, Record<stri
 /**
  * Support per PMID, the shape `TakeawayProvider.checkSupport` returns. An
  * answer whose P(yes) falls between `1 - threshold` and `threshold` is too
- * close to call and left out, so it reads as `supported: null`.
+ * close to call and left out, so it reads as `supported: null`. Null when
+ * the body carries no answers at all.
  */
-export function readSupport(responseText: string, threshold = 0.7): Map<string, boolean> {
+export function readSupport(responseText: string, threshold = 0.7): Map<string, boolean> | null {
+  const answers = answersOf(responseText);
+  if (!answers) return null;
   const result = new Map<string, boolean>();
-  for (const [pmid, answer] of byPrefix(answersOf(responseText), 'supported::')) {
+  for (const [pmid, answer] of byPrefix(answers, 'supported::')) {
     const p = yesNoOf(answer);
     if (p === null) continue;
     if (p >= threshold) result.set(pmid, true);

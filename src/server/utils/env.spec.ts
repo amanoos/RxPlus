@@ -24,6 +24,8 @@ describe('parseEnv', () => {
       OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
       OLLAMA_NUM_CTX: 16384,
       OLLAMA_TIMEOUT_MS: 600000,
+      JEV_PROVIDER: 'typesafe',
+      JEV_TIMEOUT_MS: 30000,
       AI_DAILY_LIMIT: 20,
     });
   });

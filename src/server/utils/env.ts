@@ -62,6 +62,16 @@ const envSchema = z.object({
   OLLAMA_CHECK_MODEL: z.string().trim().min(1).optional(),
   OLLAMA_NUM_CTX: z.coerce.number().int().min(2048).max(262144).default(16384),
   OLLAMA_TIMEOUT_MS: z.coerce.number().int().min(10_000).default(600_000),
+  // Optional: TypeSafe's Jev decision model checks each local takeaway against its quote,
+  // in place of OLLAMA_CHECK_MODEL. Off when unset. Never logged.
+  JEV_API_KEY: z.string().trim().min(1).optional(),
+  // Which service the key is for: TypeSafe's own API or the Vercel AI Gateway.
+  JEV_PROVIDER: z
+    .enum(['typesafe', 'gateway'], 'must be "typesafe" or "gateway"')
+    .default('typesafe'),
+  // Optional: overrides the service's default address.
+  JEV_BASE_URL: z.url({ protocol: /^https?$/, error: 'must be an http(s) URL' }).optional(),
+  JEV_TIMEOUT_MS: z.coerce.number().int().min(1000).default(30_000),
   ANTHROPIC_API_KEY: z.string().trim().min(1).optional(),
   AI_DAILY_LIMIT: z.coerce.number().int().min(0).default(20),
   // Optional; raises openFDA's daily limit. Sent as a query parameter, never logged.

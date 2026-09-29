@@ -80,8 +80,9 @@ describe('jev answers', () => {
     );
   });
 
-  it('fails open on a malformed body', () => {
-    expect(readSupport('not json').size).toBe(0);
+  it('tells a malformed body (null) from one with no support answers', () => {
+    expect(readSupport('not json')).toBeNull();
+    expect(readSupport('{"answers":{}}')?.size).toBe(0);
     expect(readSubjects('{"error":"timeout"}').size).toBe(0);
   });
 });

@@ -2,11 +2,12 @@
 import type { BetaMessage } from '@anthropic-ai/sdk/resources/beta/messages/messages';
 
 import type { ClaudeClient } from '../ai/claude';
-import { ProviderOutputError } from '../ai/errors';
+import { ProviderOutputError, ProviderUnavailableError } from '../ai/errors';
 import {
   buildAbstractsMessage,
   buildSupportMessage,
   createClaudeTakeawayProvider,
+  createJevSupportCheck,
   createOllamaTakeawayProvider,
   parseCitedTakeaways,
   SUPPORT_SYSTEM_PROMPT,
@@ -295,5 +296,94 @@ describe('support check', () => {
     expect(plain.checkSupport).toBeUndefined();
     const provider = createClaudeTakeawayProvider({ apiKey: 'test', client: {} as ClaudeClient });
     expect(provider.checkSupport).toBeUndefined();
+  });
+});
+
+describe('Jev support check', () => {
+  const items = [
+    {
+      pmid: '111',
+      takeaway: 'Lisinopril lowered blood pressure.',
+      quote: 'Lisinopril reduced systolic blood pressure by 12 mmHg.',
+    },
+    {
+      pmid: '222',
+      takeaway: 'Lisinopril caused more cough than other ACE inhibitors.',
+      quote: 'Moexipril ranked as number one for inducing cough',
+    },
+  ];
+  const reply = (answers: unknown, status = 200) =>
+    vi.fn(async () => new Response(JSON.stringify({ answers }), { status }));
+  const callOf = (fetchFn: ReturnType<typeof vi.fn>) =>
+    fetchFn.mock.calls[0] as unknown as [string, RequestInit];
+
+  it('asks one yes/no per takeaway on TypeSafe and keeps answers for asked PMIDs only', async () => {
+    const fetchFn = reply({
+      'supported::111': { noul: 0.95, confidence: 0.9 },
+      'supported::222': { noul: 0.05, confidence: 0.9 },
+      'supported::999': { noul: 0.99 },
+    });
+    const check = createJevSupportCheck({
+      provider: 'typesafe',
+      apiKey: 'k',
+      timeoutMs: 1000,
+      fetch: fetchFn,
+    });
+    expect([...(await check(items))]).toEqual([
+      ['111', true],
+      ['222', false],
+    ]);
+
+    const [url, init] = callOf(fetchFn);
+    expect(url).toBe('https://api.typesafe.ai/v1/systemone');
+    expect(init.headers).toMatchObject({ authorization: 'Bearer k' });
+    const body = JSON.parse(String(init.body));
+    expect(body.model).toBe('jev-latest');
+    expect(Object.keys(body.questions)).toEqual(['supported::111', 'supported::222']);
+    expect(body.questions['supported::222'].instructions).toContain('QUOTE: Moexipril ranked');
+  });
+
+  it('speaks the Gateway shape, at a custom address', async () => {
+    const fetchFn = reply({ 'supported::111': { probability: 0.9 } });
+    const check = createJevSupportCheck({
+      provider: 'gateway',
+      apiKey: 'k',
+      baseUrl: 'http://gateway.test/v4/ai/',
+      timeoutMs: 1000,
+      fetch: fetchFn,
+    });
+    expect([...(await check(items))]).toEqual([['111', true]]);
+    const [url, init] = callOf(fetchFn);
+    expect(url).toBe('http://gateway.test/v4/ai/evaluation-model');
+    expect(init.headers).toMatchObject({ 'ai-model-id': 'typesafe-ai/jev' });
+    expect(JSON.parse(String(init.body)).model).toBeUndefined();
+  });
+
+  it('throws on an error status, a body with no answers, or a timeout', async () => {
+    const options = { provider: 'typesafe' as const, apiKey: 'k', timeoutMs: 1000 };
+    await expect(
+      createJevSupportCheck({ ...options, fetch: reply({}, 401) })(items),
+    ).rejects.toThrow(ProviderUnavailableError);
+    const garbled = vi.fn(async () => new Response('<html>'));
+    await expect(createJevSupportCheck({ ...options, fetch: garbled })(items)).rejects.toThrow(
+      ProviderOutputError,
+    );
+    const hung = vi.fn(() => new Promise<Response>(() => undefined));
+    await expect(
+      createJevSupportCheck({ ...options, timeoutMs: 20, fetch: hung })(items),
+    ).rejects.toThrow(/timed out/);
+  });
+
+  it('takes the place of the local check model', async () => {
+    const fetchFn = reply({ 'supported::111': { noul: 0.9 } });
+    const provider = createOllamaTakeawayProvider(
+      { baseUrl: 'http://ollama.test', model: 'qwen2.5:7b', numCtx: 16384, timeoutMs: 1000 },
+      {
+        checkModel: 'qwen2.5:14b',
+        jev: { provider: 'typesafe', apiKey: 'k', timeoutMs: 1000, fetch: fetchFn },
+      },
+    );
+    await provider.checkSupport!(items);
+    expect(callOf(fetchFn)[0]).toBe('https://api.typesafe.ai/v1/systemone');
   });
 });
