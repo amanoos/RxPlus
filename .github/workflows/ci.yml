@@ -1,0 +1,54 @@
+# Checks every pull request and every push to main. Required to pass before
+# merging into main (branch rule). End-to-end tests run locally (npm run e2e).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      # Same as docker-compose.test.yml: the integration tests expect it on localhost:5433.
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: rxplus
+          POSTGRES_PASSWORD: rxplus
+          POSTGRES_DB: rxplus_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U rxplus -d rxplus_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run test:int
+        env:
+          TEST_DATABASE_URL: postgres://rxplus:rxplus@localhost:5433/rxplus_test
+      - run: npm run build

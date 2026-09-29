@@ -30,6 +30,7 @@
     "ddi:import": "npm run -s build:scripts && node --env-file-if-exists=.env dist/ddi-import.cjs"
   },
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@analogjs/router": "2.7.5",
     "@angular/cdk": "22.2.0",
