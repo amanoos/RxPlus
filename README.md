@@ -20,6 +20,7 @@ Built with [Analog](https://analogjs.org) (Angular + SSR), PrimeNG, Tailwind CSS
 - [How it works](#how-it-works)
 - [Accounts](#accounts)
 - [Backups](#backups)
+- [Contributing, security and license](#contributing-security-and-license)
 
 ## Run the app (users)
 
@@ -193,7 +194,7 @@ A plain `docker compose up` recreates the database container without the port th
 | `src/app/`                            | Angular client: `pages/` (file-based routes), `features/<module>/` (components, NgRx store, API services), `core/` (auth, layout)                                         |
 | `src/server/`                         | Nitro server: `routes/api/` (file-based API routes), one folder per module (service, repository, upstream client), `db/schema/`, `plugins/`, `tasks/` (the weekly digest) |
 | `drizzle/`                            | SQL migrations generated from `src/server/db/schema`                                                                                                                      |
-| `scripts/`                            | Password hash, DDInter import, migrations runner, backup script                                                                                                           |
+| `scripts/`                            | Account admin (`user.ts`), DDInter import, migrations runner, backup script                                                                                               |
 | `e2e/`                                | Playwright specs and the stub server that stands in for every upstream API                                                                                                |
 | `SPEC-<module>.md`, `tasks/<module>/` | The spec and task plan behind each module; [CAPABILITY-MAP.md](CAPABILITY-MAP.md) lists the modules and build order                                                       |
 | `docs/`                               | [Intent](docs/intent/rx-tracker.md) and [research on the data sources](docs/research/free-data-sources.md)                                                                |
@@ -225,7 +226,7 @@ Commit the generated `drizzle/` files with the schema change. In Docker, migrati
 
 ### Rules of the codebase
 
-- Never commit `.env`, API keys, backups or DDInter data.
+- Never commit `.env`, API keys, backups, personal health information, or DDInter data beyond the 3-row test sample.
 - AI never gives dosing or start/stop advice and never sets interaction severity; only public label text and paper abstracts are sent to models.
 - Alternatives never rank drugs or recommend switching.
 
@@ -379,3 +380,10 @@ docker compose start app
 ```
 
 To check a dump without touching the live data, restore it into a scratch database instead (`createdb -U rxplus restore_check`, then `-d restore_check`), look, and `dropdb` it.
+
+## Contributing, security and license
+
+- **Contributing:** issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Please never post your own medications or health details.
+- **Security:** report vulnerabilities privately; see [SECURITY.md](SECURITY.md).
+- **License:** RxPlus's code is [MIT](LICENSE). Its UI library, PrimeNG, is not: it's free under PrimeTek's Community License for individuals, small organizations and non-commercial open-source use, and paid otherwise. Third-party data keeps its own terms, including DDInter's non-commercial license. Details in [NOTICE.md](NOTICE.md).
+- **Not medical advice:** RxPlus is for information and for questions to bring to your prescriber or pharmacist. It can be wrong or out of date; always confirm with them.

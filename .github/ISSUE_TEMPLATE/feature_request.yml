@@ -1,0 +1,20 @@
+name: Idea or feature request
+description: Suggest something RxPlus could do.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please don't include your own medications or health details.** RxPlus never recommends starting, stopping or changing a medication, so ideas in that direction are out of scope.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What RxPlus could do about it. Data sources you have in mind help too.
