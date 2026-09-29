@@ -14,6 +14,7 @@ It is for information and for questions to bring to your prescriber or pharmacis
 Built with [Analog](https://analogjs.org) (Angular + SSR), PrimeNG, Tailwind CSS, NgRx, Drizzle and PostgreSQL.
 
 - [Run the app (users)](#run-the-app-users)
+  - [Upgrade to separate accounts](#7-upgrade-to-separate-accounts)
 - [Develop (developers)](#develop-developers)
 - [Configuration reference](#configuration-reference)
 - [How it works](#how-it-works)
@@ -115,15 +116,32 @@ Replace `192.168.1.0/24` with your network's range. With mirrored networking, th
   git pull
   docker compose up -d --build                     # database migrations run automatically
   ```
-- **Upgrading from the single-password version** (separate accounts). The upgrade clears the medication list and the What's new history, because they belonged to no account; research, label summaries, alternatives and interaction data stay. In order:
-  1. Take a backup (`docker compose exec backup sh /backup.sh once`) and write down your medications, with what each is taken for, units per month and copay.
-  2. `git pull`, then `docker compose up -d --build`.
-  3. Create an account for each person (step 3, `docker compose exec app node dist/user.cjs add <username>`).
-  4. Remove `APP_PASSWORD_HASH` from `.env`.
-  5. Sign in and add your medications again; everyone signs in once more.
+- **Upgrading from the single-password version?** Follow [Upgrade to separate accounts](#7-upgrade-to-separate-accounts) instead: that update clears data.
 - Clean up old Docker layers every few months: `docker image prune` and `docker builder prune`.
 - Your data lives in the `rxplus_db-data` Docker volume. `docker compose down` keeps it; `docker compose down -v` **deletes it**. See [Backups](#backups).
 - `POSTGRES_PASSWORD` is fixed when the database is first created; changing it later in `.env` doesn't change the database's password. Changing `VITE_PRIMEUI_LICENSE` needs a rebuild (`--build`).
+
+### 7. Upgrade to separate accounts
+
+If your RxPlus signs in with a single password (`APP_PASSWORD_HASH` in `.env`), this update switches it to one account per person. **It clears the medication list and the What's new history**, because they belonged to no account. Research, label summaries, alternatives and the interaction data stay. In order:
+
+1. Take a backup, and write down your medications with what each is taken for, units per month and copay:
+   ```bash
+   docker compose exec backup sh /backup.sh once
+   ```
+2. Update and rebuild (the database migrations run automatically and clear the old list):
+   ```bash
+   git pull
+   docker compose up -d --build
+   ```
+3. Create an account for each person (it asks for the password twice, at least 12 characters):
+   ```bash
+   docker compose exec app node dist/user.cjs add <username>
+   ```
+4. Remove the `APP_PASSWORD_HASH` line from `.env` (until then the app logs that it's ignored).
+5. Open the app, sign in with your username and password, and add your medications again. Everyone signs in once more after the update.
+
+To undo, restore the backup from step 1 on the previous version (see [Backups](#backups)).
 
 ### Linux home server with Ollama
 
