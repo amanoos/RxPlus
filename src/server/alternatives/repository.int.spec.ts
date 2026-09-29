@@ -80,14 +80,17 @@ describe('alternatives repository (integration)', () => {
     });
   });
 
-  it('hides and unhides alternatives per ingredient', async () => {
-    await repo.hide('29046', '1998');
-    await repo.hide('29046', '1998');
-    await repo.hide('29046', '3827');
-    expect(await repo.hidden('29046')).toEqual(['1998', '3827']);
-    expect(await repo.hidden('5487')).toEqual([]);
-    await repo.unhide('29046', '1998');
-    expect(await repo.hidden('29046')).toEqual(['3827']);
+  it('hides and unhides alternatives per ingredient, for one user only', async () => {
+    const { alice, bob } = await seedTestUsers(db);
+    await repo.hide(alice.id, '29046', '1998');
+    await repo.hide(alice.id, '29046', '1998');
+    await repo.hide(alice.id, '29046', '3827');
+    expect(await repo.hidden(alice.id, '29046')).toEqual(['1998', '3827']);
+    expect(await repo.hidden(alice.id, '5487')).toEqual([]);
+    expect(await repo.hidden(bob.id, '29046')).toEqual([]);
+    await repo.unhide(bob.id, '29046', '3827');
+    await repo.unhide(alice.id, '29046', '1998');
+    expect(await repo.hidden(alice.id, '29046')).toEqual(['3827']);
   });
 
   it('stores what a medication is taken for', async () => {

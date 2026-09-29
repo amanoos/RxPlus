@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Browser, type Page } from '@playwright/test';
 import pg from 'pg';
 
 /** The accounts global-setup creates; test-only credentials. */
@@ -15,6 +15,19 @@ export async function signIn(page: Page, password = E2E_PASSWORD, username = E2E
   await page.locator('#username').fill(username);
   await page.locator('#password').fill(password);
   await page.getByRole('button', { name: 'Sign in' }).click();
+}
+
+/**
+ * Opens `path` as the second test account, in its own browser context (its own
+ * cookies). Close the returned context when done.
+ */
+export async function asOtherAccount(browser: Browser, path: string) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto(path);
+  await signIn(page, E2E_OTHER_PASSWORD, E2E_OTHER_USERNAME);
+  await expect(page).toHaveURL(new RegExp(`${path}$`));
+  return { context, page };
 }
 
 /** Empties medications and stored AI output and research, so each test starts clean. */

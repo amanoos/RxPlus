@@ -71,6 +71,13 @@
       "when": 1790684999940,
       "tag": "0009_digest_per_user",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790695738547,
+      "tag": "0010_hiding_per_user",
+      "breakpoints": true
     }
   ]
 }

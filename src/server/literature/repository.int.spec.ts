@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm';
 
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
+import { seedTestUsers, type TestUsers } from '../tests/test-users';
 import {
   createLiteratureRepository,
   selectShown,
@@ -75,11 +76,15 @@ describe('literature repository (integration)', () => {
   const repo = createLiteratureRepository(db);
   const save = (papers: FetchedPaper[], trials: FetchedTrial[] = []) =>
     repo.saveFetched({ ingredientRxcui: ING, ingredientName: 'lisinopril', papers, trials });
+  let users: TestUsers;
+  let alice: string;
 
   beforeAll(() => runMigrations(url, 'drizzle'));
-  beforeEach(() =>
-    db.execute(sql`truncate table literature_lists, literature_papers, literature_trials`),
-  );
+  beforeEach(async () => {
+    await db.execute(sql`truncate table literature_lists, literature_papers, literature_trials`);
+    users = await seedTestUsers(db);
+    alice = users.alice.id;
+  });
   afterAll(() => pool.end());
 
   it('stores a fetched list and shows reviews first, then trials', async () => {
@@ -88,7 +93,7 @@ describe('literature repository (integration)', () => {
       ingredientName: 'lisinopril',
       takeawayStatus: 'none',
     });
-    const shown = await repo.shownPapers(ING);
+    const shown = await repo.shownPapers(ING, alice);
     expect(shown.map((p) => p.pmid)).toEqual([
       'r0',
       'r1',
@@ -101,7 +106,7 @@ describe('literature repository (integration)', () => {
       't4',
       't5',
     ]);
-    expect(shown[0]).toMatchObject({ abstract: 'Abstract of r0.', takeaway: null, hiddenAt: null });
+    expect(shown[0]).toMatchObject({ abstract: 'Abstract of r0.', takeaway: null });
     expect((await repo.trials(ING)).map((t) => t.nctId)).toEqual(['NCT1', 'NCT2']);
     expect(await repo.list('1')).toBeNull();
   });
@@ -115,19 +120,19 @@ describe('literature repository (integration)', () => {
       ]),
       { inputTokens: 10, outputTokens: 5 },
     );
-    await repo.setHidden(ING, 'r1', true);
+    await repo.setHidden(alice, ING, 'r1', true);
 
     // The new search no longer finds t2 and ranks t0 lower.
     await save([...reviews(2), paper('t1', 'rct', 0), paper('t0', 'rct', 1)], [trial('NCT9', 0)]);
 
-    const shown = await repo.shownPapers(ING);
+    const shown = await repo.shownPapers(ING, alice);
     expect(shown.map((p) => p.pmid)).toEqual(['r0', 't1', 't0']);
     expect(shown[2].takeaway).toEqual({
       text: 'It lowered blood pressure.',
       quote: 'reduced BP',
       uncited: false,
     });
-    expect((await repo.hiddenPapers(ING)).map((p) => p.pmid)).toEqual(['r1']);
+    expect((await repo.hiddenPapers(ING, alice)).map((p) => p.pmid)).toEqual(['r1']);
     expect((await repo.trials(ING)).map((t) => t.nctId)).toEqual(['NCT9']);
 
     // Trials unavailable this time: the stored ones stay.
@@ -137,18 +142,37 @@ describe('literature repository (integration)', () => {
 
   it('promotes the next candidate when a paper is hidden, and restores it when unhidden', async () => {
     await save([...reviews(5), ...rcts(8)]);
-    expect((await repo.shownPapers(ING)).map((p) => p.pmid)).toContain('r3');
+    expect((await repo.shownPapers(ING, alice)).map((p) => p.pmid)).toContain('r3');
 
-    expect(await repo.setHidden(ING, 'r1', true)).toBe(true);
-    let shown = (await repo.shownPapers(ING)).map((p) => p.pmid);
+    expect(await repo.setHidden(alice, ING, 'r1', true)).toBe(true);
+    let shown = (await repo.shownPapers(ING, alice)).map((p) => p.pmid);
     expect(shown.slice(0, 4)).toEqual(['r0', 'r2', 'r3', 'r4']);
     expect(shown).not.toContain('r1');
 
-    await repo.setHidden(ING, 'r1', false);
-    shown = (await repo.shownPapers(ING)).map((p) => p.pmid);
+    await repo.setHidden(alice, ING, 'r1', false);
+    shown = (await repo.shownPapers(ING, alice)).map((p) => p.pmid);
     expect(shown.slice(0, 4)).toEqual(['r0', 'r1', 'r2', 'r3']);
-    expect(await repo.hiddenPapers(ING)).toEqual([]);
-    expect(await repo.setHidden(ING, 'unknown', true)).toBe(false);
+    expect(await repo.hiddenPapers(ING, alice)).toEqual([]);
+    expect(await repo.setHidden(alice, ING, 'unknown', true)).toBe(false);
+  });
+
+  it('hides a paper for one user only, and drops their hides with the account', async () => {
+    await save([...reviews(5), ...rcts(8)]);
+    const bob = users.bob.id;
+    await repo.setHidden(alice, ING, 'r1', true);
+    await repo.setHidden(alice, ING, 'r1', true); // twice is harmless
+    expect((await repo.shownPapers(ING, alice)).map((p) => p.pmid)).not.toContain('r1');
+    expect((await repo.shownPapers(ING, bob)).map((p) => p.pmid)).toContain('r1');
+    expect(await repo.hiddenPapers(ING, bob)).toEqual([]);
+    // Unhiding what isn't hidden is harmless too.
+    expect(await repo.setHidden(bob, ING, 'r1', false)).toBe(true);
+    expect((await repo.hiddenPapers(ING, alice)).map((p) => p.pmid)).toEqual(['r1']);
+
+    await db.execute(sql`delete from users where id = ${alice}`);
+    const [{ n }] = (await db.execute(sql`select count(*)::int n from literature_hidden`)).rows as {
+      n: number;
+    }[];
+    expect(n).toBe(0);
   });
 
   it('runs one takeaway job at a time and records its outcome', async () => {

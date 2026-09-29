@@ -87,30 +87,37 @@ export function createAlternativesRepository(db: Db) {
         .orderBy(asc(alternativeDrugs.name));
     },
 
-    async hide(ingredientRxcui: string, hiddenRxcui: string): Promise<void> {
+    /** Hides an alternative for one user. */
+    async hide(userId: string, ingredientRxcui: string, hiddenRxcui: string): Promise<void> {
       await db
         .insert(alternativeHidden)
-        .values({ ingredientRxcui, hiddenRxcui })
+        .values({ userId, ingredientRxcui, hiddenRxcui })
         .onConflictDoNothing();
     },
 
-    async unhide(ingredientRxcui: string, hiddenRxcui: string): Promise<void> {
+    async unhide(userId: string, ingredientRxcui: string, hiddenRxcui: string): Promise<void> {
       await db
         .delete(alternativeHidden)
         .where(
           and(
+            eq(alternativeHidden.userId, userId),
             eq(alternativeHidden.ingredientRxcui, ingredientRxcui),
             eq(alternativeHidden.hiddenRxcui, hiddenRxcui),
           ),
         );
     },
 
-    /** Hidden alternatives for a drug's ingredient, oldest first. */
-    async hidden(ingredientRxcui: string): Promise<string[]> {
+    /** The alternatives this user hid for a drug's ingredient, oldest first. */
+    async hidden(userId: string, ingredientRxcui: string): Promise<string[]> {
       const rows = await db
         .select({ rxcui: alternativeHidden.hiddenRxcui })
         .from(alternativeHidden)
-        .where(eq(alternativeHidden.ingredientRxcui, ingredientRxcui))
+        .where(
+          and(
+            eq(alternativeHidden.userId, userId),
+            eq(alternativeHidden.ingredientRxcui, ingredientRxcui),
+          ),
+        )
         .orderBy(asc(alternativeHidden.hiddenAt));
       return rows.map((r) => r.rxcui);
     },

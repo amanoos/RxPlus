@@ -287,7 +287,7 @@ Each drug page has a **Research** section per ingredient:
   - Each paper is labeled with who was studied (people, animals, lab, review), read from its abstract.
   - All takeaways for a drug are written in one background call: about 4–5 minutes with a local model, well under a minute with Claude.
 - **Trials:** up to 5 from ClinicalTrials.gov: completed with posted results, then recruiting.
-- **Hide** a paper you don't find useful and the next one takes its place (Show hidden → Show again to undo).
+- **Hide** a paper you don't find useful and the next one takes its place (Show hidden → Show again to undo). Hides are yours alone: others who take the drug still see it.
 
 Lists are stored and refreshed after 30 days, or with "Check for new research". New papers week to week are in [What's new](#whats-new).
 
@@ -299,7 +299,7 @@ Each drug page has an **Alternatives** section: other drugs used for the same pu
 - **New for that condition:** drugs first approved by the FDA in the last 5 years (Drugs@FDA), e.g. aprocitentan (2024) for hypertension.
 - **Same class:** other drugs in the same FDA pharmacologic class (RxClass), e.g. the other ACE inhibitors.
 - **Other classes for the condition:** grouped and collapsed by class (ARBs, calcium channel blockers, thiazides…).
-- Each drug shows its first US approval year and whether a generic exists, and links to its own drug page. **Hide** removes one you don't care about ("Show hidden" to undo).
+- Each drug shows its first US approval year and whether a generic exists, and links to its own drug page. **Hide** removes one you don't care about ("Show hidden" to undo), for you only.
 
 How the lists are made: MED-RT's drugs for the condition, reduced to ingredients with a US prescribable single-ingredient product. Drugs also listed for a more specific form (e.g. pulmonary arterial hypertension) are kept only if their FDA label mentions the plain condition. Lists are built in the background (about a minute the first time for a common condition), stored, shared by every drug taken for that condition, and refreshed after 30 days or with "Check for new approvals". Known gaps: combination-only drugs (e.g. sacubitril/valsartan) are not listed, some drugs lack an FDA class and appear under "Other", and MED-RT can lag new approvals.
 
@@ -337,7 +337,7 @@ docker compose exec app node dist/user.cjs list                        # usernam
 
 - Usernames ignore case (`Alice` signs in as `alice`) and are 3–32 letters, digits, `.`, `_` or `-`. Passwords are at least 12 characters, stored only as scrypt hashes.
 - A wrong password and an unknown username get the same answer, "Invalid username or password.". After 5 failures in 15 minutes that username is locked for the rest of the window; after 20 failures across all usernames, every sign-in is.
-- Each account has its own medication list, and everything built from it is that person's alone: the dashboard, interactions, prices and costs, what a drug is taken for, and the weekly What's new digest. Research, label summaries and alternatives are shared, since they're about the drug, not the person. Removing an account deletes its medications and digests.
+- Each account has its own medication list, and everything built from it is that person's alone: the dashboard, interactions, prices and costs, what a drug is taken for, and the weekly What's new digest. Research, label summaries and alternatives are shared, since they're about the drug, not the person; what each person hides from them is their own. Removing an account deletes its medications, digests and hides.
 - Signing out ends the session in that browser only. A password reset or a removed account ends every session of that person on their next request.
 
 ## Backups

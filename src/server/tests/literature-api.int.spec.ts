@@ -23,6 +23,7 @@ import unhideRoute from '../routes/api/literature/[ingredient]/papers/[pmid]/hid
 import hideRoute from '../routes/api/literature/[ingredient]/papers/[pmid]/hide.post';
 import { useRxNavClient, type RxNavClient, type RxProductDetails } from '../rxnorm';
 import { env } from '../utils/env';
+import { seedTestUsers, TEST_USER_HEADER, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -82,8 +83,10 @@ describe('literature API (integration)', () => {
     recentUpdates: vi.fn<CtGovClient['recentUpdates']>(),
   };
   let handle: (req: Request) => Promise<Response>;
-  const call = (method: string, path: string) =>
-    handle(new Request(`http://localhost${path}`, { method }));
+  let users: TestUsers;
+  /** Runs as Alice unless another test user is named. */
+  const call = (method: string, path: string, as: keyof TestUsers = 'alice') =>
+    handle(new Request(`http://localhost${path}`, { method, headers: { [TEST_USER_HEADER]: as } }));
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
@@ -93,14 +96,16 @@ describe('literature API (integration)', () => {
     usePubMedClient(pubmed);
     useCtGovClient(ctgov);
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/drugs/:rxcui/literature', listRoute)
-          .post('/api/drugs/:rxcui/literature/refresh', refreshRoute)
-          .post('/api/literature/:ingredient/papers/:pmid/hide', hideRoute)
-          .delete('/api/literature/:ingredient/papers/:pmid/hide', unhideRoute)
-          .post('/api/drugs/:rxcui/literature/takeaways', takeawaysRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter()
+            .get('/api/drugs/:rxcui/literature', listRoute)
+            .post('/api/drugs/:rxcui/literature/refresh', refreshRoute)
+            .post('/api/literature/:ingredient/papers/:pmid/hide', hideRoute)
+            .delete('/api/literature/:ingredient/papers/:pmid/hide', unhideRoute)
+            .post('/api/drugs/:rxcui/literature/takeaways', takeawaysRoute),
+        ),
     );
   });
   beforeEach(async () => {
@@ -129,6 +134,7 @@ describe('literature API (integration)', () => {
     await db.execute(
       sql`truncate literature_lists, literature_papers, literature_trials, medications, drug_summaries`,
     );
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useTakeawayProvider(undefined);
@@ -233,6 +239,12 @@ describe('literature API (integration)', () => {
       '104',
     ]);
     expect(lit.hidden.map((p: { pmid: string }) => p.pmid)).toEqual(['101']);
+
+    // Bob's list is his own: Alice's hide doesn't touch it.
+    const bobs = (await (await call('GET', '/api/drugs/314076/literature', 'bob')).json())
+      .ingredients[0];
+    expect(bobs.papers.map((p: { pmid: string }) => p.pmid)).toContain('101');
+    expect(bobs.hidden).toEqual([]);
 
     expect((await call('DELETE', '/api/literature/29046/papers/101/hide')).status).toBe(204);
     lit = (await (await call('GET', '/api/drugs/314076/literature')).json()).ingredients[0];

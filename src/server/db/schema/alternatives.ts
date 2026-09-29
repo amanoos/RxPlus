@@ -1,4 +1,15 @@
-import { boolean, date, integer, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  date,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
+
+import { users } from './users';
 
 /**
  * A stored list of alternatives, shared by every drug it applies to:
@@ -36,15 +47,18 @@ export const alternativeDrugs = pgTable(
   (t) => [primaryKey({ columns: [t.listKey, t.ingredientRxcui] })],
 );
 
-/** Alternatives the owner hid while looking at a drug (per ingredient). */
+/** Alternatives a user hid while looking at a drug (per ingredient); only that user stops seeing them. */
 export const alternativeHidden = pgTable(
   'alternative_hidden',
   {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
     ingredientRxcui: text('ingredient_rxcui').notNull(),
     hiddenRxcui: text('hidden_rxcui').notNull(),
     hiddenAt: timestamp('hidden_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.ingredientRxcui, t.hiddenRxcui] })],
+  (t) => [primaryKey({ columns: [t.userId, t.ingredientRxcui, t.hiddenRxcui] })],
 );
 
 export type AlternativeListRow = typeof alternativeLists.$inferSelect;

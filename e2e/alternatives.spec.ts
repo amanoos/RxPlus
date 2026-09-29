@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { addMedication, resetMedications, signIn } from './helpers';
+import { addMedication, asOtherAccount, resetMedications, signIn } from './helpers';
 
 const LISINOPRIL = 'lisinopril 10 MG Oral Tablet';
 
@@ -12,7 +12,10 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole('article', { name: LISINOPRIL })).toBeVisible();
 });
 
-test('shows alternatives for what the medication is taken for, and hides one', async ({ page }) => {
+test('shows alternatives for what the medication is taken for, and hides one', async ({
+  page,
+  browser,
+}) => {
   await page
     .getByRole('article', { name: LISINOPRIL })
     .getByRole('link', { name: 'About this drug' })
@@ -47,6 +50,16 @@ test('shows alternatives for what the medication is taken for, and hides one', a
   // Hide enalapril, then show it again.
   await sameClass.getByRole('button', { name: 'Hide: enalapril' }).click();
   await expect(sameClass.getByTestId('alternative')).toHaveCount(0);
+
+  // Hides are personal: the other account still sees enalapril.
+  const other = await asOtherAccount(browser, '/drugs/314076');
+  try {
+    await expect(
+      other.page.getByTestId('alternatives').getByTestId('group-same-class'),
+    ).toContainText('enalapril', { timeout: 20_000 });
+  } finally {
+    await other.context.close();
+  }
   await section.getByRole('button', { name: 'Show hidden (1)' }).click();
   await section
     .getByTestId('hidden-alternatives')

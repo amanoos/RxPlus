@@ -1,7 +1,8 @@
-import { and, asc, count, eq, gte, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
+import { and, asc, count, eq, gte, inArray, isNull, notInArray, sql } from 'drizzle-orm';
 
 import type { Db } from '../db/client';
 import {
+  literatureHidden,
   literatureLists,
   literaturePapers,
   literatureTrials,
@@ -19,7 +20,7 @@ export type LiteratureList = LiteratureListRow;
 export type LiteraturePaper = LiteraturePaperRow;
 export type LiteratureTrial = LiteratureTrialRow;
 
-export type FetchedPaper = Omit<LiteraturePaperRow, 'ingredientRxcui' | 'takeaway' | 'hiddenAt'>;
+export type FetchedPaper = Omit<LiteraturePaperRow, 'ingredientRxcui' | 'takeaway'>;
 export type FetchedTrial = Omit<LiteratureTrialRow, 'ingredientRxcui'>;
 
 export interface FetchedLiterature {
@@ -52,8 +53,9 @@ export function createLiteratureRepository(db: Db) {
     },
 
     /**
-     * Stores a fresh search. Papers still found keep their takeaway and hidden
-     * state; papers no longer found are dropped; trials are replaced.
+     * Stores a fresh search. Papers still found keep their takeaway (and every
+     * user's hides, which live in literature_hidden); papers no longer found are
+     * dropped; trials are replaced.
      */
     async saveFetched({ ingredientRxcui, ingredientName, papers, trials }: FetchedLiterature) {
       await db.transaction(async (tx) => {
@@ -75,7 +77,7 @@ export function createLiteratureRepository(db: Db) {
             ),
           );
         for (const paper of papers) {
-          // Search results only: takeaway and hidden state are left as they are.
+          // Search results only: the takeaway is left as it is.
           await tx
             .insert(literaturePapers)
             .values({ ...paper, ingredientRxcui })
@@ -98,46 +100,85 @@ export function createLiteratureRepository(db: Db) {
       });
     },
 
-    /** The papers the page shows (see selectShown). */
-    async shownPapers(ingredientRxcui: string): Promise<LiteraturePaper[]> {
+    /** The papers the page shows this user (see selectShown): candidates they haven't hidden. */
+    async shownPapers(ingredientRxcui: string, userId: string): Promise<LiteraturePaper[]> {
+      const hiddenByUser = db
+        .select({ pmid: literatureHidden.pmid })
+        .from(literatureHidden)
+        .where(
+          and(
+            eq(literatureHidden.userId, userId),
+            eq(literatureHidden.ingredientRxcui, ingredientRxcui),
+          ),
+        );
       const visible = await db
         .select()
         .from(literaturePapers)
         .where(
           and(
             eq(literaturePapers.ingredientRxcui, ingredientRxcui),
-            isNull(literaturePapers.hiddenAt),
+            notInArray(literaturePapers.pmid, hiddenByUser),
           ),
         );
       return selectShown(visible);
     },
 
-    async hiddenPapers(ingredientRxcui: string): Promise<LiteraturePaper[]> {
-      return db
-        .select()
+    /** This user's hidden papers that are still candidates, oldest hide first. */
+    async hiddenPapers(ingredientRxcui: string, userId: string): Promise<LiteraturePaper[]> {
+      const rows = await db
+        .select({ paper: literaturePapers })
         .from(literaturePapers)
+        .innerJoin(
+          literatureHidden,
+          and(
+            eq(literatureHidden.ingredientRxcui, literaturePapers.ingredientRxcui),
+            eq(literatureHidden.pmid, literaturePapers.pmid),
+          ),
+        )
         .where(
           and(
             eq(literaturePapers.ingredientRxcui, ingredientRxcui),
-            isNotNull(literaturePapers.hiddenAt),
+            eq(literatureHidden.userId, userId),
           ),
         )
-        .orderBy(asc(literaturePapers.hiddenAt));
+        .orderBy(asc(literatureHidden.hiddenAt));
+      return rows.map((r) => r.paper);
     },
 
-    /** Hides or unhides a paper; false when it isn't a candidate for that ingredient. */
-    async setHidden(ingredientRxcui: string, pmid: string, hidden: boolean): Promise<boolean> {
-      const rows = await db
-        .update(literaturePapers)
-        .set({ hiddenAt: hidden ? sql`now()` : null })
+    /** Hides or unhides a paper for one user; false when it isn't a candidate for that ingredient. */
+    async setHidden(
+      userId: string,
+      ingredientRxcui: string,
+      pmid: string,
+      hidden: boolean,
+    ): Promise<boolean> {
+      const [candidate] = await db
+        .select({ pmid: literaturePapers.pmid })
+        .from(literaturePapers)
         .where(
           and(
             eq(literaturePapers.ingredientRxcui, ingredientRxcui),
             eq(literaturePapers.pmid, pmid),
           ),
-        )
-        .returning({ pmid: literaturePapers.pmid });
-      return rows.length > 0;
+        );
+      if (!candidate) return false;
+      if (hidden) {
+        await db
+          .insert(literatureHidden)
+          .values({ userId, ingredientRxcui, pmid })
+          .onConflictDoNothing();
+      } else {
+        await db
+          .delete(literatureHidden)
+          .where(
+            and(
+              eq(literatureHidden.userId, userId),
+              eq(literatureHidden.ingredientRxcui, ingredientRxcui),
+              eq(literatureHidden.pmid, pmid),
+            ),
+          );
+      }
+      return true;
     },
 
     async trials(ingredientRxcui: string): Promise<LiteratureTrial[]> {

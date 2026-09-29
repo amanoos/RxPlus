@@ -60,6 +60,8 @@ export interface AlternativesResponse {
 }
 
 interface Deps {
+  /** Whose view this is: hidden alternatives are per user. */
+  userId: string;
   repo: AlternativesRepository;
   builder: Pick<AlternativesBuilder, 'ensure'>;
   /** The signed-in user's list: "taken for" comes from their saved medication. */
@@ -79,6 +81,7 @@ const status = (list: AlternativeList | null): ListStatus | null =>
   };
 
 export function createAlternativesService({
+  userId,
   repo,
   builder,
   medications,
@@ -144,7 +147,7 @@ export function createAlternativesService({
           classId: drugClass?.id ?? null,
           classDrugs,
           conditionDrugs,
-          hidden: await repo.hidden(ing.rxcui),
+          hidden: await repo.hidden(userId, ing.rxcui),
           today: today(),
         }),
       });
@@ -165,8 +168,9 @@ export function createAlternativesService({
     /** "Check for new approvals": rebuilds this drug's lists now. */
     refresh: (rxcui: string, conditionId?: string) => load(rxcui, conditionId, { force: true }),
 
-    hide: (ingredient: string, hiddenRxcui: string) => repo.hide(ingredient, hiddenRxcui),
-    unhide: (ingredient: string, hiddenRxcui: string) => repo.unhide(ingredient, hiddenRxcui),
+    hide: (ingredient: string, hiddenRxcui: string) => repo.hide(userId, ingredient, hiddenRxcui),
+    unhide: (ingredient: string, hiddenRxcui: string) =>
+      repo.unhide(userId, ingredient, hiddenRxcui),
   };
 }
 
@@ -186,6 +190,7 @@ export function sharedAlternativesBuilder(): AlternativesBuilder {
 export function alternativesService(userId: string) {
   const facts = drugFactsService();
   return createAlternativesService({
+    userId,
     repo: createAlternativesRepository(db()),
     builder: sharedAlternativesBuilder(),
     medications: createMedicationsRepository(db()).forUser(userId),

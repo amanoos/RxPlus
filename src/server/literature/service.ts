@@ -88,6 +88,8 @@ interface Ingredient {
 }
 
 interface Deps {
+  /** Whose view this is: hidden papers are per user. */
+  userId: string;
   repo: LiteratureRepository;
   pubMed: PubMedClient;
   ctGov: CtGovClient;
@@ -141,6 +143,7 @@ function trialView(t: LiteratureTrial): TrialView {
 }
 
 export function createLiteratureService({
+  userId,
   repo,
   pubMed,
   ctGov,
@@ -209,8 +212,8 @@ export function createLiteratureService({
 
   async function view(ingredient: Ingredient, list: LiteratureList): Promise<IngredientLiterature> {
     const [papers, hidden, trials] = await Promise.all([
-      repo.shownPapers(ingredient.rxcui),
-      repo.hiddenPapers(ingredient.rxcui),
+      repo.shownPapers(ingredient.rxcui, userId),
+      repo.hiddenPapers(ingredient.rxcui, userId),
       repo.trials(ingredient.rxcui),
     ]);
     return {
@@ -319,7 +322,7 @@ export function createLiteratureService({
       const result: IngredientLiterature[] = [];
       for (const ingredient of await ingredients(rxcui)) {
         await ingredientLiterature(ingredient); // searches first if never done
-        const shown = await repo.shownPapers(ingredient.rxcui);
+        const shown = await repo.shownPapers(ingredient.rxcui, userId);
         const missing = await repo.withoutTakeaway(
           ingredient.rxcui,
           shown.map((p) => p.pmid),
@@ -348,18 +351,19 @@ export function createLiteratureService({
     },
 
     async setHidden(ingredientRxcui: string, pmid: string, hidden: boolean): Promise<void> {
-      if (!(await repo.setHidden(ingredientRxcui, pmid, hidden))) {
+      if (!(await repo.setHidden(userId, ingredientRxcui, pmid, hidden))) {
         throw createError({ statusCode: 404, statusMessage: 'Paper not found.' });
       }
     },
   };
 }
 
-/** Service wired to the app database and upstream clients. */
-export function literatureService() {
+/** Service for the signed-in user, wired to the app database and upstream clients. */
+export function literatureService(userId: string) {
   const config = env();
   const facts = drugFactsService();
   return createLiteratureService({
+    userId,
     repo: createLiteratureRepository(db()),
     pubMed: pubMed(),
     ctGov: ctGov(),

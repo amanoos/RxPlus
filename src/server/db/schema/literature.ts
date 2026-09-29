@@ -1,4 +1,15 @@
-import { boolean, integer, jsonb, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
+
+import { users } from './users';
 
 /** One per ingredient: when its papers and trials were fetched, and the takeaway job state. */
 export const literatureLists = pgTable('literature_lists', {
@@ -57,9 +68,22 @@ export const literaturePapers = pgTable(
     /** Input for the AI only; never sent to the page. */
     abstract: text('abstract').notNull(),
     takeaway: jsonb('takeaway').$type<PaperTakeaway>(),
-    hiddenAt: timestamp('hidden_at', { withTimezone: true }),
   },
   (t) => [primaryKey({ columns: [t.ingredientRxcui, t.pmid] })],
+);
+
+/** Papers a user hid from a drug's research; only that user stops seeing them. */
+export const literatureHidden = pgTable(
+  'literature_hidden',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    ingredientRxcui: text('ingredient_rxcui').notNull(),
+    pmid: text('pmid').notNull(),
+    hiddenAt: timestamp('hidden_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.ingredientRxcui, t.pmid] })],
 );
 
 export const literatureTrials = pgTable(

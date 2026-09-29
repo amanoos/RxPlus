@@ -2,11 +2,12 @@ import { defineEventHandler, getValidatedRouterParams, setResponseStatus } from 
 
 import { DrugParams } from '../../../../../drug-info/facts';
 import { literatureService } from '../../../../../literature/service';
+import { requireUser } from '../../../../../utils/auth-user';
 
 /** Starts takeaways for papers that lack one; 202 while any ingredient is generating. */
 export default defineEventHandler(async (event) => {
   const { rxcui } = await getValidatedRouterParams(event, DrugParams.parse);
-  const result = await literatureService().startTakeaways(rxcui);
+  const result = await literatureService(requireUser(event).id).startTakeaways(rxcui);
   if (result.ingredients.some((i) => i.takeaways.status === 'pending'))
     setResponseStatus(event, 202);
   return result;

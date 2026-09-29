@@ -208,6 +208,11 @@ describe('alternatives API (integration)', () => {
     let lit = (await (await call('GET', '/api/drugs/314076/alternatives')).json()).ingredients[0];
     expect(lit.groups.sameClass).toEqual([]);
     expect(names(lit.groups.hidden)).toEqual(['enalapril']);
+    // Bob still sees it: hides are per user.
+    const bobs = (await (await call('GET', '/api/drugs/314076/alternatives', 'bob')).json())
+      .ingredients[0];
+    expect(names(bobs.groups.sameClass)).toEqual(['enalapril']);
+    expect(bobs.groups.hidden).toEqual([]);
 
     expect((await call('DELETE', '/api/alternatives/29046/hidden/3827')).status).toBe(204);
     lit = (await (await call('GET', '/api/drugs/314076/alternatives')).json()).ingredients[0];
