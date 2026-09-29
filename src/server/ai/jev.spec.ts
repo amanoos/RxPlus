@@ -83,6 +83,6 @@ describe('jev answers', () => {
   it('tells a malformed body (null) from one with no support answers', () => {
     expect(readSupport('not json')).toBeNull();
     expect(readSupport('{"answers":{}}')?.size).toBe(0);
-    expect(readSubjects('{"error":"timeout"}').size).toBe(0);
+    expect(readSubjects('{"error":"timeout"}')).toBeNull();
   });
 });

@@ -23,7 +23,12 @@ import {
   type LiteratureTrial,
 } from './repository';
 import { studySubject, type StudySubject } from './study-subject';
-import { checkTakeawaySupport, verifyTakeaways, type TakeawayProvider } from './takeaways';
+import {
+  checkTakeawaySupport,
+  labelStudySubjects,
+  verifyTakeaways,
+  type TakeawayProvider,
+} from './takeaways';
 
 export const REFRESH_AFTER_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -36,7 +41,7 @@ export interface PaperView {
   pmid: string;
   tier: LiteraturePaper['tier'];
   studyType: LiteraturePaper['studyType'];
-  /** Who or what was studied, from the title and abstract. */
+  /** Who or what was studied: from the title and abstract, else from Jev. */
   studySubject: StudySubject | null;
   title: string;
   journal: string | null;
@@ -112,7 +117,8 @@ function paperView(p: LiteraturePaper): PaperView {
     pmid: p.pmid,
     tier: p.tier,
     studyType: p.studyType,
-    studySubject: studySubject(p.title, p.abstract, p.studyType),
+    studySubject:
+      studySubject(p.title, p.abstract, p.studyType) ?? p.takeaway?.studySubject ?? null,
     title: p.title,
     journal: p.journal,
     year: p.year,
@@ -259,6 +265,7 @@ export function createLiteratureService({
       for (const p of papers) {
         if (!byPmid.has(p.pmid)) byPmid.set(p.pmid, { text: '', quote: null, uncited: true });
       }
+      await labelStudySubjects(byPmid, papers, provider);
       await repo.completeTakeaways(ingredient.rxcui, byPmid, {
         inputTokens: inputTokens ?? null,
         outputTokens: outputTokens ?? null,

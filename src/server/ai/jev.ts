@@ -168,10 +168,15 @@ export function readSupport(responseText: string, threshold = 0.7): Map<string, 
   return result;
 }
 
-/** Study subject per PMID; `unclear` and unknown labels read as null. */
-export function readSubjects(responseText: string): Map<string, StudySubject | null> {
+/**
+ * Study subject per PMID; `unclear` and unknown labels read as null. Null when
+ * the body carries no answers at all.
+ */
+export function readSubjects(responseText: string): Map<string, StudySubject | null> | null {
+  const answers = answersOf(responseText);
+  if (!answers) return null;
   const result = new Map<string, StudySubject | null>();
-  for (const [pmid, answer] of byPrefix(answersOf(responseText), 'subject::')) {
+  for (const [pmid, answer] of byPrefix(answers, 'subject::')) {
     const choice = answer['choice'];
     if (typeof choice !== 'string') continue;
     result.set(

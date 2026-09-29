@@ -10,14 +10,19 @@ import {
   jevBody,
   jevHeaders,
   jevUrl,
+  readSubjects,
   readSupport,
+  SUBJECT_REQUEST,
+  subjectQuestions,
   SUPPORT_REQUEST,
   supportQuestions,
   type JevProvider,
+  type SubjectPaper,
 } from '../ai/jev';
 import { createOllamaJson, type OllamaJson, type OllamaOptions } from '../ai/ollama';
 import { ignoreSet, isAdvice, isRelevant, MIN_QUOTE_CHARS, normalizeText } from '../ai/verify';
 import type { PaperTakeaway } from '../db/schema';
+import { studySubject, type StudySubject } from './study-subject';
 
 export interface PaperInput {
   pmid: string;
@@ -84,6 +89,8 @@ export interface TakeawayProvider {
    * Claude's citations already tie the text to its source, so it's skipped there.
    */
   checkSupport?(items: SupportItem[]): Promise<Map<string, boolean>>;
+  /** Who each paper studied, for papers the words alone don't settle (Jev only). */
+  classifySubjects?(papers: SubjectPaper[]): Promise<Map<string, StudySubject | null>>;
 }
 
 export const SUPPORT_SYSTEM_PROMPT = `You check summaries of medical studies against the study's own words.
@@ -141,52 +148,87 @@ export interface JevCheckOptions {
   fetch?: typeof fetch;
 }
 
+/** Posts one Jev request and returns the reply's text; throws on any failure. */
+async function jevRequest(
+  { provider, apiKey, baseUrl, timeoutMs, fetch: fetchFn = fetch }: JevCheckOptions,
+  request: string,
+  questions: Parameters<typeof jevBody>[2],
+): Promise<string> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  // Race the abort too, so the timeout holds even if a fetch ignores the signal.
+  const aborted = new Promise<never>((_, reject) =>
+    controller.signal.addEventListener('abort', () => reject(new Error('aborted'))),
+  );
+  let response: Response;
+  let text: string;
+  try {
+    response = await Promise.race([
+      aborted,
+      fetchFn(jevUrl(provider, baseUrl?.replace(/\/$/, '')), {
+        method: 'POST',
+        headers: jevHeaders(provider, apiKey),
+        signal: controller.signal,
+        body: jevBody(provider, request, questions),
+      }),
+    ]);
+    text = await Promise.race([aborted, response.text()]);
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new ProviderUnavailableError(`Jev timed out after ${timeoutMs / 1000}s.`);
+    }
+    throw new ProviderUnavailableError(`Jev is unreachable (${(error as Error).message}).`);
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!response.ok) throw new ProviderUnavailableError(`Jev responded ${response.status}.`);
+  return text;
+}
+
+/** Keeps only the answers for what was asked. */
+function askedOnly<T>(answers: Map<string, T>, pmids: string[]): Map<string, T> {
+  const asked = new Set(pmids);
+  return new Map([...answers].filter(([pmid]) => asked.has(pmid)));
+}
+
 /**
  * The support check as one Jev request: a yes/no per takeaway, with no tokens
  * spent on a generating model. Throws on any failure, so checkTakeawaySupport
  * logs it and leaves `supported` null.
  */
-export function createJevSupportCheck({
-  provider,
-  apiKey,
-  baseUrl,
-  timeoutMs,
-  fetch: fetchFn = fetch,
-}: JevCheckOptions): (items: SupportItem[]) => Promise<Map<string, boolean>> {
+export function createJevSupportCheck(
+  options: JevCheckOptions,
+): (items: SupportItem[]) => Promise<Map<string, boolean>> {
   return async (items) => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    // Race the abort too, so the timeout holds even if a fetch ignores the signal.
-    const aborted = new Promise<never>((_, reject) =>
-      controller.signal.addEventListener('abort', () => reject(new Error('aborted'))),
+    const text = await jevRequest(
+      options,
+      SUPPORT_REQUEST,
+      supportQuestions(options.provider, items),
     );
-    let response: Response;
-    let text: string;
-    try {
-      response = await Promise.race([
-        aborted,
-        fetchFn(jevUrl(provider, baseUrl?.replace(/\/$/, '')), {
-          method: 'POST',
-          headers: jevHeaders(provider, apiKey),
-          signal: controller.signal,
-          body: jevBody(provider, SUPPORT_REQUEST, supportQuestions(provider, items)),
-        }),
-      ]);
-      text = await Promise.race([aborted, response.text()]);
-    } catch (error) {
-      if (controller.signal.aborted) {
-        throw new ProviderUnavailableError(`Jev timed out after ${timeoutMs / 1000}s.`);
-      }
-      throw new ProviderUnavailableError(`Jev is unreachable (${(error as Error).message}).`);
-    } finally {
-      clearTimeout(timer);
-    }
-    if (!response.ok) throw new ProviderUnavailableError(`Jev responded ${response.status}.`);
-
     const answers = readSupport(text);
     if (!answers) throw new ProviderOutputError('Jev returned no answers.');
-    const asked = new Set(items.map((i) => i.pmid));
-    return new Map([...answers].filter(([pmid]) => asked.has(pmid)));
+    return askedOnly(
+      answers,
+      items.map((i) => i.pmid),
+    );
+  };
+}
+
+/**
+ * Who each paper studied, as one Jev request: a choice per paper. Throws on any
+ * failure, so labelStudySubjects logs it and leaves the papers unlabeled.
+ */
+export function createJevSubjectCheck(
+  options: JevCheckOptions,
+): (papers: SubjectPaper[]) => Promise<Map<string, StudySubject | null>> {
+  return async (papers) => {
+    const text = await jevRequest(options, SUBJECT_REQUEST, subjectQuestions(papers));
+    const answers = readSubjects(text);
+    if (!answers) throw new ProviderOutputError('Jev returned no answers.');
+    return askedOnly(
+      answers,
+      papers.map((p) => p.pmid),
+    );
   };
 }
 
@@ -364,5 +406,29 @@ export async function checkTakeawaySupport(
   } catch (error) {
     console.warn(`[takeaways] support check failed: ${(error as Error).message}`);
     for (const { pmid } of items) byPmid.get(pmid)!.supported = null;
+  }
+}
+
+/**
+ * Labels who was studied on each takeaway whose paper the regex in
+ * study-subject.ts leaves unlabeled. A failed check leaves them unlabeled
+ * rather than failing the takeaways.
+ */
+export async function labelStudySubjects(
+  byPmid: Map<string, PaperTakeaway>,
+  papers: (SubjectPaper & { studyType?: string })[],
+  provider: TakeawayProvider,
+): Promise<void> {
+  const unlabeled = papers.filter(
+    (p) => byPmid.has(p.pmid) && !studySubject(p.title, p.abstract, p.studyType),
+  );
+  if (!provider.classifySubjects || !unlabeled.length) return;
+  try {
+    const answers = await provider.classifySubjects(
+      unlabeled.map(({ pmid, title, abstract }) => ({ pmid, title, abstract })),
+    );
+    for (const { pmid } of unlabeled) byPmid.get(pmid)!.studySubject = answers.get(pmid) ?? null;
+  } catch (error) {
+    console.warn(`[takeaways] study subject check failed: ${(error as Error).message}`);
   }
 }

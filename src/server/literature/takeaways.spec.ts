@@ -3,17 +3,21 @@ import type { BetaMessage } from '@anthropic-ai/sdk/resources/beta/messages/mess
 
 import type { ClaudeClient } from '../ai/claude';
 import { ProviderOutputError, ProviderUnavailableError } from '../ai/errors';
+import type { PaperTakeaway } from '../db/schema';
 import {
   buildAbstractsMessage,
   buildSupportMessage,
   createClaudeTakeawayProvider,
+  createJevSubjectCheck,
   createJevSupportCheck,
   createOllamaTakeawayProvider,
+  labelStudySubjects,
   parseCitedTakeaways,
   SUPPORT_SYSTEM_PROMPT,
   TAKEAWAY_SYSTEM_PROMPT,
   verifyTakeaways,
   type PaperInput,
+  type TakeawayProvider,
 } from './takeaways';
 
 const papers: PaperInput[] = [
@@ -385,5 +389,73 @@ describe('Jev support check', () => {
     );
     await provider.checkSupport!(items);
     expect(callOf(fetchFn)[0]).toBe('https://api.typesafe.ai/v1/systemone');
+  });
+});
+
+describe('Jev study subject', () => {
+  const papers = [
+    { pmid: '1', title: 'Drug X in mice', abstract: 'Mice were given drug X.' },
+    { pmid: '2', title: 'Drug X exposure', abstract: 'Exposure was measured over time.' },
+    { pmid: '3', title: 'Drug X outcomes', abstract: 'Outcomes were compared.' },
+  ];
+  const takeaway = (): PaperTakeaway => ({ text: 't', quote: null, uncited: true });
+
+  it('asks one choice per paper and keeps answers for asked PMIDs only', async () => {
+    const fetchFn = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            answers: {
+              'subject::2': { choice: 'human', confidence: 0.8 },
+              'subject::3': { choice: 'unclear' },
+              'subject::9': { choice: 'lab' },
+            },
+          }),
+        ),
+    );
+    const check = createJevSubjectCheck({
+      provider: 'typesafe',
+      apiKey: 'k',
+      timeoutMs: 1000,
+      fetch: fetchFn,
+    });
+    expect([...(await check(papers.slice(1)))]).toEqual([
+      ['2', 'human'],
+      ['3', null],
+    ]);
+    const body = JSON.parse(
+      String((fetchFn.mock.calls[0] as unknown as [string, RequestInit])[1].body),
+    );
+    expect(body.questions['subject::2']).toMatchObject({ type: 'choice' });
+    expect(body.questions['subject::2'].instructions).toContain('TITLE: Drug X exposure');
+  });
+
+  it('labels only takeaways whose paper the regex leaves unlabeled', async () => {
+    const classifySubjects = vi.fn(async () => new Map([['2', 'human' as const]]));
+    const provider = { classifySubjects } as unknown as TakeawayProvider;
+    const byPmid = new Map([
+      ['1', takeaway()],
+      ['2', takeaway()],
+    ]);
+    await labelStudySubjects(byPmid, papers, provider);
+    // Paper 1 says "mice"; paper 3 has no takeaway entry.
+    expect(classifySubjects).toHaveBeenCalledWith([papers[1]]);
+    expect(byPmid.get('2')?.studySubject).toBe('human');
+    expect(byPmid.get('1')).not.toHaveProperty('studySubject');
+  });
+
+  it('leaves takeaways unlabeled when the check fails or is not configured', async () => {
+    const byPmid = new Map([['2', takeaway()]]);
+    const failing = {
+      classifySubjects: vi.fn(async () => {
+        throw new Error('Jev responded 500.');
+      }),
+    } as unknown as TakeawayProvider;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    await labelStudySubjects(byPmid, papers, failing);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('study subject check failed'));
+    warn.mockRestore();
+    await labelStudySubjects(byPmid, papers, {} as TakeawayProvider);
+    expect(byPmid.get('2')).not.toHaveProperty('studySubject');
   });
 });

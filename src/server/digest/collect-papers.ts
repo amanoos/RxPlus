@@ -7,7 +7,7 @@ import { InputTooLargeError, ProviderOutputError, ProviderUnavailableError } fro
 import type { PaperTakeaway } from '../db/schema';
 import type { TakeawayChoice } from '../literature/providers';
 import { studySubject } from '../literature/study-subject';
-import { checkTakeawaySupport, verifyTakeaways } from '../literature/takeaways';
+import { checkTakeawaySupport, labelStudySubjects, verifyTakeaways } from '../literature/takeaways';
 import type { PubMedClient } from '../pubmed/client';
 import {
   errorMessage,
@@ -70,7 +70,10 @@ export async function collectPapers(
         journal: paper.journal,
         year: paper.year,
         studyType: paper.studyType,
-        studySubject: studySubject(paper.title, abstracts.get(paper.pmid) ?? '', paper.studyType),
+        studySubject:
+          studySubject(paper.title, abstracts.get(paper.pmid) ?? '', paper.studyType) ??
+          takeaway?.studySubject ??
+          null,
       },
       takeaway: takeaway?.text ? takeaway : null,
       externalId: paper.pmid,
@@ -94,7 +97,7 @@ export async function collectPapers(
 /** One model call for the ingredient's papers; failures become a note, not an error. */
 async function writeTakeaways(
   ingredient: DigestIngredient,
-  papers: { pmid: string }[],
+  papers: { pmid: string; title: string; studyType?: string }[],
   abstracts: Map<string, string>,
   takeaways: () => Promise<TakeawayChoice>,
   notes: string[],
@@ -115,6 +118,14 @@ async function writeTakeaways(
     const { raw } = await choice.provider.generate(input);
     const { byPmid } = verifyTakeaways(raw, input, { ignoreWords: [ingredient.name] });
     await checkTakeawaySupport(byPmid, choice.provider);
+    await labelStudySubjects(
+      byPmid,
+      papers.flatMap((p) => {
+        const abstract = abstracts.get(p.pmid);
+        return abstract ? [{ ...p, abstract }] : [];
+      }),
+      choice.provider,
+    );
     const written = [...byPmid.values()].filter((t) => t.text).length;
     if (written < input.length) {
       notes.push(
