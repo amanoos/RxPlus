@@ -141,7 +141,7 @@ describe('medications repository (integration)', () => {
       await repo.create(lisinopril);
       await bob.create(zestril);
       await createUsersRepository(db).remove('alice');
-      expect((await all.listAllActive()).map((m) => m.userId)).toEqual([users.bob.id]);
+      expect(await all.usersWithActiveMedications()).toEqual([users.bob.id]);
     });
 
     it('looks a saved product up by RXCUI without any user data', async () => {
@@ -159,13 +159,15 @@ describe('medications repository (integration)', () => {
       expect(await all.productByRxcui('999')).toBeNull();
     });
 
-    it("lists every user's active medications for the digest runner", async () => {
+    it('names the users with an active medication, for the weekly digest', async () => {
       const bob = all.forUser(users.bob.id);
-      const a = await repo.create(lisinopril);
-      const b = await bob.create(zestril);
-      const stopped = await bob.create({ ...lisinopril, rxcui: '197884', name: 'x' });
+      expect(await all.usersWithActiveMedications()).toEqual([]);
+      const stopped = await bob.create(zestril);
       await bob.update(stopped.id, { stoppedOn: '2026-05-01' });
-      expect((await all.listAllActive()).map((m) => m.id).sort()).toEqual([a.id, b.id].sort());
+      expect(await all.usersWithActiveMedications()).toEqual([]);
+      await repo.create(lisinopril);
+      await repo.create({ ...lisinopril, rxcui: '197884', name: 'x' });
+      expect(await all.usersWithActiveMedications()).toEqual([users.alice.id]);
     });
   });
 });

@@ -1,7 +1,8 @@
 /**
- * One digest run: over the window since the last successful run, collect news
- * for the active medications and store it as one digest at the end (or mark the
- * run failed). One run at a time; runs happen in the background.
+ * One digest run for one user: over the window since their last successful run,
+ * collect news for their active medications and store it as one digest at the end
+ * (or mark the run failed). One run per user at a time; runs happen in the
+ * background, and the weekly and catch-up runs go one user after another.
  */
 import type { AlternativesBuilder } from '../alternatives/builder';
 import type { AlternativesRepository } from '../alternatives/repository';
@@ -15,7 +16,7 @@ import { collectApprovals, type DigestCondition } from './collect-approvals';
 import { collectLabels, type DigestProduct } from './collect-labels';
 import { collectPapers } from './collect-papers';
 import { collectTrials } from './collect-trials';
-import type { Digest, DigestRepository, NewDigestItem } from './repository';
+import type { Digest, DigestRepository, NewDigestItem, UserDigests } from './repository';
 
 /** The first run, and a catch-up threshold: one week. */
 export const WINDOW_DAYS = 7;
@@ -42,8 +43,11 @@ export function needsCatchUp(last: Digest | null, now: number): boolean {
 }
 
 export interface RunnerDeps {
-  repo: DigestRepository;
-  medications: { list(): Promise<Medication[]> };
+  repo: Pick<DigestRepository, 'forUser' | 'failInterrupted' | 'takeawayFor'>;
+  medications: {
+    forUser(userId: string): { list(): Promise<Medication[]> };
+    usersWithActiveMedications(): Promise<string[]>;
+  };
   pubmed: Pick<PubMedClient, 'recentPapers' | 'paperDetails' | 'abstracts'>;
   ctgov: Pick<CtGovClient, 'recentUpdates'>;
   openFda: Pick<OpenFdaClient, 'summaryLabel'>;
@@ -67,7 +71,7 @@ export function createDigestRunner(deps: RunnerDeps) {
   const { repo, now = Date.now } = deps;
 
   /** The takeaway provider for one call; a Claude call is counted before it's made. */
-  async function takeawaysFor(digestId: string): Promise<TakeawayChoice> {
+  async function takeawaysFor(mine: UserDigests, digestId: string): Promise<TakeawayChoice> {
     const choice = deps.takeaways();
     if (choice.provider?.name !== 'claude') return choice;
     if ((await deps.claudeStartsToday()) >= deps.dailyLimit) {
@@ -75,12 +79,12 @@ export function createDigestRunner(deps: RunnerDeps) {
         unavailable: `The daily limit of ${deps.dailyLimit} Claude requests has been reached.`,
       };
     }
-    await repo.countClaudeCall(digestId);
+    await mine.countClaudeCall(digestId);
     return choice;
   }
 
-  async function collect(digest: Digest, window: DigestWindow) {
-    const active = (await deps.medications.list()).filter((m) => !m.stoppedOn);
+  async function collect(userId: string, mine: UserDigests, digest: Digest, window: DigestWindow) {
+    const active = (await deps.medications.forUser(userId).list()).filter((m) => !m.stoppedOn);
     const ingredients = new Map<string, DigestIngredient>();
     const conditions = new Map<string, DigestCondition>();
     const products: DigestProduct[] = [];
@@ -96,11 +100,19 @@ export function createDigestRunner(deps: RunnerDeps) {
       });
     }
 
-    const seen = repo.seen.bind(repo);
+    const seen = mine.seen.bind(mine);
+    const storedTakeaway = (pmid: string) => repo.takeawayFor(pmid);
     const found: Collected[] = [];
     for (const ingredient of ingredients.values()) {
-      const takeaways = () => takeawaysFor(digest.id);
-      found.push(await collectPapers(ingredient, window, { pubmed: deps.pubmed, seen, takeaways }));
+      const takeaways = () => takeawaysFor(mine, digest.id);
+      found.push(
+        await collectPapers(ingredient, window, {
+          pubmed: deps.pubmed,
+          seen,
+          takeaways,
+          storedTakeaway,
+        }),
+      );
       found.push(await collectTrials(ingredient, window, { ctgov: deps.ctgov, seen }));
     }
     const today = window.to;
@@ -116,7 +128,7 @@ export function createDigestRunner(deps: RunnerDeps) {
     }
     const labels = await collectLabels(products, {
       openFda: deps.openFda,
-      recorded: await repo.labelVersions(products.map((p) => p.rxcui)),
+      recorded: await mine.labelVersions(products.map((p) => p.rxcui)),
       seen,
     });
     found.push(labels);
@@ -133,41 +145,86 @@ export function createDigestRunner(deps: RunnerDeps) {
     return { items, notes: found.flatMap((f) => f.notes), labelVersions: labels.labelVersions };
   }
 
-  async function execute(digest: Digest, window: DigestWindow): Promise<void> {
+  async function execute(
+    userId: string,
+    mine: UserDigests,
+    digest: Digest,
+    window: DigestWindow,
+  ): Promise<void> {
     try {
-      await repo.finish(digest.id, await collect(digest, window));
+      await mine.finish(digest.id, await collect(userId, mine, digest, window));
     } catch (error) {
       console.error('[digest] run failed:', error);
-      await repo
+      await mine
         .fail(digest.id, errorMessage(error) || 'The digest could not be collected.')
         .catch((e: unknown) => console.error('[digest] could not record the failure:', e));
     }
   }
 
-  /** Starts a run in the background; null when one is already running. */
-  async function start(trigger: Digest['trigger']): Promise<Digest | null> {
+  const track = <T>(job: Promise<T>): Promise<T> => {
+    const tracked = job.then(() => undefined);
+    jobs.add(tracked);
+    void tracked.finally(() => jobs.delete(tracked));
+    return job;
+  };
+
+  /** Starts one user's run; resolves when it has finished (or failed). Null when one is running. */
+  async function begin(
+    trigger: Digest['trigger'],
+    userId: string,
+  ): Promise<{ digest: Digest; done: Promise<void> } | null> {
+    const mine = repo.forUser(userId);
     const today = dateIn(deps.timeZone, now());
-    const window = digestWindow(await repo.lastSuccessful(), today);
-    const digest = await repo.start({ trigger, windowStart: window.from, windowEnd: window.to });
+    const window = digestWindow(await mine.lastSuccessful(), today);
+    const digest = await mine.start({ trigger, windowStart: window.from, windowEnd: window.to });
     if (!digest) return null;
-    const job = execute(digest, window);
-    jobs.add(job);
-    void job.finally(() => jobs.delete(job));
-    return digest;
+    return { digest, done: track(execute(userId, mine, digest, window)) };
+  }
+
+  /** Runs these users one after another, in the background: upstream APIs see one run at a time. */
+  function inTurn(trigger: Digest['trigger'], userIds: string[]): string[] {
+    void track(
+      (async () => {
+        for (const userId of userIds) {
+          try {
+            await (
+              await begin(trigger, userId)
+            )?.done;
+          } catch (error) {
+            console.error('[digest] could not start a run:', error);
+          }
+        }
+      })(),
+    );
+    return userIds;
   }
 
   return {
-    start,
+    /** Starts one user's run in the background (Run now); null when theirs is already running. */
+    async start(trigger: Digest['trigger'], userId: string): Promise<Digest | null> {
+      return (await begin(trigger, userId))?.digest ?? null;
+    },
+
+    /** The weekly run: every user with an active medication, one after another. */
+    async runAll(trigger: Digest['trigger']): Promise<string[]> {
+      return inTurn(trigger, await deps.medications.usersWithActiveMedications());
+    },
 
     /**
-     * At startup: fail a run cut off by a restart and run again, or catch up
-     * when a week was missed.
+     * At startup: fail runs cut off by a restart and run those users again, and catch
+     * up users whose last successful digest is more than a week old; one at a time.
      */
-    async startup(): Promise<Digest | null> {
-      const interrupted = await repo.failInterrupted();
-      if (interrupted) console.warn('[digest] marked an interrupted run as failed');
-      if (!interrupted && !needsCatchUp(await repo.lastSuccessful(), now())) return null;
-      return start('catch-up');
+    async startup(): Promise<string[]> {
+      const interrupted = new Set(await repo.failInterrupted());
+      if (interrupted.size) {
+        console.warn(`[digest] marked ${interrupted.size} interrupted run(s) as failed`);
+      }
+      const due: string[] = [];
+      for (const userId of await deps.medications.usersWithActiveMedications()) {
+        const last = await repo.forUser(userId).lastSuccessful();
+        if (interrupted.has(userId) || needsCatchUp(last, now())) due.push(userId);
+      }
+      return due.length ? inTurn('catch-up', due) : [];
     },
   };
 }

@@ -115,7 +115,12 @@ Replace `192.168.1.0/24` with your network's range. With mirrored networking, th
   git pull
   docker compose up -d --build                     # database migrations run automatically
   ```
-- **Upgrading from the single-password version:** create the accounts (step 3) after updating, then remove `APP_PASSWORD_HASH` from `.env`. Everyone signs in again once.
+- **Upgrading from the single-password version** (separate accounts). The upgrade clears the medication list and the What's new history, because they belonged to no account; research, label summaries, alternatives and interaction data stay. In order:
+  1. Take a backup (`docker compose exec backup sh /backup.sh once`) and write down your medications, with what each is taken for, units per month and copay.
+  2. `git pull`, then `docker compose up -d --build`.
+  3. Create an account for each person (step 3, `docker compose exec app node dist/user.cjs add <username>`).
+  4. Remove `APP_PASSWORD_HASH` from `.env`.
+  5. Sign in and add your medications again; everyone signs in once more.
 - Clean up old Docker layers every few months: `docker image prune` and `docker builder prune`.
 - Your data lives in the `rxplus_db-data` Docker volume. `docker compose down` keeps it; `docker compose down -v` **deletes it**. See [Backups](#backups).
 - `POSTGRES_PASSWORD` is fixed when the database is first created; changing it later in `.env` doesn't change the database's password. Changing `VITE_PRIMEUI_LICENSE` needs a rebuild (`--build`).
@@ -300,15 +305,16 @@ How the lists are made: MED-RT's drugs for the condition, reduced to ingredients
 
 ### What's new
 
-Once a week the app collects what changed for the medications you take (stopped ones are skipped) and shows it on **What's new**, with the number of unread items in the navigation (a dot on the menu button on phones). Opening the page marks them read. No email or notifications.
+Once a week the app collects what changed for the medications each person takes (stopped ones are skipped) and shows it on their **What's new**, with the number of unread items in the navigation (a dot on the menu button on phones). Each account has its own digests, unread count and "already reported" list, built from its own medications only; no one sees another person's digest. Opening the page marks them read. No email or notifications.
 
 - **New papers:** papers entered in PubMed since the last digest with the ingredient in the title or abstract (new entries aren't indexed by topic or study type for weeks). The 5 most relevant per ingredient get a takeaway with its quote, as in Research; the rest are counted, with a link to the same search on PubMed.
 - **Trials:** trials first posted, or with results first posted, on ClinicalTrials.gov since the last digest.
 - **Newly listed drugs:** each condition your medications are taken for is rebuilt as in Alternatives; drugs that newly appear and were first approved in the last 5 years are reported.
 - **Label changes:** a new FDA label version for a product you take (the drug page then writes a new summary).
-- Nothing is reported twice. The first digest records the current condition lists and label versions without reporting them.
+- Nothing is reported twice to the same person. Their first digest records the current condition lists and label versions without reporting them.
+- A paper's takeaway is about the paper, so when a second person's digest finds a paper someone else's digest already has, it reuses that takeaway instead of asking the model again.
 
-**When:** every Monday at 6:00 AM in the server's time zone (`TZ`). If the server was off then, the digest runs at the next start once the last one is more than a week old; a run cut off by a restart is marked failed and run again. **Run now** on the page starts one at any time (one at a time). A run takes a few minutes: about a minute per condition, plus one takeaway call per ingredient with new papers. If a source or the model fails, the digest says what couldn't be checked; if the run itself fails, the page offers Try again.
+**When:** every Monday at 6:00 AM in the server's time zone (`TZ`), for each account with an active medication, one after another. If the server was off then, each person's digest runs at the next start once their last one is more than a week old; a run cut off by a restart is marked failed and run again. **Run now** on the page starts that person's digest at any time (one at a time per person). A run takes a few minutes: about a minute per condition, plus one takeaway call per ingredient with new papers. If a source or the model fails, the digest says what couldn't be checked; if the run itself fails, the page offers Try again.
 
 ### Prices and costs
 
@@ -331,7 +337,7 @@ docker compose exec app node dist/user.cjs list                        # usernam
 
 - Usernames ignore case (`Alice` signs in as `alice`) and are 3–32 letters, digits, `.`, `_` or `-`. Passwords are at least 12 characters, stored only as scrypt hashes.
 - A wrong password and an unknown username get the same answer, "Invalid username or password.". After 5 failures in 15 minutes that username is locked for the rest of the window; after 20 failures across all usernames, every sign-in is.
-- Each account has its own medication list, and everything built from it is that person's alone: the dashboard, interactions, prices and costs, and what a drug is taken for. Research, label summaries and alternatives are shared, since they're about the drug, not the person. Removing an account deletes its medications.
+- Each account has its own medication list, and everything built from it is that person's alone: the dashboard, interactions, prices and costs, what a drug is taken for, and the weekly What's new digest. Research, label summaries and alternatives are shared, since they're about the drug, not the person. Removing an account deletes its medications and digests.
 - Signing out ends the session in that browser only. A password reset or a removed account ends every session of that person on their next request.
 
 ## Backups

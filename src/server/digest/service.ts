@@ -21,8 +21,8 @@ import {
   createDigestRepository,
   type Digest,
   type DigestItem,
-  type DigestRepository,
   type DigestWithItems,
+  type UserDigests,
 } from './repository';
 import { addDays, createDigestRunner, dateIn, type DigestRunner } from './run';
 
@@ -158,7 +158,9 @@ function toView(digest: DigestWithItems): DigestView {
 }
 
 export interface DigestServiceDeps {
-  repo: DigestRepository;
+  /** Whose digests these are. */
+  userId: string;
+  repo: UserDigests;
   runner: Pick<DigestRunner, 'start'>;
   medications: { list(): Promise<{ stoppedOn: string | null }[]> };
   timeZone: string;
@@ -166,6 +168,7 @@ export interface DigestServiceDeps {
 }
 
 export function createDigestService({
+  userId,
   repo,
   runner,
   medications,
@@ -190,9 +193,9 @@ export function createDigestService({
       return { count: await repo.unreadCount() };
     },
 
-    /** Starts a run now; 409 when one is already running. */
+    /** Starts the user's run now; 409 when theirs is already running. */
     async run(): Promise<RunningDigest> {
-      const digest = await runner.start('manual');
+      const digest = await runner.start('manual', userId);
       if (!digest) {
         const message = 'A digest is already being collected.';
         throw createError({ statusCode: 409, statusMessage: message, message });
@@ -218,11 +221,9 @@ let runner: DigestRunner | undefined;
 export function digestRunner(): DigestRunner {
   if (runner) return runner;
   const config = env();
-  const meds = createMedicationsRepository(db());
   runner = createDigestRunner({
     repo: createDigestRepository(db()),
-    // Every user's active medications, until per-user-digest builds one digest per user.
-    medications: { list: () => meds.listAllActive() },
+    medications: createMedicationsRepository(db()),
     pubmed: pubMed(),
     ctgov: ctGov(),
     openFda: openFda(),
@@ -239,7 +240,8 @@ export function digestRunner(): DigestRunner {
 /** Service for the signed-in user, wired to the app database and the shared runner. */
 export function digestService(userId: string) {
   return createDigestService({
-    repo: createDigestRepository(db()),
+    userId,
+    repo: createDigestRepository(db()).forUser(userId),
     runner: digestRunner(),
     medications: createMedicationsRepository(db()).forUser(userId),
     timeZone: env().TZ,

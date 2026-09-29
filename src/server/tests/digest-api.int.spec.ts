@@ -174,4 +174,29 @@ describe('digest API (integration)', () => {
     ).toBe(404);
     expect((await call('POST', '/api/digests/not-an-id/read')).status).toBe(400);
   });
+
+  it("keeps each user's digests, counts, runs and read marks to themselves", async () => {
+    await addLisinopril();
+    let release = () => undefined as void;
+    gate = new Promise<void>((resolve) => (release = resolve));
+
+    const alices = await (await call('POST', '/api/digests/run')).json();
+    // Alice's run doesn't block Bob's.
+    expect((await call('POST', '/api/digests/run', 'bob')).status).toBe(202);
+    release();
+    await settleDigestJobs();
+
+    const bobs = await (await call('GET', '/api/digests', 'bob')).json();
+    expect(bobs.digests).toHaveLength(1);
+    expect(bobs.digests[0].id).not.toBe(alices.id);
+    // Bob has no medications: his digest has nothing about Alice's lisinopril.
+    expect(bobs.digests[0].itemCount).toBe(0);
+    expect(await (await call('GET', '/api/digests/unread-count', 'bob')).json()).toEqual({
+      count: 0,
+    });
+    expect(await (await call('GET', '/api/digests/unread-count')).json()).toEqual({ count: 2 });
+
+    expect((await call('POST', `/api/digests/${alices.id}/read`, 'bob')).status).toBe(404);
+    expect(await (await call('GET', '/api/digests/unread-count')).json()).toEqual({ count: 2 });
+  });
 });

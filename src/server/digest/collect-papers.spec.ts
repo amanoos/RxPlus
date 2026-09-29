@@ -102,6 +102,31 @@ describe('collectPapers', () => {
     expect(PAPERS_PER_INGREDIENT).toBe(5);
   });
 
+  it('reuses a stored takeaway and asks the model only for the other papers', async () => {
+    const deps = setup({ pmids: ['1', '2', '3'], total: 3 });
+    const stored = { text: 'Stored takeaway.', quote: 'Stored quote.', uncited: false };
+    const storedTakeaway = vi.fn(async (pmid: string) => (pmid === '2' ? stored : null));
+    const { items } = await collectPapers(ATORVASTATIN, WINDOW, { ...deps, storedTakeaway });
+
+    expect(storedTakeaway).toHaveBeenCalledTimes(3);
+    expect(deps.provider.generate).toHaveBeenCalledWith([
+      expect.objectContaining({ pmid: '1' }),
+      expect.objectContaining({ pmid: '3' }),
+    ]);
+    expect(items.find((i) => i.externalId === '2')?.takeaway).toEqual(stored);
+    expect(items.find((i) => i.externalId === '1')?.takeaway?.text).toBe(
+      'In this study, atorvastatin lowered LDL cholesterol.',
+    );
+  });
+
+  it('asks no model (and counts no call) when every paper has a stored takeaway', async () => {
+    const deps = setup({ pmids: ['1'], total: 1 });
+    const stored = { text: 'Stored takeaway.', quote: null, uncited: true };
+    await collectPapers(ATORVASTATIN, WINDOW, { ...deps, storedTakeaway: async () => stored });
+    expect(deps.takeaways).not.toHaveBeenCalled();
+    expect(deps.provider.generate).not.toHaveBeenCalled();
+  });
+
   it('skips papers reported in an earlier digest', async () => {
     const deps = setup({ seen: ['1', '3'] });
     const { items } = await collectPapers(ATORVASTATIN, WINDOW, deps);

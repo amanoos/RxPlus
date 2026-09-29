@@ -64,6 +64,13 @@
       "when": 1790675140631,
       "tag": "0008_medications_per_user",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790684999940,
+      "tag": "0009_digest_per_user",
+      "breakpoints": true
     }
   ]
 }

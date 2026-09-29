@@ -7,10 +7,10 @@ import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
 import type { TakeawayProvider } from '../literature/takeaways';
 import { createMedicationsRepository } from '../medications/repository';
-import { seedTestUsers } from '../tests/test-users';
+import { seedTestUsers, type TestUsers } from '../tests/test-users';
 import type { OpenFdaClient, SummaryLabel } from '../openfda/client';
 import type { PubMedClient } from '../pubmed/client';
-import { createDigestRepository } from './repository';
+import { createDigestRepository, type UserDigests } from './repository';
 import { createDigestRunner, settleDigestJobs, type RunnerDeps } from './run';
 
 // Requires: npm run db:test:up
@@ -55,19 +55,21 @@ const label = (version: string): SummaryLabel => ({
 
 describe('digest run (integration)', () => {
   const { db, pool } = createDb(url);
-  const repo = createDigestRepository(db);
+  const shared = createDigestRepository(db);
   const alternatives = createAlternativesRepository(db);
-  const allMedications = createMedicationsRepository(db);
-  // What the runner reads, as wired in digest/service.ts.
-  const medications = { list: () => allMedications.listAllActive() };
+  const medications = createMedicationsRepository(db);
+  let users: TestUsers;
+  // Alice's digests: she takes lisinopril (and stopped metformin).
+  let repo: UserDigests;
 
   beforeAll(() => runMigrations(url, 'drizzle'));
   beforeEach(async () => {
     await db.execute(
       sql`truncate digests, digest_items, digest_label_versions, alternative_lists, alternative_drugs, medications`,
     );
-    const { alice } = await seedTestUsers(db);
-    const alicesList = allMedications.forUser(alice.id);
+    users = await seedTestUsers(db);
+    repo = shared.forUser(users.alice.id);
+    const alicesList = medications.forUser(users.alice.id);
     const lisinopril = await alicesList.create({
       rxcui: '314076',
       tty: 'SCD',
@@ -169,7 +171,7 @@ describe('digest run (integration)', () => {
       }),
     };
     const deps: RunnerDeps = {
-      repo,
+      repo: shared,
       medications,
       pubmed,
       ctgov,
@@ -185,11 +187,28 @@ describe('digest run (integration)', () => {
     return { runner: createDigestRunner(deps), deps, world, pubmed, ctgov, builder, provider };
   }
 
-  const run = async (runner: ReturnType<typeof create>['runner']) => {
-    const digest = await runner.start('manual');
+  /** One manual run for a user (Alice unless named), settled. */
+  const run = async (
+    runner: ReturnType<typeof create>['runner'],
+    as: keyof TestUsers = 'alice',
+  ) => {
+    const digest = await runner.start('manual', users[as].id);
     await settleDigestJobs();
-    return (await repo.recent()).find((d) => d.id === digest?.id)!;
+    return (await shared.forUser(users[as].id).recent()).find((d) => d.id === digest?.id)!;
   };
+  /** Puts a product on Bob's list. */
+  const giveBob = (rxcui: string, name: string, ingredient: [string, string]) =>
+    medications.forUser(users.bob.id).create({
+      rxcui,
+      tty: 'SCD',
+      name,
+      strength: null,
+      doseForm: 'Oral Tablet',
+      brandName: null,
+      ingredients: [{ rxcui: ingredient[0], name: ingredient[1] }],
+      notes: null,
+      startedOn: null,
+    });
 
   it('collects the week for active medications, with baselines on the first run', async () => {
     const { runner, pubmed, ctgov, builder } = create();
@@ -244,16 +263,18 @@ describe('digest run (integration)', () => {
     expect(digest.items[1]).toMatchObject({ title: '3 more new papers on PubMed' });
   });
 
-  it('runs one digest at a time', async () => {
+  it('runs one digest at a time per user', async () => {
     const { runner, world } = create();
     let release = () => undefined as void;
     world.gate = new Promise<void>((resolve) => (release = resolve));
-    const first = await runner.start('manual');
+    const first = await runner.start('manual', users.alice.id);
     expect(first).not.toBeNull();
-    expect(await runner.start('schedule')).toBeNull();
+    expect(await runner.start('schedule', users.alice.id)).toBeNull();
+    // Bob's run is his own: Alice's doesn't block it.
+    expect(await runner.start('manual', users.bob.id)).not.toBeNull();
     release();
     await settleDigestJobs();
-    expect(await runner.start('schedule')).not.toBeNull();
+    expect(await runner.start('schedule', users.alice.id)).not.toBeNull();
     await settleDigestJobs();
   });
 
@@ -275,7 +296,7 @@ describe('digest run (integration)', () => {
         ...deps,
         takeaways: () => ({ provider: { ...provider, name: 'claude' } }),
         dailyLimit: 1,
-        claudeStartsToday: () => repo.claudeCallsToday('America/New_York'),
+        claudeStartsToday: () => shared.claudeCallsToday('America/New_York'),
       });
 
     const allowed = await run(withClaude(create()));
@@ -294,7 +315,9 @@ describe('digest run (integration)', () => {
   it('fails the run, writing nothing, when collecting breaks', async () => {
     const { runner } = create();
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    vi.spyOn(medications, 'list').mockRejectedValueOnce(new Error('database gone'));
+    vi.spyOn(medications, 'forUser').mockReturnValueOnce({
+      list: () => Promise.reject(new Error('database gone')),
+    } as never);
     const digest = await run(runner);
     expect(digest).toMatchObject({ status: 'failed', error: 'database gone', items: [] });
   });
@@ -304,10 +327,10 @@ describe('digest run (integration)', () => {
     await repo.start({ trigger: 'schedule', windowStart: '2026-09-21', windowEnd: '2026-09-28' });
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const caughtUp = await runner.startup();
-    expect(caughtUp).toMatchObject({ trigger: 'catch-up' });
+    expect(caughtUp).toEqual([users.alice.id]);
     await settleDigestJobs();
     const [latest, interrupted] = await repo.recent();
-    expect(latest.status).toBe('ready');
+    expect(latest).toMatchObject({ status: 'ready', trigger: 'catch-up' });
     expect(interrupted).toMatchObject({ status: 'failed' });
   });
 
@@ -315,14 +338,101 @@ describe('digest run (integration)', () => {
     await run(create().runner);
     const now = Date.now();
     await db.execute(sql`update digests set started_at = now() - interval '6 days'`);
-    expect(await create(now).runner.startup()).toBeNull();
+    expect(await create(now).runner.startup()).toEqual([]);
 
     await db.execute(sql`update digests set started_at = now() - interval '8 days'`);
-    expect(await create(now).runner.startup()).toMatchObject({ trigger: 'catch-up' });
+    expect(await create(now).runner.startup()).toEqual([users.alice.id]);
     await settleDigestJobs();
   });
 
   it('at startup, waits for the schedule before the very first run', async () => {
-    expect(await create(Date.now()).runner.startup()).toBeNull();
+    expect(await create(Date.now()).runner.startup()).toEqual([]);
+  });
+
+  describe('two users', () => {
+    const subjects = (digest: { items: { subject: string }[] }) =>
+      new Set(digest.items.map((i) => i.subject));
+
+    it("builds each user's digest from their own medications only", async () => {
+      await giveBob('861007', 'metformin 500 MG Oral Tablet', ['6809', 'metformin']);
+      const alice = await run(create().runner);
+      const bob = await run(create().runner, 'bob');
+      expect([...subjects(alice)].some((s) => s.includes('metformin'))).toBe(false);
+      expect([...subjects(bob)].every((s) => s.includes('metformin'))).toBe(true);
+      expect(bob.items.length).toBeGreaterThan(0);
+    });
+
+    it("reports a paper Alice has seen to Bob too, reusing Alice's takeaway", async () => {
+      await giveBob('314076', 'lisinopril 10 MG Oral Tablet', ['29046', 'lisinopril']);
+      const { runner, provider } = create();
+      const alice = await run(runner);
+      expect(provider.generate).toHaveBeenCalledTimes(1);
+
+      const bob = await run(runner, 'bob');
+      const papers = bob.items.filter((i) => i.kind === 'paper');
+      expect(papers.map((i) => i.externalId)).toEqual(['101', '102']);
+      expect(papers[0].takeaway).toEqual(alice.items.find((i) => i.externalId === '101')?.takeaway);
+      // No second model call, and none counted against the Claude cap.
+      expect(provider.generate).toHaveBeenCalledTimes(1);
+      expect(bob.claudeCalls).toBe(0);
+    });
+
+    it('runs the week for users with active medications, one after another', async () => {
+      const { runner } = create();
+      expect(await runner.runAll('schedule')).toEqual([users.alice.id]);
+      await settleDigestJobs();
+      expect(await shared.forUser(users.bob.id).recent()).toEqual([]);
+
+      await giveBob('861007', 'metformin 500 MG Oral Tablet', ['6809', 'metformin']);
+      const queued = await runner.runAll('schedule');
+      expect(new Set(queued)).toEqual(new Set([users.alice.id, users.bob.id]));
+      await settleDigestJobs();
+      const firsts = await Promise.all(
+        queued.map(async (id) => (await shared.forUser(id).recent())[0]),
+      );
+      expect(firsts.every((d) => d.status === 'ready' && d.trigger === 'schedule')).toBe(true);
+      // Sequential: the first user's run finished before the second's started.
+      expect(firsts[0].finishedAt!.getTime()).toBeLessThanOrEqual(firsts[1].startedAt.getTime());
+    });
+
+    it('at startup, catches up and reruns each user on their own schedule', async () => {
+      await giveBob('861007', 'metformin 500 MG Oral Tablet', ['6809', 'metformin']);
+      await run(create().runner);
+      await run(create().runner, 'bob');
+      // Alice's last digest is over a week old; Bob's is recent.
+      await db.execute(
+        sql`update digests set started_at = now() - interval '8 days' where user_id = ${users.alice.id}`,
+      );
+      await db.execute(
+        sql`update digests set started_at = now() - interval '2 days' where user_id = ${users.bob.id}`,
+      );
+      expect(await create(Date.now()).runner.startup()).toEqual([users.alice.id]);
+      await settleDigestJobs();
+
+      // A restart cut off Bob's run: only Bob runs again.
+      await shared
+        .forUser(users.bob.id)
+        .start({ trigger: 'manual', windowStart: '2026-09-21', windowEnd: '2026-09-28' });
+      vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      expect(await create(Date.now()).runner.startup()).toEqual([users.bob.id]);
+      await settleDigestJobs();
+      const [latest] = await shared.forUser(users.bob.id).recent();
+      expect(latest).toMatchObject({ status: 'ready', trigger: 'catch-up' });
+    });
+
+    it("keeps going when one user's run fails", async () => {
+      await giveBob('861007', 'metformin 500 MG Oral Tablet', ['6809', 'metformin']);
+      const { runner } = create();
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      vi.spyOn(medications, 'forUser').mockReturnValueOnce({
+        list: () => Promise.reject(new Error('database gone')),
+      } as never);
+      const queued = await runner.runAll('schedule');
+      await settleDigestJobs();
+      const statuses = await Promise.all(
+        queued.map(async (id) => (await shared.forUser(id).recent())[0].status),
+      );
+      expect(statuses).toEqual(['failed', 'ready']);
+    });
   });
 });

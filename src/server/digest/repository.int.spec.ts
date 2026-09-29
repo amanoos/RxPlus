@@ -3,7 +3,8 @@ import { sql } from 'drizzle-orm';
 
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
-import { createDigestRepository, type NewDigestItem } from './repository';
+import { seedTestUsers, type TestUsers } from '../tests/test-users';
+import { createDigestRepository, type NewDigestItem, type UserDigests } from './repository';
 
 // Requires: npm run db:test:up
 const url =
@@ -23,17 +24,24 @@ const paper = (pmid: string): NewDigestItem => ({
 
 describe('digest repository (integration)', () => {
   const { db, pool } = createDb(url);
-  const repo = createDigestRepository(db);
+  const shared = createDigestRepository(db);
+  let users: TestUsers;
+  // Alice's digests, used by the single-user tests below.
+  let repo: UserDigests;
 
   beforeAll(() => runMigrations(url, 'drizzle'));
-  beforeEach(() => db.execute(sql`truncate digests, digest_items, digest_label_versions`));
+  beforeEach(async () => {
+    await db.execute(sql`truncate digests, digest_items, digest_label_versions`);
+    users = await seedTestUsers(db);
+    repo = shared.forUser(users.alice.id);
+  });
   // The e2e server shares this database: leave no running digest for its startup to resume.
   afterAll(async () => {
     await db.execute(sql`truncate digests, digest_items, digest_label_versions`);
     await pool.end();
   });
 
-  it('runs one digest at a time', async () => {
+  it('runs one digest at a time per user', async () => {
     const run = await repo.start({ trigger: 'manual', ...WINDOW });
     expect(run).toMatchObject({ status: 'running', trigger: 'manual', ...WINDOW });
     expect(await repo.start({ trigger: 'schedule', ...WINDOW })).toBeNull();
@@ -137,7 +145,7 @@ describe('digest repository (integration)', () => {
 
   it('marks a run cut off by a restart as failed', async () => {
     const run = (await repo.start({ trigger: 'schedule', ...WINDOW }))!;
-    expect(await repo.failInterrupted()).toBe(1);
+    expect(await shared.failInterrupted()).toEqual([users.alice.id]);
     const [digest] = await repo.recent();
     expect(digest).toMatchObject({
       id: run.id,
@@ -151,8 +159,78 @@ describe('digest repository (integration)', () => {
     const run = (await repo.start({ trigger: 'schedule', ...WINDOW }))!;
     await repo.countClaudeCall(run.id);
     await repo.countClaudeCall(run.id);
-    expect(await repo.claudeCallsToday('America/New_York')).toBe(2);
+    expect(await shared.claudeCallsToday('America/New_York')).toBe(2);
     await db.execute(sql`update digests set started_at = now() - interval '2 days'`);
-    expect(await repo.claudeCallsToday('America/New_York')).toBe(0);
+    expect(await shared.claudeCallsToday('America/New_York')).toBe(0);
+  });
+
+  describe('two users', () => {
+    it('keeps digests, unread counts and read marks to their owner', async () => {
+      const bob = shared.forUser(users.bob.id);
+      const mine = (await repo.start({ trigger: 'manual', ...WINDOW }))!;
+      await repo.finish(mine.id, { items: [paper('1'), paper('2')], notes: [] });
+
+      expect(await bob.recent()).toEqual([]);
+      expect(await bob.unreadCount()).toBe(0);
+      expect(await bob.lastSuccessful()).toBeNull();
+      expect(await bob.markRead(mine.id)).toBe(false);
+      expect(await repo.unreadCount()).toBe(2);
+    });
+
+    it('lets each user have a run going at the same time', async () => {
+      const bob = shared.forUser(users.bob.id);
+      expect(await repo.start({ trigger: 'manual', ...WINDOW })).not.toBeNull();
+      expect(await bob.start({ trigger: 'manual', ...WINDOW })).not.toBeNull();
+      expect(await bob.start({ trigger: 'manual', ...WINDOW })).toBeNull();
+      expect(new Set(await shared.failInterrupted())).toEqual(
+        new Set([users.alice.id, users.bob.id]),
+      );
+    });
+
+    it('reports a paper to each user once, whoever saw it first', async () => {
+      const bob = shared.forUser(users.bob.id);
+      const mine = (await repo.start({ trigger: 'manual', ...WINDOW }))!;
+      await repo.finish(mine.id, { items: [paper('1')], notes: [] });
+      expect(await repo.seen('paper', ['1'])).toEqual(new Set(['1']));
+      expect(await bob.seen('paper', ['1'])).toEqual(new Set());
+    });
+
+    it('keeps label baselines per user', async () => {
+      const bob = shared.forUser(users.bob.id);
+      const mine = (await repo.start({ trigger: 'manual', ...WINDOW }))!;
+      await repo.finish(mine.id, {
+        items: [],
+        notes: [],
+        labelVersions: [{ productRxcui: '617312', setId: 'abc', version: '12' }],
+      });
+      expect((await repo.labelVersions(['617312'])).get('617312')?.version).toBe('12');
+      expect(await bob.labelVersions(['617312'])).toEqual(new Map());
+    });
+
+    it("reuses another user's takeaway for the same paper, and nothing else", async () => {
+      const takeaway = { text: 'In this trial, pain fell.', quote: 'Pain fell.', uncited: false };
+      const mine = (await repo.start({ trigger: 'manual', ...WINDOW }))!;
+      await repo.finish(mine.id, {
+        items: [
+          { ...paper('1'), takeaway },
+          { ...paper('2'), takeaway: { ...takeaway, text: '' } },
+        ],
+        notes: [],
+      });
+      expect(await shared.takeawayFor('1')).toEqual(takeaway);
+      // An empty takeaway (the model skipped the paper) is not reused.
+      expect(await shared.takeawayFor('2')).toBeNull();
+      expect(await shared.takeawayFor('3')).toBeNull();
+    });
+
+    it("deletes a user's digests with the account", async () => {
+      const mine = (await repo.start({ trigger: 'manual', ...WINDOW }))!;
+      await repo.finish(mine.id, { items: [paper('1')], notes: [] });
+      await db.execute(sql`delete from users where id = ${users.alice.id}`);
+      const [{ n }] = (await db.execute(sql`select count(*)::int n from digest_items`)).rows as {
+        n: number;
+      }[];
+      expect(n).toBe(0);
+    });
   });
 });

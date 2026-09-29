@@ -4,6 +4,7 @@ import { addDays, dateIn, digestWindow, needsCatchUp } from './run';
 
 const digest = (overrides: Partial<Digest>): Digest => ({
   id: 'd1',
+  userId: 'u1',
   status: 'ready',
   trigger: 'schedule',
   windowStart: '2026-09-14',

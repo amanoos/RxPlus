@@ -137,16 +137,13 @@ export function createMedicationsRepository(db: Db) {
       return row ?? null;
     },
 
-    /**
-     * Every user's active medications. Only the weekly digest runner uses this,
-     * until per-user-digest builds one digest per user.
-     */
-    listAllActive(): Promise<Medication[]> {
-      return db
-        .select()
+    /** Users with at least one active medication: who the weekly digest runs for. */
+    async usersWithActiveMedications(): Promise<string[]> {
+      const rows = await db
+        .selectDistinct({ userId: medications.userId })
         .from(medications)
-        .where(isNull(medications.stoppedOn))
-        .orderBy(desc(medications.createdAt));
+        .where(isNull(medications.stoppedOn));
+      return rows.map((r) => r.userId);
     },
   };
 }

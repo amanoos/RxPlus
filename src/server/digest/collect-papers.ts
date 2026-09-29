@@ -28,12 +28,14 @@ export interface PapersDeps {
   seen: Seen;
   /** The takeaway provider for this call (daily limit already applied). */
   takeaways: () => Promise<TakeawayChoice>;
+  /** A takeaway already stored for the paper (anyone's digest), to skip the model. */
+  storedTakeaway?: (pmid: string) => Promise<PaperTakeaway | null>;
 }
 
 export async function collectPapers(
   ingredient: DigestIngredient,
   window: DigestWindow,
-  { pubmed, seen, takeaways }: PapersDeps,
+  { pubmed, seen, takeaways, storedTakeaway }: PapersDeps,
 ): Promise<Collected> {
   const { name } = ingredient;
   let found;
@@ -54,9 +56,17 @@ export async function collectPapers(
 
   const { recent, already, details, abstracts } = found;
   const notes: string[] = [];
-  const byPmid = details.length
-    ? await writeTakeaways(ingredient, details, abstracts, takeaways, notes)
+  // Takeaways are about the paper: reuse a stored one and ask the model only for the rest.
+  const stored = new Map<string, PaperTakeaway>();
+  for (const paper of details) {
+    const found = await storedTakeaway?.(paper.pmid);
+    if (found) stored.set(paper.pmid, found);
+  }
+  const toWrite = details.filter((p) => !stored.has(p.pmid));
+  const written = toWrite.length
+    ? await writeTakeaways(ingredient, toWrite, abstracts, takeaways, notes)
     : new Map<string, PaperTakeaway>();
+  const byPmid = new Map([...stored, ...written]);
 
   const items: NewDigestItem[] = details.map((paper) => {
     const takeaway = byPmid.get(paper.pmid);

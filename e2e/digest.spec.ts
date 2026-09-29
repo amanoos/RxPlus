@@ -1,7 +1,14 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import pg from 'pg';
 
-import { addMedication, E2E_DATABASE_URL, resetMedications, signIn } from './helpers';
+import {
+  addMedication,
+  E2E_DATABASE_URL,
+  E2E_OTHER_PASSWORD,
+  E2E_OTHER_USERNAME,
+  resetMedications,
+  signIn,
+} from './helpers';
 
 const LISINOPRIL = 'lisinopril 10 MG Oral Tablet';
 const STUB = 'http://localhost:4399';
@@ -132,4 +139,43 @@ test('reports a newly listed drug and a new label the next week, without repeats
 
   await label.getByRole('link', { name: `New FDA label for ${LISINOPRIL}` }).click();
   await expect(page).toHaveURL(/\/drugs\/314076$/);
+});
+
+test("keeps each account's digest to itself", async ({ page, browser }) => {
+  const nav = page.getByRole('navigation', { name: 'Main' });
+  await nav.getByRole('link', { name: 'What’s new' }).click();
+  await page.getByTestId('run-now').getByRole('button').click();
+  // Leave the page while it collects: viewing the finished digest would mark it read.
+  await nav.getByRole('link', { name: 'Medications' }).click();
+  await runFinished(page);
+  await nav.getByRole('link', { name: 'Dashboard' }).click();
+  await expect(
+    nav.getByRole('link', { name: /What’s new/ }).getByTestId('unread-badge'),
+  ).toHaveText('5 unread');
+
+  // The other account takes nothing: no badge, no digest, and its own run has no lisinopril.
+  const context = await browser.newContext();
+  try {
+    const other = await context.newPage();
+    await other.goto('/digest');
+    await signIn(other, E2E_OTHER_PASSWORD, E2E_OTHER_USERNAME);
+    const otherNav = other.getByRole('navigation', { name: 'Main' });
+    await expect(otherNav.getByTestId('unread-badge')).toHaveCount(0);
+    // Its own list is empty, whatever the first account takes.
+    await expect(other.getByTestId('no-medications')).toBeVisible();
+
+    await other.getByTestId('run-now').getByRole('button').click();
+    await runFinished(other);
+    await other.reload();
+    await expect(other.getByTestId('digest-group')).toHaveCount(0);
+    await expect(other.getByText('lisinopril')).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+
+  // The first account's digest is untouched by the other's run.
+  await nav.getByRole('link', { name: /What’s new/ }).click();
+  await expect(
+    page.getByTestId('digest').first().getByTestId('digest-group').locator('h3'),
+  ).toHaveText('lisinopril');
 });

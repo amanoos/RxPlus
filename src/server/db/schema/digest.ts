@@ -5,6 +5,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -12,12 +13,17 @@ import {
 } from 'drizzle-orm/pg-core';
 
 import type { PaperTakeaway } from './literature';
+import { users } from './users';
 
 /** One weekly run and what it found. Items are written only when the run finishes. */
 export const digests = pgTable(
   'digests',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    /** Whose digest this is (SPEC-per-user-digest.md). */
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
     status: text('status', { enum: ['running', 'ready', 'failed'] }).notNull(),
     trigger: text('trigger', { enum: ['schedule', 'manual', 'catch-up'] }).notNull(),
     /** Inclusive dates the run covers (YYYY-MM-DD). */
@@ -31,11 +37,12 @@ export const digests = pgTable(
     /** Claude takeaway calls made by the run; they count toward AI_DAILY_LIMIT. */
     claudeCalls: integer('claude_calls').notNull().default(0),
   },
-  // One run at a time.
+  // One run at a time per user.
   (t) => [
     uniqueIndex('digests_one_running')
-      .on(t.status)
+      .on(t.userId)
       .where(sql`${t.status} = 'running'`),
+    index('digests_user_id_idx').on(t.userId),
   ],
 );
 
@@ -90,13 +97,23 @@ export const digestItems = pgTable(
   ],
 );
 
-/** The label version last seen per product; the first sight is a baseline, not a change. */
-export const digestLabelVersions = pgTable('digest_label_versions', {
-  productRxcui: text('product_rxcui').primaryKey(),
-  setId: text('set_id').notNull(),
-  version: text('version').notNull(),
-  checkedAt: timestamp('checked_at', { withTimezone: true }).notNull().defaultNow(),
-});
+/**
+ * The label version a user last saw per product; their first sight is a baseline,
+ * not a change. Per user, so one user's run can't hide a change from another.
+ */
+export const digestLabelVersions = pgTable(
+  'digest_label_versions',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    productRxcui: text('product_rxcui').notNull(),
+    setId: text('set_id').notNull(),
+    version: text('version').notNull(),
+    checkedAt: timestamp('checked_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.productRxcui] })],
+);
 
 export type DigestRow = typeof digests.$inferSelect;
 export type DigestItemRow = typeof digestItems.$inferSelect;

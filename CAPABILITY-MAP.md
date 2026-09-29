@@ -63,3 +63,4 @@ Decisions:
 - [SPEC-pricing.md](SPEC-pricing.md) (done)
 - [SPEC-accounts.md](SPEC-accounts.md) (done)
 - [SPEC-per-user-medications.md](SPEC-per-user-medications.md) (done)
+- [SPEC-per-user-digest.md](SPEC-per-user-digest.md) (done)
