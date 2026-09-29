@@ -45,7 +45,7 @@ This module moves paper hides into a per-user `literature_hidden` table and adds
 ### Checkpoint C: per-user-hiding and the multi-user initiative complete
 
 - [x] Spec success criteria 1–7
-- [ ] Human review; then the README upgrade checklist can be followed
+- [x] Human review (approved 2026-09-29); then the README upgrade checklist can be followed
 
 ## Risks and Mitigations
 

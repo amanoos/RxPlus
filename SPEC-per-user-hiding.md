@@ -1,6 +1,6 @@
 # Spec: per-user-hiding
 
-Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md), initiative **multi-user**. Depends on: `accounts`, `literature`, `alternatives`. Status: **approved 2026-09-29, built**.
+Module of [CAPABILITY-MAP.md](CAPABILITY-MAP.md), initiative **multi-user**. Depends on: `accounts`, `literature`, `alternatives`. Status: **done, approved 2026-09-29**.
 
 ## Objective
 

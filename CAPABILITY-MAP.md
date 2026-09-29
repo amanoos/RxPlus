@@ -64,4 +64,4 @@ Decisions:
 - [SPEC-accounts.md](SPEC-accounts.md) (done)
 - [SPEC-per-user-medications.md](SPEC-per-user-medications.md) (done)
 - [SPEC-per-user-digest.md](SPEC-per-user-digest.md) (done)
-- [SPEC-per-user-hiding.md](SPEC-per-user-hiding.md) (built, awaiting review)
+- [SPEC-per-user-hiding.md](SPEC-per-user-hiding.md) (done)
