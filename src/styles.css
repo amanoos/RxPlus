@@ -5,22 +5,123 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
+/* Dark mode follows the app-dark class on <html> (set before first paint by the
+   script in index.html, and by the theme toggle), not the OS setting directly. */
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
 @layer base {
   html {
-    color-scheme: light dark;
-    font-family: Inter, system-ui, Helvetica, Arial, sans-serif;
+    /* Drives the theme's light-dark() colors. */
+    color-scheme: light;
+    font-family: 'DM Sans', system-ui, Helvetica, Arial, sans-serif;
   }
 
   body {
     margin: 0;
     min-width: 320px;
-    background: var(--p-surface-0);
+    /* A soft lavender page, so the white cards stand out (docs/design.md). */
+    background: var(--p-primary-50);
     color: var(--p-text-color);
   }
 
-  @media (prefers-color-scheme: dark) {
-    body {
-      background: var(--p-surface-950);
-    }
+  h1,
+  h2,
+  h3 {
+    font-family: 'Bricolage Grotesque', 'DM Sans', system-ui, sans-serif;
+    letter-spacing: 0.01em;
+  }
+
+  h1 {
+    font-weight: 800;
+  }
+
+  html.app-dark {
+    color-scheme: dark;
+  }
+
+  .app-dark body {
+    background: var(--p-surface-950);
+  }
+}
+
+@layer components {
+  /* The brand gradient. The rose end is darkened (#d6105a) so white text on it
+     stays at 5.2:1; the reference's #ff2d6b would be 3.6:1. */
+  .rx-gradient {
+    background-image: linear-gradient(135deg, #7c18ff 0%, #d6105a 100%);
+    color: #ffffff;
+  }
+
+  .rx-gradient-text {
+    background-image: linear-gradient(135deg, #7c18ff 0%, #d6105a 100%);
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* A content card: white on the lavender page, generous corners, a faint shadow. */
+  .rx-card {
+    border: 1px solid color-mix(in srgb, var(--p-primary-600) 10%, transparent);
+    border-radius: 20px;
+    background: var(--p-surface-0);
+    box-shadow: 0 2px 16px rgb(13 13 13 / 0.06);
+  }
+
+  /* A small gradient tile for an icon next to a card title. */
+  .rx-icon-tile {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 14px;
+    background-image: linear-gradient(135deg, #7c18ff 0%, #d6105a 100%);
+    color: #ffffff;
+  }
+
+  /* Lighter ends on dark backgrounds: 8:1 or better against the dark header. */
+  .app-dark .rx-gradient-text {
+    background-image: linear-gradient(135deg, #c79bff 0%, #ff8fb1 100%);
+  }
+
+  .app-dark .rx-card {
+    border-color: rgb(255 255 255 / 0.1);
+    background: var(--p-surface-900);
+    box-shadow: none;
+  }
+
+  /* Primary buttons carry the gradient; secondary, text, outlined, link and
+     severity buttons keep their flat theme colors. */
+  .p-button:not(
+    .p-button-secondary,
+    .p-button-success,
+    .p-button-info,
+    .p-button-warn,
+    .p-button-help,
+    .p-button-danger,
+    .p-button-contrast,
+    .p-button-text,
+    .p-button-outlined,
+    .p-button-link
+  ) {
+    border-color: transparent;
+    background-image: linear-gradient(135deg, #7c18ff 0%, #d6105a 100%);
+    box-shadow: 0 6px 18px rgb(124 24 255 / 0.22);
+    color: #ffffff;
+  }
+
+  .p-button:not(
+      .p-button-secondary,
+      .p-button-success,
+      .p-button-info,
+      .p-button-warn,
+      .p-button-help,
+      .p-button-danger,
+      .p-button-contrast,
+      .p-button-text,
+      .p-button-outlined,
+      .p-button-link
+    ):not(:disabled):hover {
+    filter: brightness(1.06);
   }
 }

@@ -11,23 +11,41 @@ import { AuthActions } from '../core/auth/auth.actions';
 import { selectAuthError, selectAuthPending } from '../core/auth/auth.selectors';
 import { AppReady } from '../core/app-ready';
 import { safeNext } from '../core/auth/safe-next';
+import { ThemeToggleComponent } from '../core/layout/theme-toggle.component';
 
 export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
 
 // Public and prerendered at build time (see prerender.routes in vite.config.ts).
 @Component({
   selector: 'app-login-page',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, MessageModule],
+  imports: [
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    MessageModule,
+    ThemeToggleComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <main class="flex min-h-screen items-center justify-center p-4">
+    <main
+      class="relative flex min-h-screen items-center justify-center bg-linear-135 from-primary-100 to-[#ffe0ea] p-4 dark:from-surface-950 dark:to-surface-900"
+    >
+      <div class="absolute top-4 right-4"><app-theme-toggle /></div>
       <form
         [formGroup]="form"
         (ngSubmit)="submit()"
-        class="flex w-full max-w-sm flex-col gap-4"
+        class="rx-card flex w-full max-w-sm flex-col gap-4 p-8"
         aria-labelledby="login-title"
       >
-        <h1 id="login-title" class="text-2xl font-semibold">RxPlus</h1>
+        <div class="flex items-center gap-3">
+          <span class="rx-icon-tile text-sm font-bold" aria-hidden="true">Rx</span>
+          <h1 id="login-title" class="rx-gradient-text text-3xl font-extrabold tracking-tight">
+            RxPlus
+          </h1>
+        </div>
+        <p class="-mt-1 text-sm text-surface-600 dark:text-surface-300">
+          Sign in to your medication watchlist.
+        </p>
         <!-- Disabled until the app has loaded: text typed before then would be lost. -->
         <fieldset
           class="flex flex-col gap-4"

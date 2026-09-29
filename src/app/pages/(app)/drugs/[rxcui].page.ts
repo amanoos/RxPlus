@@ -37,7 +37,7 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
       <p class="text-sm">Loading…</p>
     } @else {
       <header>
-        <h1 class="text-2xl font-semibold" data-testid="drug-name">{{ f.name }}</h1>
+        <h1 class="text-3xl font-bold tracking-tight" data-testid="drug-name">{{ f.name }}</h1>
         <p class="mt-1 text-sm text-surface-600 dark:text-surface-300">
           {{ details() }}
         </p>
@@ -57,7 +57,7 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
         </p-message>
       }
 
-      <div class="mt-6 grid gap-6 md:grid-cols-2">
+      <div class="rx-card mt-6 grid gap-6 p-5 md:grid-cols-2">
         <section aria-labelledby="uses-heading">
           <h2 id="uses-heading" class="text-lg font-semibold">Used for</h2>
           @if (f.mayTreat.length) {
@@ -95,24 +95,24 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
       </div>
 
       @if (entry(); as e) {
-        <div class="mt-8 rounded-lg border border-surface-200 p-4 dark:border-surface-800">
+        <div class="rx-card mt-8 p-5">
           <app-summary-panel [rxcui]="rxcui()" [state]="e.summary" />
         </div>
       }
 
-      <div class="mt-8">
+      <div class="rx-card mt-6 p-5">
         <app-research-section [rxcui]="rxcui()" />
       </div>
 
-      <div class="mt-8">
+      <div class="rx-card mt-6 p-5">
         <app-alternatives-section [rxcui]="rxcui()" [drugName]="drugName()" />
       </div>
 
-      <div class="mt-8">
+      <div class="rx-card mt-6 p-5">
         <app-prices-section [rxcui]="rxcui()" />
       </div>
 
-      <div class="mt-8">
+      <div class="rx-card mt-6 p-5">
         <app-reported-reactions
           [reactions]="entry()?.reactions?.data ?? null"
           [status]="entry()?.reactions?.status ?? 'loading'"
@@ -120,7 +120,7 @@ export const routeMeta: RouteMeta = { title: 'Drug information · RxPlus' };
         />
       </div>
 
-      <section class="mt-8" aria-labelledby="links-heading">
+      <section class="rx-card mt-6 p-5" aria-labelledby="links-heading">
         <h2 id="links-heading" class="text-lg font-semibold">Read more</h2>
         <ul class="mt-2 flex flex-col gap-1 text-sm" data-testid="links">
           @if (f.label) {

@@ -26,7 +26,7 @@ export const routeMeta: RouteMeta = { title: 'Costs · RxPlus' };
   imports: [RouterLink, ButtonModule, MessageModule, EditMedicationDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="text-2xl font-semibold">Costs</h1>
+    <h1 class="text-3xl font-bold tracking-tight">Costs</h1>
     <p class="mt-1 text-sm text-surface-600 dark:text-surface-300">
       What your current medications cost a month: paying cash at Cost Plus Drugs, or your copay with
       insurance. Cost Plus prices are its list prices (plus per-order fees), not a quote; copays are
@@ -50,71 +50,73 @@ export const routeMeta: RouteMeta = { title: 'Costs · RxPlus' };
             <a routerLink="/medications" class="underline">Medications</a> page.
           </p>
         } @else {
-          <table class="mt-6 hidden w-full text-left text-sm md:table" data-testid="costs-table">
-            <thead class="border-b border-surface-200 dark:border-surface-700">
-              <tr>
-                <th scope="col" class="py-2 pr-3 font-medium">Medication</th>
-                <th scope="col" class="px-3 py-2 text-right font-medium">Units / month</th>
-                <th scope="col" class="px-3 py-2 text-right font-medium">Cost Plus cash</th>
-                <th scope="col" class="px-3 py-2 text-right font-medium">Your copay</th>
-                <th scope="col" class="px-3 py-2 font-medium">Cheaper</th>
-                <th scope="col" class="py-2 pl-3"><span class="sr-only">Edit</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of data.rows; track row.medicationId) {
-                <tr
-                  class="border-b border-surface-100 dark:border-surface-800"
-                  data-testid="cost-row"
-                >
-                  <th scope="row" class="py-2 pr-3 font-normal">
-                    <a class="underline" [routerLink]="['/drugs', row.rxcui]">{{ row.name }}</a>
-                  </th>
-                  <td class="px-3 py-2 text-right">{{ row.unitsPerMonth }}</td>
-                  <td class="px-3 py-2 text-right">
-                    @if (row.price) {
-                      <a
-                        class="underline"
-                        [href]="row.price.url"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >{{ money(row.cashCents) }}</a
-                      >
-                    } @else {
-                      <span class="text-surface-600 dark:text-surface-300">{{
-                        missingPrice(row)
-                      }}</span>
-                    }
-                  </td>
-                  <td class="px-3 py-2 text-right">{{ money(row.insuredCents) }}</td>
-                  <td class="px-3 py-2">{{ cheaper(row) }}</td>
-                  <td class="py-2 pl-3 text-right">
-                    <p-button
-                      label="Edit"
-                      size="small"
-                      severity="secondary"
-                      [text]="true"
-                      [ariaLabel]="'Edit units and copay: ' + row.name"
-                      (onClick)="edit(row.medicationId)"
-                    />
-                  </td>
+          <div class="rx-card mt-6 hidden px-5 py-3 md:block">
+            <table class="w-full text-left text-sm" data-testid="costs-table">
+              <thead class="border-b border-surface-200 dark:border-surface-700">
+                <tr>
+                  <th scope="col" class="py-2 pr-3 font-medium">Medication</th>
+                  <th scope="col" class="px-3 py-2 text-right font-medium">Units / month</th>
+                  <th scope="col" class="px-3 py-2 text-right font-medium">Cost Plus cash</th>
+                  <th scope="col" class="px-3 py-2 text-right font-medium">Your copay</th>
+                  <th scope="col" class="px-3 py-2 font-medium">Cheaper</th>
+                  <th scope="col" class="py-2 pl-3"><span class="sr-only">Edit</span></th>
                 </tr>
-              }
-            </tbody>
-            <tfoot>
-              <tr class="font-semibold" data-testid="totals">
-                <th scope="row" class="py-2 pr-3">Total a month</th>
-                <td></td>
-                <td class="px-3 py-2 text-right">{{ money(data.totals.cashCents) }}</td>
-                <td class="px-3 py-2 text-right">{{ money(data.totals.insuredCents) }}</td>
-                <td colspan="2"></td>
-              </tr>
-            </tfoot>
-          </table>
+              </thead>
+              <tbody>
+                @for (row of data.rows; track row.medicationId) {
+                  <tr
+                    class="border-b border-surface-100 dark:border-surface-800"
+                    data-testid="cost-row"
+                  >
+                    <th scope="row" class="py-2 pr-3 font-normal">
+                      <a class="underline" [routerLink]="['/drugs', row.rxcui]">{{ row.name }}</a>
+                    </th>
+                    <td class="px-3 py-2 text-right">{{ row.unitsPerMonth }}</td>
+                    <td class="px-3 py-2 text-right">
+                      @if (row.price) {
+                        <a
+                          class="underline"
+                          [href]="row.price.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          >{{ money(row.cashCents) }}</a
+                        >
+                      } @else {
+                        <span class="text-surface-600 dark:text-surface-300">{{
+                          missingPrice(row)
+                        }}</span>
+                      }
+                    </td>
+                    <td class="px-3 py-2 text-right">{{ money(row.insuredCents) }}</td>
+                    <td class="px-3 py-2">{{ cheaper(row) }}</td>
+                    <td class="py-2 pl-3 text-right">
+                      <p-button
+                        label="Edit"
+                        size="small"
+                        severity="secondary"
+                        [text]="true"
+                        [ariaLabel]="'Edit units and copay: ' + row.name"
+                        (onClick)="edit(row.medicationId)"
+                      />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="font-semibold" data-testid="totals">
+                  <th scope="row" class="py-2 pr-3">Total a month</th>
+                  <td></td>
+                  <td class="px-3 py-2 text-right">{{ money(data.totals.cashCents) }}</td>
+                  <td class="px-3 py-2 text-right">{{ money(data.totals.insuredCents) }}</td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
 
           <ul class="mt-6 flex flex-col gap-3 md:hidden" data-testid="costs-cards">
             @for (row of data.rows; track row.medicationId) {
-              <li class="rounded border border-surface-200 p-3 text-sm dark:border-surface-700">
+              <li class="rx-card p-4 text-sm">
                 <a class="font-medium underline" [routerLink]="['/drugs', row.rxcui]">{{
                   row.name
                 }}</a>

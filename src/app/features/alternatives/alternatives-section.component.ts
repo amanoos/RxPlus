@@ -158,7 +158,7 @@ import { alternativesFeature } from './store/alternatives.reducer';
                 <div class="mt-2 flex flex-col gap-1" data-testid="group-other-classes">
                   @for (cls of lit.groups.otherClasses; track cls.className) {
                     <details
-                      class="rounded border border-surface-200 px-3 py-2 dark:border-surface-800"
+                      class="rounded-xl border border-surface-200 bg-surface-0 px-3 py-2 dark:border-surface-800 dark:bg-surface-900"
                     >
                       <summary class="cursor-pointer text-sm" data-testid="other-class">
                         {{ cls.className }} ({{ cls.drugs.length }})
