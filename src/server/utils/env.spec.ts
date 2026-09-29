@@ -1,9 +1,8 @@
 // @vitest-environment node
-import { EnvError, parseEnv } from './env';
+import { EnvError, ignoredSettings, parseEnv } from './env';
 
 const valid = {
   DATABASE_URL: 'postgres://rxplus:pw@db:5432/rxplus',
-  APP_PASSWORD_HASH: 'scrypt:16384:c2FsdHNhbHRzYWx0c2FsdA:aGFzaGhhc2hoYXNoaGFzaGhhc2hoYXNo',
   SESSION_SECRET: 'x'.repeat(32),
 };
 
@@ -42,7 +41,6 @@ describe('parseEnv', () => {
     } catch (e) {
       const message = (e as Error).message;
       expect(message).toContain('DATABASE_URL');
-      expect(message).toContain('APP_PASSWORD_HASH');
       expect(message).toContain('SESSION_SECRET');
     }
   });
@@ -55,9 +53,6 @@ describe('parseEnv', () => {
 
   it('rejects malformed values', () => {
     expect(() => parseEnv({ ...valid, DATABASE_URL: 'mysql://x' })).toThrowError(/DATABASE_URL/);
-    expect(() => parseEnv({ ...valid, APP_PASSWORD_HASH: 'plaintext' })).toThrowError(
-      /APP_PASSWORD_HASH/,
-    );
     expect(() => parseEnv({ ...valid, COOKIE_SECURE: 'yes' })).toThrowError(/COOKIE_SECURE/);
     expect(() => parseEnv({ ...valid, PORT: '0' })).toThrowError(/PORT/);
     expect(() => parseEnv({ ...valid, TZ: 'Mars/Olympus' })).toThrowError(/TZ/);
@@ -65,5 +60,15 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...valid, SUMMARY_PROVIDER: 'gpt' })).toThrowError(/SUMMARY_PROVIDER/);
     expect(() => parseEnv({ ...valid, OLLAMA_NUM_CTX: '512' })).toThrowError(/OLLAMA_NUM_CTX/);
     expect(() => parseEnv({ ...valid, NCBI_EMAIL: 'not-an-email' })).toThrowError(/NCBI_EMAIL/);
+  });
+
+  it('no longer needs APP_PASSWORD_HASH, and notes a leftover one', () => {
+    expect(parseEnv({ ...valid, APP_PASSWORD_HASH: 'plaintext' })).not.toHaveProperty(
+      'APP_PASSWORD_HASH',
+    );
+    expect(ignoredSettings({ APP_PASSWORD_HASH: 'scrypt:1:a:b' })).toEqual([
+      expect.stringContaining('APP_PASSWORD_HASH is ignored'),
+    ]);
+    expect(ignoredSettings({})).toEqual([]);
   });
 });

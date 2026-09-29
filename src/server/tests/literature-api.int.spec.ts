@@ -23,7 +23,6 @@ import unhideRoute from '../routes/api/literature/[ingredient]/papers/[pmid]/hid
 import hideRoute from '../routes/api/literature/[ingredient]/papers/[pmid]/hide.post';
 import { useRxNavClient, type RxNavClient, type RxProductDetails } from '../rxnorm';
 import { env } from '../utils/env';
-import { hashPassword } from '../utils/password';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -88,7 +87,6 @@ describe('literature API (integration)', () => {
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnav as unknown as RxNavClient);

@@ -4,6 +4,7 @@ import { sql } from 'drizzle-orm';
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
 import { createMedicationsRepository } from '../medications/repository';
+import { seedTestUsers } from '../tests/test-users';
 import { createAlternativesRepository, listKey, type AlternativeDrug } from './repository';
 
 // Requires: npm run db:test:up
@@ -90,7 +91,8 @@ describe('alternatives repository (integration)', () => {
   });
 
   it('stores what a medication is taken for', async () => {
-    const meds = createMedicationsRepository(db);
+    const { alice } = await seedTestUsers(db);
+    const meds = createMedicationsRepository(db).forUser(alice.id);
     const med = await meds.create({
       rxcui: '314076',
       tty: 'SCD',

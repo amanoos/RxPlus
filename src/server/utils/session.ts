@@ -2,8 +2,14 @@ import { useSession, type H3Event, type SessionConfig } from 'h3';
 
 import { env } from './env';
 
+/**
+ * What the sealed cookie carries: the user and the session version it was
+ * issued at (users.session_version). Sessions from before accounts carry
+ * neither and are refused.
+ */
 export interface AuthSession {
-  authenticated?: true;
+  userId?: string;
+  version?: number;
 }
 
 const THIRTY_DAYS = 30 * 24 * 60 * 60;
@@ -22,8 +28,4 @@ function sessionConfig(): SessionConfig {
 
 export function authSession(event: H3Event) {
   return useSession<AuthSession>(event, sessionConfig());
-}
-
-export async function isAuthenticated(event: H3Event): Promise<boolean> {
-  return (await authSession(event)).data.authenticated === true;
 }

@@ -1,8 +1,5 @@
-import { createError, defineEventHandler } from 'h3';
+import { defineEventHandler } from 'h3';
 
-import { isAuthenticated } from '../../../utils/session';
+import { requireUser } from '../../../utils/auth-user';
 
-export default defineEventHandler(async (event) => {
-  if (!(await isAuthenticated(event))) throw createError({ statusCode: 401 });
-  return { authenticated: true };
-});
+export default defineEventHandler((event) => ({ authenticated: true, user: requireUser(event) }));

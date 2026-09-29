@@ -218,9 +218,11 @@ let runner: DigestRunner | undefined;
 export function digestRunner(): DigestRunner {
   if (runner) return runner;
   const config = env();
+  const meds = createMedicationsRepository(db());
   runner = createDigestRunner({
     repo: createDigestRepository(db()),
-    medications: createMedicationsRepository(db()),
+    // Every user's active medications, until per-user-digest builds one digest per user.
+    medications: { list: () => meds.listAllActive() },
     pubmed: pubMed(),
     ctgov: ctGov(),
     openFda: openFda(),
@@ -234,12 +236,12 @@ export function digestRunner(): DigestRunner {
   return runner;
 }
 
-/** Service wired to the app database and the shared runner. */
-export function digestService() {
+/** Service for the signed-in user, wired to the app database and the shared runner. */
+export function digestService(userId: string) {
   return createDigestService({
     repo: createDigestRepository(db()),
     runner: digestRunner(),
-    medications: createMedicationsRepository(db()),
+    medications: createMedicationsRepository(db()).forUser(userId),
     timeZone: env().TZ,
   });
 }

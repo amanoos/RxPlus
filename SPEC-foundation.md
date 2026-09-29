@@ -106,6 +106,8 @@ docs/intent/, CAPABILITY-MAP.md, SPEC-*.md
 
 **Auth**
 
+> Superseded by [SPEC-accounts.md](SPEC-accounts.md) (multi-user, 2026-09-28): username + password per account, `APP_PASSWORD_HASH` and `npm run hash-password` removed. The single-user rules below describe the original foundation.
+
 - `POST /api/auth/login` takes `{ password }`.
   - On a match (checked with `timingSafeEqual` against the scrypt hash), it sets a sealed session cookie (`httpOnly`, `sameSite=lax`, `secure` taken from `COOKIE_SECURE`, 30-day max age) and returns `204`.
   - On a wrong password it returns `401` with a generic message.

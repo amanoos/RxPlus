@@ -2,7 +2,7 @@ import { createError } from 'h3';
 import { z } from 'zod';
 
 import { db } from '../db/client';
-import { createMedicationsRepository, type MedicationsRepository } from '../medications/repository';
+import { createMedicationsRepository, type UserMedications } from '../medications/repository';
 import { openFda, OpenFdaUnavailableError, type OpenFdaClient } from '../openfda';
 import { rxnav, type RxNavClient, type RxProductDetails } from '../rxnorm';
 import { toHttpError as rxnavHttpError } from '../rxnorm/errors';
@@ -33,7 +33,8 @@ type ProductInfo = Pick<RxProductDetails, 'rxcui' | 'name' | 'ingredients'>;
 
 interface Deps {
   repo: InteractionsRepository;
-  medications: MedicationsRepository;
+  /** The signed-in user's list: checks compare against their active medications only. */
+  medications: Pick<UserMedications, 'list'>;
   rxnav: RxNavClient;
   openFda: OpenFdaClient;
 }
@@ -135,11 +136,11 @@ export function createInteractionsService({ repo, medications, rxnav, openFda }:
   };
 }
 
-/** Service wired to the app database and upstream clients. */
-export function interactionsService() {
+/** Service for the signed-in user, wired to the app database and upstream clients. */
+export function interactionsService(userId: string) {
   return createInteractionsService({
     repo: createInteractionsRepository(db()),
-    medications: createMedicationsRepository(db()),
+    medications: createMedicationsRepository(db()).forUser(userId),
     rxnav: rxnav(),
     openFda: openFda(),
   });

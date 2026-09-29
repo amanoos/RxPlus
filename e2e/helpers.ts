@@ -1,13 +1,18 @@
 import { expect, type Page } from '@playwright/test';
 import pg from 'pg';
 
+/** The accounts global-setup creates; test-only credentials. */
+export const E2E_USERNAME = 'e2e';
 export const E2E_PASSWORD = 'e2e-test-password';
+export const E2E_OTHER_USERNAME = 'e2e-other';
+export const E2E_OTHER_PASSWORD = 'e2e-other-password';
 export const E2E_DATABASE_URL =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
 
-export async function signIn(page: Page, password = E2E_PASSWORD) {
+export async function signIn(page: Page, password = E2E_PASSWORD, username = E2E_USERNAME) {
   // Wait for the client app to take over (it redirects to /login) before typing.
   await expect(page).toHaveURL(/\/login/);
+  await page.locator('#username').fill(username);
   await page.locator('#password').fill(password);
   await page.getByRole('button', { name: 'Sign in' }).click();
 }

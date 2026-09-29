@@ -10,7 +10,7 @@ import patchRoute from '../routes/api/medications/[id].patch';
 import listRoute from '../routes/api/medications/index.get';
 import createRoute from '../routes/api/medications/index.post';
 import { RxNavUnavailableError, useRxNavClient, type RxNavClient } from '../rxnorm';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, TEST_USER_HEADER, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -44,12 +44,17 @@ describe('medications API (integration)', () => {
   };
   const { db, pool } = createDb(TEST_DB);
   let handle: (req: Request) => Promise<Response>;
+  let users: TestUsers;
 
-  const call = (method: string, path: string, body?: unknown) =>
+  /** Runs as Alice unless another test user is named. */
+  const call = (method: string, path: string, body?: unknown, as: keyof TestUsers = 'alice') =>
     handle(
       new Request(`http://localhost${path}`, {
         method,
-        headers: body ? { 'content-type': 'application/json' } : undefined,
+        headers: {
+          [TEST_USER_HEADER]: as,
+          ...(body ? { 'content-type': 'application/json' } : {}),
+        },
         body: body ? JSON.stringify(body) : undefined,
       }),
     );
@@ -57,18 +62,19 @@ describe('medications API (integration)', () => {
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnavStub);
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/medications', listRoute)
-          .post('/api/medications', createRoute)
-          .patch('/api/medications/:id', patchRoute)
-          .delete('/api/medications/:id', removeRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users))
+        .use(
+          createRouter()
+            .get('/api/medications', listRoute)
+            .post('/api/medications', createRoute)
+            .patch('/api/medications/:id', patchRoute)
+            .delete('/api/medications/:id', removeRoute),
+        ),
     );
   });
   beforeEach(async () => {
@@ -77,6 +83,7 @@ describe('medications API (integration)', () => {
       rxcui === lisinopril.rxcui ? lisinopril : null,
     );
     await db.execute(sql`truncate table medications`);
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useRxNavClient(undefined);
@@ -219,5 +226,37 @@ describe('medications API (integration)', () => {
 
   it('rejects a malformed id with 400', async () => {
     expect((await call('DELETE', '/api/medications/not-a-uuid')).status).toBe(400);
+  });
+
+  describe('two users', () => {
+    it('keeps separate lists, and lets both add the same product', async () => {
+      const alice = await (await add({ rxcui: '314076', notes: 'alice notes' })).json();
+      expect(await (await call('GET', '/api/medications', undefined, 'bob')).json()).toEqual([]);
+
+      const bobAdd = await call('POST', '/api/medications', { rxcui: '314076' }, 'bob');
+      expect(bobAdd.status).toBe(201);
+      const bob = await bobAdd.json();
+
+      const aliceList = await (await call('GET', '/api/medications')).json();
+      const bobList = await (await call('GET', '/api/medications', undefined, 'bob')).json();
+      expect(aliceList.map((m: { id: string }) => m.id)).toEqual([alice.id]);
+      expect(bobList.map((m: { id: string }) => m.id)).toEqual([bob.id]);
+      expect(bobList[0].notes).toBeNull();
+    });
+
+    it("answers 404 for another user's medication and leaves it unchanged", async () => {
+      const { id } = await (await add({ rxcui: '314076', notes: 'alice notes' })).json();
+      expect((await call('PATCH', `/api/medications/${id}`, { notes: 'x' }, 'bob')).status).toBe(
+        404,
+      );
+      expect((await call('DELETE', `/api/medications/${id}`, undefined, 'bob')).status).toBe(404);
+      const [kept] = await (await call('GET', '/api/medications')).json();
+      expect(kept).toMatchObject({ id, notes: 'alice notes' });
+    });
+
+    it('refuses requests with no signed-in user', async () => {
+      const res = await handle(new Request('http://localhost/api/medications'));
+      expect(res.status).toBe(401);
+    });
   });
 });

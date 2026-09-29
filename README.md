@@ -1,6 +1,6 @@
 # RxPlus
 
-A personal, single-user medication watchlist that runs on your own computer or home server. It keeps track of the prescriptions you take and their strengths, and shows:
+A medication watchlist for you and your household that runs on your own computer or home server. Each person signs in to their own list of the prescriptions they take and their strengths, and sees:
 
 - what each drug is for, its FDA label in plain language, and the side effects most often reported
 - interactions between your medications
@@ -17,11 +17,12 @@ Built with [Analog](https://analogjs.org) (Angular + SSR), PrimeNG, Tailwind CSS
 - [Develop (developers)](#develop-developers)
 - [Configuration reference](#configuration-reference)
 - [How it works](#how-it-works)
+- [Accounts](#accounts)
 - [Backups](#backups)
 
 ## Run the app (users)
 
-The app runs in Docker: one container for the app, one for its PostgreSQL database, and one that backs the database up every night. Only you can sign in (a single password). It's meant for your home network, not the internet.
+The app runs in Docker: one container for the app, one for its PostgreSQL database, and one that backs the database up every night. Each person signs in with their own account, which whoever runs the server creates. It's meant for your home network, not the internet.
 
 ### 1. Install the prerequisites
 
@@ -41,16 +42,13 @@ cd rxplus
 cp .env.example .env
 ```
 
-Open `.env` in a text editor. Every setting is explained there, including how to get each optional key. You need to fill in four values:
+Open `.env` in a text editor. Every setting is explained there, including how to get each optional key. You need to fill in three values:
 
-1. **`APP_PASSWORD_HASH`**: your login password, as a hash. Run this, type your password twice (at least 12 characters), and replace the `APP_PASSWORD_HASH=` line in `.env` with the `APP_PASSWORD_HASH=scrypt:...` line it prints:
-   ```bash
-   docker run --rm -it -v "${PWD}:/app" -w /app node:24-bookworm-slim node scripts/hash-password.ts
-   ```
-   With Node.js 24 installed, `npm run hash-password` does the same.
-2. **`SESSION_SECRET`**: at least 32 random characters, e.g. from `openssl rand -base64 32`.
-3. **`POSTGRES_PASSWORD`**: any strong password (letters and digits only) for the database.
-4. **`VITE_PRIMEUI_LICENSE`**: the free PrimeUI Community License key (sign-up link in `.env`). The app also works without it.
+1. **`SESSION_SECRET`**: at least 32 random characters, e.g. from `openssl rand -base64 32`.
+2. **`POSTGRES_PASSWORD`**: any strong password (letters and digits only) for the database.
+3. **`VITE_PRIMEUI_LICENSE`**: the free PrimeUI Community License key (sign-up link in `.env`). The app also works without it.
+
+Accounts aren't set in `.env`: you create them after the first start (step 3).
 
 Optional, all explained in `.env`:
 
@@ -74,7 +72,16 @@ docker compose ps                     # app and backup running, db healthy
 curl http://localhost:3000/api/health # {"status":"ok","db":"ok"}
 ```
 
-Open **http://localhost:3000** (or your `APP_PORT`) and sign in with your password.
+Create an account for each person (usernames are 3–32 letters, digits, `.`, `_` or `-`; passwords at least 12 characters):
+
+```bash
+docker compose exec app node dist/user.cjs add alice   # asks for the password twice
+docker compose exec app node dist/user.cjs list
+```
+
+Until there is at least one account, `docker compose logs app` shows a "No accounts yet" line with this command. See [Accounts](#accounts) to reset a password or remove an account.
+
+Open **http://localhost:3000** (or your `APP_PORT`) and sign in with your username and password.
 
 ### 4. First steps in the app
 
@@ -108,6 +115,7 @@ Replace `192.168.1.0/24` with your network's range. With mirrored networking, th
   git pull
   docker compose up -d --build                     # database migrations run automatically
   ```
+- **Upgrading from the single-password version:** create the accounts (step 3) after updating, then remove `APP_PASSWORD_HASH` from `.env`. Everyone signs in again once.
 - Clean up old Docker layers every few months: `docker image prune` and `docker builder prune`.
 - Your data lives in the `rxplus_db-data` Docker volume. `docker compose down` keeps it; `docker compose down -v` **deletes it**. See [Backups](#backups).
 - `POSTGRES_PASSWORD` is fixed when the database is first created; changing it later in `.env` doesn't change the database's password. Changing `VITE_PRIMEUI_LICENSE` needs a rebuild (`--build`).
@@ -143,6 +151,7 @@ cp .env.example .env     # fill in section 1 and 2 (see "Run the app"); DATABASE
 npm run db:up            # dev PostgreSQL on localhost:${DB_DEV_PORT}
 npm run db:migrate       # create the tables
 npm run ddi:import       # optional: interaction data (~5 minutes)
+npm run user -- add me   # an account to sign in with (asks for the password)
 npm run dev              # http://localhost:5173
 ```
 
@@ -203,7 +212,6 @@ All settings live in `.env`. [`.env.example`](.env.example) explains each one an
 
 | Variable                                                                                                               | Required | Purpose                                                                                             |
 | ---------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------- |
-| `APP_PASSWORD_HASH`                                                                                                    | yes      | Login password hash, from `npm run hash-password`                                                   |
 | `SESSION_SECRET`                                                                                                       | yes      | Signs the session cookie; at least 32 random characters                                             |
 | `POSTGRES_PASSWORD`                                                                                                    | yes      | Database password (letters and digits only)                                                         |
 | `DATABASE_URL`                                                                                                         | dev only | `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`; Docker Compose sets its own |
@@ -309,6 +317,22 @@ Once a week the app collects what changed for the medications you take (stopped 
 - **Per month:** each medication has units per month (default 30, half units allowed). The drug page's **Prices** section and the **Costs** page show cash and copay per month and which is cheaper; the Costs page totals them and says what the totals leave out.
 
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
+
+## Accounts
+
+Each person has a username and password. There's no sign-up page: accounts are managed with a command on the server (in development, `npm run user -- <command>` instead of `docker compose exec app node dist/user.cjs <command>`):
+
+```bash
+docker compose exec app node dist/user.cjs add <username>              # new account; asks for the password twice
+docker compose exec app node dist/user.cjs reset-password <username>   # new password; signs them out everywhere
+docker compose exec app node dist/user.cjs remove <username>           # asks you to type the name; add --yes to skip
+docker compose exec app node dist/user.cjs list                        # usernames and creation dates
+```
+
+- Usernames ignore case (`Alice` signs in as `alice`) and are 3–32 letters, digits, `.`, `_` or `-`. Passwords are at least 12 characters, stored only as scrypt hashes.
+- A wrong password and an unknown username get the same answer, "Invalid username or password.". After 5 failures in 15 minutes that username is locked for the rest of the window; after 20 failures across all usernames, every sign-in is.
+- Each account has its own medication list, and everything built from it is that person's alone: the dashboard, interactions, prices and costs, and what a drug is taken for. Research, label summaries and alternatives are shared, since they're about the drug, not the person. Removing an account deletes its medications.
+- Signing out ends the session in that browser only. A password reset or a removed account ends every session of that person on their next request.
 
 ## Backups
 

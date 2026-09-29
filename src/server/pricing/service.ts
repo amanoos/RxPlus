@@ -159,11 +159,11 @@ export function createPricingService({ rxnav, costPlus, medications }: PricingDe
   };
 }
 
-/** Service wired to the app database and upstream clients. */
-export function pricingService() {
+/** The signed-in user's prices and costs, wired to the app database and upstream clients. */
+export function pricingService(userId: string) {
   return createPricingService({
     rxnav: rxnav(),
     costPlus: costPlus(),
-    medications: createMedicationsRepository(db()),
+    medications: createMedicationsRepository(db()).forUser(userId),
   });
 }

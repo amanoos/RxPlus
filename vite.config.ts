@@ -35,6 +35,7 @@ export default defineConfig(() => ({
       provider: 'v8',
       include: [
         'src/server/utils/**',
+        'src/server/accounts/**',
         'src/app/core/auth/**',
         'src/app/store/**',
         'src/server/rxnorm/**',

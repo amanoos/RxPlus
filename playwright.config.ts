@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { E2E_DATABASE_URL, E2E_PASSWORD } from './e2e/helpers';
-import { hashPassword } from './src/server/utils/password';
+import { E2E_DATABASE_URL } from './e2e/helpers';
 
 const PORT = 4300;
 const STUB_UPSTREAM_PORT = 4399;
@@ -44,8 +43,7 @@ export default defineConfig({
       env: {
         PORT: String(PORT),
         DATABASE_URL: E2E_DATABASE_URL,
-        // Test-only credentials for this throwaway server; never used anywhere else.
-        APP_PASSWORD_HASH: await hashPassword(E2E_PASSWORD),
+        // Test-only secret for this throwaway server; accounts come from global-setup.
         SESSION_SECRET: 'e2e-session-secret-not-for-real-use-0123456789',
         COOKIE_SECURE: 'false',
         RXNAV_BASE_URL: `http://localhost:${STUB_UPSTREAM_PORT}/REST`,

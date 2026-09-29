@@ -6,6 +6,7 @@ import { DrawerModule } from 'primeng/drawer';
 
 import { digestFeature } from '../../features/digest/store/digest.reducer';
 import { AuthActions } from '../auth/auth.actions';
+import { selectAuthUser } from '../auth/auth.selectors';
 
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: '/' },
@@ -77,15 +78,24 @@ export const NAV_ITEMS = [
           }
         </nav>
 
-        <p-button
-          data-testid="logout"
-          label="Log out"
-          severity="secondary"
-          [text]="true"
-          size="small"
-          class="ml-auto"
-          (onClick)="logout()"
-        />
+        <div class="ml-auto flex items-center gap-2">
+          @if (user(); as user) {
+            <!-- Below 640px the name is in the drawer, so the top bar stays uncluttered. -->
+            <span
+              class="hidden max-w-40 truncate text-sm text-surface-600 sm:inline dark:text-surface-300"
+              data-testid="signed-in-user"
+              ><span class="sr-only">Signed in as </span>{{ user.username }}</span
+            >
+          }
+          <p-button
+            data-testid="logout"
+            label="Log out"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="logout()"
+          />
+        </div>
       </div>
     </header>
 
@@ -115,6 +125,14 @@ export const NAV_ITEMS = [
           }
         </ul>
       </nav>
+      @if (user(); as user) {
+        <p
+          class="mt-6 border-t border-surface-200 px-3 pt-4 text-sm text-surface-600 dark:border-surface-800 dark:text-surface-300"
+          data-testid="drawer-user"
+        >
+          Signed in as <span class="font-medium">{{ user.username }}</span>
+        </p>
+      }
     </p-drawer>
 
     <main id="content" tabindex="-1" class="mx-auto max-w-5xl px-4 py-6 focus:outline-none">
@@ -127,6 +145,8 @@ export class AppShellComponent {
   protected readonly navItems = NAV_ITEMS;
   /** Unread digest items, for the What's new badge. */
   protected readonly unread = this.store.selectSignal(digestFeature.selectUnread);
+  /** Who is signed in, shown in the top bar (and in the drawer on small screens). */
+  protected readonly user = this.store.selectSignal(selectAuthUser);
   readonly drawerOpen = signal(false);
 
   logout(): void {

@@ -16,7 +16,7 @@ import {
   type RxNavClient,
   type RxProductDetails,
 } from '../rxnorm';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, TEST_USER_HEADER, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -67,7 +67,10 @@ describe('interactions API (integration)', () => {
     indications: vi.fn(),
   };
   let handle: (req: Request) => Promise<Response>;
-  const get = (path: string) => handle(new Request(`http://localhost${path}`));
+  let users: TestUsers;
+  /** Runs as Alice unless another test user is named. */
+  const get = (path: string, as: keyof TestUsers = 'alice') =>
+    handle(new Request(`http://localhost${path}`, { headers: { [TEST_USER_HEADER]: as } }));
 
   async function seedDdinter() {
     await db.insert(ddiDrugs).values([
@@ -81,25 +84,33 @@ describe('interactions API (integration)', () => {
     ]);
     await db.insert(ddiImports).values({ pairs: 2, drugs: 3, mappedDrugs: 3 });
   }
-  async function addMedication(rxcui: string, stoppedOn: string | null = null) {
+  /** Adds a product to a user's list (Alice's unless named). */
+  async function addMedication(
+    rxcui: string,
+    stoppedOn: string | null = null,
+    as: keyof TestUsers = 'alice',
+  ) {
     const p = products[rxcui];
-    await db.insert(medications).values({ ...p, notes: null, startedOn: null, stoppedOn });
+    await db
+      .insert(medications)
+      .values({ userId: users[as].id, ...p, notes: null, startedOn: null, stoppedOn });
   }
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnav);
     useOpenFdaClient(openFda);
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/interactions/check', checkRoute)
-          .get('/api/interactions/current', currentRoute)
-          .get('/api/interactions/evidence', evidenceRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter()
+            .get('/api/interactions/check', checkRoute)
+            .get('/api/interactions/current', currentRoute)
+            .get('/api/interactions/evidence', evidenceRoute),
+        ),
     );
   });
   beforeEach(async () => {
@@ -108,6 +119,7 @@ describe('interactions API (integration)', () => {
     rxnav.classNames.mockResolvedValue([]);
     rxnav.brandNames.mockResolvedValue([]);
     await db.execute(sql`truncate medications, ddi_interactions, ddi_drugs, ddi_imports`);
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useRxNavClient(undefined);
@@ -151,6 +163,22 @@ describe('interactions API (integration)', () => {
     const body = await (await get('/api/interactions/current')).json();
     expect(body.results.map((r: { level: string }) => r.level)).toEqual(['Unknown']);
     expect(body.notCovered).toEqual([expect.objectContaining({ ingredient: 'mystery' })]);
+  });
+
+  it("checks and lists against the signed-in user's medications only", async () => {
+    await seedDdinter();
+    await addMedication('314076'); // Alice: lisinopril
+    await addMedication('617310', null, 'bob'); // Bob: atorvastatin
+
+    // Spironolactone interacts with lisinopril: a Major result for Alice, none for Bob.
+    const alice = await (await get('/api/interactions/check?rxcui=313096')).json();
+    const bob = await (await get('/api/interactions/check?rxcui=313096', 'bob')).json();
+    expect(alice.results.map((r: { level: string }) => r.level)).toEqual(['Major']);
+    expect(bob.results).toEqual([]);
+
+    // Lisinopril and atorvastatin interact, but they are on different lists.
+    const current = await (await get('/api/interactions/current', 'bob')).json();
+    expect(current.results).toEqual([]);
   });
 
   it('rejects non-products and maps RxNav outages', async () => {

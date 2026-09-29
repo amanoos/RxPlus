@@ -1,12 +1,18 @@
-import { desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, isNull, sql } from 'drizzle-orm';
 
 import type { Db } from '../db/client';
 import { medications, type MedicationRow } from '../db/schema';
 
 export type Medication = MedicationRow;
+/** RxNorm product data as stored with a medication (no user data). */
+export type SavedProduct = Pick<
+  MedicationRow,
+  'rxcui' | 'tty' | 'name' | 'strength' | 'doseForm' | 'brandName' | 'ingredients'
+>;
 export type NewMedication = Omit<
   MedicationRow,
   | 'id'
+  | 'userId'
   | 'stoppedOn'
   | 'createdAt'
   | 'updatedAt'
@@ -59,44 +65,92 @@ async function mapDuplicate<T>(work: Promise<T>): Promise<T> {
 
 export function createMedicationsRepository(db: Db) {
   return {
-    /** Active first (newest first), then stopped (newest first). */
-    list(): Promise<Medication[]> {
+    /** One user's list: every query is filtered by (and every insert sets) user_id. */
+    forUser(userId: string) {
+      const mine = eq(medications.userId, userId);
+      const byId = (id: string) => and(mine, eq(medications.id, id));
+      return {
+        /** Active first (newest first), then stopped (newest first). */
+        list(): Promise<Medication[]> {
+          return db
+            .select()
+            .from(medications)
+            .where(mine)
+            .orderBy(sql`${medications.stoppedOn} is null desc`, desc(medications.createdAt));
+        },
+
+        async get(id: string): Promise<Medication | null> {
+          const [row] = await db.select().from(medications).where(byId(id));
+          return row ?? null;
+        },
+
+        async create(input: NewMedication): Promise<Medication> {
+          const [row] = await mapDuplicate(
+            db
+              .insert(medications)
+              .values({ ...input, userId })
+              .returning(),
+          );
+          return row;
+        },
+
+        async update(id: string, patch: MedicationPatch): Promise<Medication | null> {
+          const [row] = await mapDuplicate(
+            db
+              .update(medications)
+              // Database clock, like the defaultNow() on insert.
+              .set({ ...patch, updatedAt: sql`now()` })
+              .where(byId(id))
+              .returning(),
+          );
+          return row ?? null;
+        },
+
+        async remove(id: string): Promise<boolean> {
+          const deleted = await db
+            .delete(medications)
+            .where(byId(id))
+            .returning({ id: medications.id });
+          return deleted.length > 0;
+        },
+      };
+    },
+
+    /**
+     * RxNorm details of a product anyone has saved, to skip an RxNav call. Product
+     * columns only: never notes, dates, copays or who saved it.
+     */
+    async productByRxcui(rxcui: string): Promise<SavedProduct | null> {
+      const [row] = await db
+        .select({
+          rxcui: medications.rxcui,
+          tty: medications.tty,
+          name: medications.name,
+          strength: medications.strength,
+          doseForm: medications.doseForm,
+          brandName: medications.brandName,
+          ingredients: medications.ingredients,
+        })
+        .from(medications)
+        .where(eq(medications.rxcui, rxcui))
+        .limit(1);
+      return row ?? null;
+    },
+
+    /**
+     * Every user's active medications. Only the weekly digest runner uses this,
+     * until per-user-digest builds one digest per user.
+     */
+    listAllActive(): Promise<Medication[]> {
       return db
         .select()
         .from(medications)
-        .orderBy(sql`${medications.stoppedOn} is null desc`, desc(medications.createdAt));
-    },
-
-    async get(id: string): Promise<Medication | null> {
-      const [row] = await db.select().from(medications).where(eq(medications.id, id));
-      return row ?? null;
-    },
-
-    async create(input: NewMedication): Promise<Medication> {
-      const [row] = await mapDuplicate(db.insert(medications).values(input).returning());
-      return row;
-    },
-
-    async update(id: string, patch: MedicationPatch): Promise<Medication | null> {
-      const [row] = await mapDuplicate(
-        db
-          .update(medications)
-          // Database clock, like the defaultNow() on insert.
-          .set({ ...patch, updatedAt: sql`now()` })
-          .where(eq(medications.id, id))
-          .returning(),
-      );
-      return row ?? null;
-    },
-
-    async remove(id: string): Promise<boolean> {
-      const deleted = await db
-        .delete(medications)
-        .where(eq(medications.id, id))
-        .returning({ id: medications.id });
-      return deleted.length > 0;
+        .where(isNull(medications.stoppedOn))
+        .orderBy(desc(medications.createdAt));
     },
   };
 }
 
 export type MedicationsRepository = ReturnType<typeof createMedicationsRepository>;
+/** One user's list, as the request path sees it. */
+export type UserMedications = ReturnType<MedicationsRepository['forUser']>;

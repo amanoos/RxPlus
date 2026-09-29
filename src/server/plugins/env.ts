@@ -1,6 +1,6 @@
 import { defineNitroPlugin } from 'nitropack/runtime';
 
-import { env, EnvError } from '../utils/env';
+import { env, EnvError, ignoredSettings } from '../utils/env';
 
 // Validate configuration once at server startup and fail fast on bad config.
 // Skipped while prerendering during `npm run build`, where runtime config is absent.
@@ -8,6 +8,7 @@ export default defineNitroPlugin(() => {
   if (import.meta.prerender) return;
   try {
     env();
+    for (const notice of ignoredSettings(process.env)) console.warn(`[rxplus] ${notice}`);
   } catch (error) {
     if (!(error instanceof EnvError)) throw error;
     console.error(`\n[rxplus] ${error.message}\n\nSee .env.example for the expected variables.\n`);

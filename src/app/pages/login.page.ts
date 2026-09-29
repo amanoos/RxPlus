@@ -27,6 +27,17 @@ export const routeMeta: RouteMeta = { title: 'Sign in · RxPlus' };
         aria-labelledby="login-title"
       >
         <h1 id="login-title" class="text-2xl font-semibold">RxPlus</h1>
+        <label for="username" class="text-sm font-medium">Username</label>
+        <input
+          pInputText
+          id="username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          class="w-full"
+        />
         <label for="password" class="text-sm font-medium">Password</label>
         <input
           pInputText
@@ -57,14 +68,14 @@ export default class LoginPage {
   readonly error = this.store.selectSignal(selectAuthError);
   readonly pending = this.store.selectSignal(selectAuthPending);
   readonly form = inject(NonNullableFormBuilder).group({
+    username: ['', Validators.required],
     password: ['', Validators.required],
   });
 
   submit(): void {
     if (this.form.invalid) return;
     const redirectTo = safeNext(this.route.snapshot.queryParamMap.get('next'));
-    this.store.dispatch(
-      AuthActions.login({ password: this.form.getRawValue().password, redirectTo }),
-    );
+    const { username, password } = this.form.getRawValue();
+    this.store.dispatch(AuthActions.login({ username, password, redirectTo }));
   }
 }

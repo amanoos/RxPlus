@@ -16,7 +16,7 @@ import {
   type RxNavClient,
   type RxProductDetails,
 } from '../rxnorm';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -61,22 +61,24 @@ describe('drug-info API (integration)', () => {
   };
   const medline = { drugPage: vi.fn<MedlinePlusClient['drugPage']>() };
   let handle: (req: Request) => Promise<Response>;
+  let users: TestUsers;
   const get = (path: string) => handle(new Request(`http://localhost${path}`));
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnav as unknown as RxNavClient);
     useOpenFdaClient(openFda as unknown as OpenFdaClient);
     useMedlinePlusClient(medline);
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/drugs/:rxcui', factsRoute)
-          .get('/api/drugs/:rxcui/reported-reactions', reactionsRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter()
+            .get('/api/drugs/:rxcui', factsRoute)
+            .get('/api/drugs/:rxcui/reported-reactions', reactionsRoute),
+        ),
     );
   });
   beforeEach(async () => {
@@ -122,6 +124,7 @@ describe('drug-info API (integration)', () => {
         : null,
     );
     await db.execute(sql`truncate medications`);
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useRxNavClient(undefined);
@@ -164,7 +167,9 @@ describe('drug-info API (integration)', () => {
   });
 
   it('uses a saved medication without calling RxNav for the product', async () => {
-    await db.insert(medications).values({ ...zestoretic, notes: null, startedOn: null });
+    await db
+      .insert(medications)
+      .values({ userId: users.alice.id, ...zestoretic, notes: null, startedOn: null });
     rxnav.product.mockRejectedValue(new RxNavUnavailableError('slow'));
     expect((await get('/api/drugs/197885')).status).toBe(200);
   });

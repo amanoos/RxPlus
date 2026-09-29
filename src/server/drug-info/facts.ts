@@ -50,7 +50,7 @@ export interface ReportedReactionsResponse {
 }
 
 interface Deps {
-  medications: MedicationsRepository;
+  medications: Pick<MedicationsRepository, 'productByRxcui'>;
   rxnav: RxNavClient;
   openFda: OpenFdaClient;
   medlinePlus: MedlinePlusClient;
@@ -61,7 +61,7 @@ const union = (lists: string[][]) => [...new Set(lists.flat())].sort((a, b) => a
 export function createDrugFactsService({ medications, rxnav, openFda, medlinePlus }: Deps) {
   /** Saved medications already hold RxNorm details; others are resolved via RxNav. */
   async function product(rxcui: string): Promise<Product> {
-    const saved = (await medications.list()).find((m) => m.rxcui === rxcui);
+    const saved = await medications.productByRxcui(rxcui);
     if (saved) return saved;
     let found: RxProductDetails | null;
     try {

@@ -25,9 +25,9 @@ export const authGuard: CanActivateFn = (_route, state) => {
     switchMap((status) =>
       status === 'authenticated'
         ? of(true)
-        : api.isAuthenticated().pipe(
-            tap((authenticated) => store.dispatch(AuthActions.sessionChecked({ authenticated }))),
-            map((authenticated) => authenticated || toLogin()),
+        : api.currentUser().pipe(
+            tap((user) => store.dispatch(AuthActions.sessionChecked({ user }))),
+            map((user) => !!user || toLogin()),
           ),
     ),
   );

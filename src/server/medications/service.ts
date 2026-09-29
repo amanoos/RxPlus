@@ -8,7 +8,7 @@ import {
   createMedicationsRepository,
   DuplicateActiveMedicationError,
   type Medication,
-  type MedicationsRepository,
+  type UserMedications,
 } from './repository';
 
 const notes = z
@@ -63,7 +63,8 @@ function toHttpError(error: unknown): unknown {
   return rxnavHttpError(error);
 }
 
-export function createMedicationsService(repo: MedicationsRepository, rxnavClient: RxNavClient) {
+/** One user's medications: `repo` is already scoped with forUser. */
+export function createMedicationsService(repo: UserMedications, rxnavClient: RxNavClient) {
   return {
     list: () => repo.list(),
 
@@ -130,7 +131,7 @@ export function createMedicationsService(repo: MedicationsRepository, rxnavClien
   };
 }
 
-/** Service wired to the app database and RxNav client. */
-export function medicationsService() {
-  return createMedicationsService(createMedicationsRepository(db()), rxnav());
+/** The signed-in user's medications, wired to the app database and RxNav client. */
+export function medicationsService(userId: string) {
+  return createMedicationsService(createMedicationsRepository(db()).forUser(userId), rxnav());
 }

@@ -9,14 +9,14 @@ import { initialAuthState } from '../auth/auth.reducer';
 import { AppShellComponent, NAV_ITEMS } from './app-shell.component';
 
 describe('AppShellComponent', () => {
-  const setup = async (unread: number | null = null) => {
+  const setup = async (unread: number | null = null, auth = initialAuthState) => {
     await TestBed.configureTestingModule({
       imports: [AppShellComponent],
       providers: [
         providePrimeNG(),
         provideRouter([]),
         provideMockStore({
-          initialState: { auth: initialAuthState, digest: { ...initialDigestState, unread } },
+          initialState: { auth, digest: { ...initialDigestState, unread } },
         }),
       ],
     }).compileComponents();
@@ -79,5 +79,26 @@ describe('AppShellComponent', () => {
     const { el } = await setup();
     expect(el.querySelector('main#content')).not.toBeNull();
     expect(el.querySelector('a[href="#content"]')?.textContent).toContain('Skip to content');
+  });
+
+  it('shows who is signed in, in the top bar and in the drawer', async () => {
+    const alice = { id: 'u1', username: 'alice' };
+    const { el, fixture } = await setup(null, {
+      ...initialAuthState,
+      status: 'authenticated',
+      user: alice,
+    });
+    expect(el.querySelector('[data-testid="signed-in-user"]')?.textContent).toContain('alice');
+
+    fixture.componentInstance.drawerOpen.set(true);
+    await fixture.whenStable();
+    expect(document.body.querySelector('[data-testid="drawer-user"]')?.textContent).toContain(
+      'Signed in as alice',
+    );
+  });
+
+  it('shows no name before the session is known', async () => {
+    const { el } = await setup();
+    expect(el.querySelector('[data-testid="signed-in-user"]')).toBeNull();
   });
 });

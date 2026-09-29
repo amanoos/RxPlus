@@ -1,5 +1,4 @@
 // @vitest-environment node
-import { hashPassword } from '../utils/password';
 
 /** Loads the provider factory with a fresh module registry, so env() is parsed anew. */
 async function choiceFor(overrides: Record<string, string | undefined>) {
@@ -7,7 +6,6 @@ async function choiceFor(overrides: Record<string, string | undefined>) {
   const saved = { ...process.env };
   Object.assign(process.env, {
     DATABASE_URL: 'postgres://x@localhost/x',
-    APP_PASSWORD_HASH: await hashPassword('irrelevant-password'),
     SESSION_SECRET: 's'.repeat(32),
   });
   for (const [key, value] of Object.entries(overrides)) {
@@ -104,6 +102,20 @@ describe('takeawayProvider', () => {
       ANTHROPIC_API_KEY: 'test-key',
       JEV_API_KEY: 'jev-key',
     });
+
+  it('labels who was studied with Jev for either takeaway model, only when its key is set', async () => {
+    const local = await choiceFor({ OLLAMA_MODEL: 'qwen2.5:7b', JEV_API_KEY: 'jev-key' });
+    expect(local.provider?.classifySubjects).toBeTypeOf('function');
+    expect(local.provider).toMatchObject({ name: 'ollama', model: 'qwen2.5:7b' });
+    const claude = await choiceFor({
+      TAKEAWAY_PROVIDER: 'claude',
+      ANTHROPIC_API_KEY: 'test-key',
+      JEV_API_KEY: 'jev-key',
+    });
+    expect(claude.provider?.classifySubjects).toBeTypeOf('function');
+    const off = await choiceFor({ OLLAMA_MODEL: 'qwen2.5:7b' });
+    expect(off.provider?.classifySubjects).toBeUndefined();
+  });
     expect(claude.provider?.checkSupport).toBeUndefined();
   });
 

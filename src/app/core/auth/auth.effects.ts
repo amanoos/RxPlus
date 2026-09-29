@@ -2,14 +2,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, EMPTY, exhaustMap, map, of, tap } from 'rxjs';
+import { catchError, EMPTY, exhaustMap, map, of, switchMap, tap } from 'rxjs';
 
 import { AuthApi } from './auth-api.service';
 import { AuthActions } from './auth.actions';
 
 function loginErrorMessage(error: unknown): string {
   const status = error instanceof HttpErrorResponse ? error.status : 0;
-  if (status === 401) return 'Incorrect password.';
+  if (status === 401) return 'Invalid username or password.';
   if (status === 429) return 'Too many attempts. Try again in 15 minutes.';
   return 'Sign-in failed. Please try again.';
 }
@@ -18,9 +18,15 @@ export const login = createEffect(
   (actions$ = inject(Actions), api = inject(AuthApi)) =>
     actions$.pipe(
       ofType(AuthActions.login),
-      exhaustMap(({ password, redirectTo }) =>
-        api.login(password).pipe(
-          map(() => AuthActions.loginSuccess({ redirectTo })),
+      exhaustMap(({ username, password, redirectTo }) =>
+        api.login(username, password).pipe(
+          // The new session's user, for the top bar.
+          switchMap(() => api.currentUser()),
+          map((user) =>
+            user
+              ? AuthActions.loginSuccess({ user, redirectTo })
+              : AuthActions.loginFailure({ error: loginErrorMessage(null) }),
+          ),
           catchError((error: unknown) =>
             of(AuthActions.loginFailure({ error: loginErrorMessage(error) })),
           ),

@@ -6,11 +6,11 @@ import { createApp, createRouter, toWebHandler } from 'h3';
 import { useCostPlusClient, CostPlusUnavailableError, type CostPlusClient } from '../costplus';
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
-import { createMedicationsRepository } from '../medications/repository';
+import { createMedicationsRepository, type MedicationPatch } from '../medications/repository';
 import costsRoute from '../routes/api/costs.get';
 import pricesRoute from '../routes/api/drugs/[rxcui]/prices.get';
 import { useRxNavClient, type RxNavClient, type RxProductDetails } from '../rxnorm';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, TEST_USER_HEADER, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -52,7 +52,7 @@ const FETCHED = Date.parse('2026-09-28T13:14:00Z');
 
 describe('pricing API (integration)', () => {
   const { db, pool } = createDb(TEST_DB);
-  const meds = createMedicationsRepository(db);
+  const allMeds = createMedicationsRepository(db);
   const rxnav = {
     product: vi.fn(async (rxcui: string) => PRODUCTS[rxcui] ?? null),
     ndcs: vi.fn(async (rxcui: string) => NDCS[rxcui] ?? []),
@@ -64,8 +64,17 @@ describe('pricing API (integration)', () => {
     })),
   };
   let handle: (req: Request) => Promise<Response>;
-  const get = (path: string) => handle(new Request(`http://localhost${path}`));
-  const add = async (rxcui: string, changes: Parameters<typeof meds.update>[1] = {}) => {
+  let users: TestUsers;
+  /** Runs as Alice unless another test user is named. */
+  const get = (path: string, as: keyof TestUsers = 'alice') =>
+    handle(new Request(`http://localhost${path}`, { headers: { [TEST_USER_HEADER]: as } }));
+  /** Adds a product to a user's list (Alice's unless named), then applies `changes`. */
+  const add = async (
+    rxcui: string,
+    changes: MedicationPatch = {},
+    as: keyof TestUsers = 'alice',
+  ) => {
+    const meds = allMeds.forUser(users[as].id);
     const p = PRODUCTS[rxcui];
     const med = await meds.create({
       rxcui,
@@ -83,20 +92,22 @@ describe('pricing API (integration)', () => {
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnav as unknown as RxNavClient);
     useCostPlusClient(costPlus);
     handle = toWebHandler(
-      createApp().use(
-        createRouter().get('/api/drugs/:rxcui/prices', pricesRoute).get('/api/costs', costsRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter().get('/api/drugs/:rxcui/prices', pricesRoute).get('/api/costs', costsRoute),
+        ),
     );
   });
   beforeEach(async () => {
     vi.clearAllMocks();
     await db.execute(sql`truncate medications`);
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useRxNavClient(undefined);
@@ -177,6 +188,29 @@ describe('pricing API (integration)', () => {
       missingPrice: 1,
       missingCopay: 0,
     });
+  });
+
+  it("prices only the signed-in user's list, with their own copay", async () => {
+    await add('314076', { copayCents: 1000, copayUnits: 90 });
+    await add('617310', {}, 'bob');
+    await add('314076', { copayCents: 200, copayUnits: 30 }, 'bob');
+
+    const alice = await (await get('/api/costs')).json();
+    const bob = await (await get('/api/costs', 'bob')).json();
+    expect(alice.rows.map((r: { name: string }) => r.name)).toEqual([
+      'lisinopril 10 MG Oral Tablet',
+    ]);
+    expect(bob.rows.map((r: { name: string }) => r.name).sort()).toEqual([
+      'atorvastatin 20 MG Oral Tablet',
+      'lisinopril 10 MG Oral Tablet',
+    ]);
+    expect(alice.totals.insuredCents).toBe(333);
+    expect(bob.totals.medications).toBe(2);
+
+    const onBobsList = await (await get('/api/drugs/314076/prices', 'bob')).json();
+    expect(onBobsList.medication).toMatchObject({ insuredCents: 200 });
+    const notOnAlices = await (await get('/api/drugs/617310/prices')).json();
+    expect(notOnAlices.medication).toBeNull();
   });
 
   it('marks a row unavailable when its lookup fails, and keeps the others', async () => {

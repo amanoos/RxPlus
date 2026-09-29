@@ -9,7 +9,8 @@ import { authGuard } from './auth.guard';
 import { initialAuthState } from './auth.reducer';
 
 describe('authGuard', () => {
-  const api = { isAuthenticated: vi.fn() };
+  const api = { currentUser: vi.fn() };
+  const alice = { id: 'u1', username: 'alice' };
   let store: MockStore;
 
   const runGuard = async (url: string) => {
@@ -35,30 +36,26 @@ describe('authGuard', () => {
   it('allows navigation without a request when the store is already authenticated', async () => {
     store.setState({ auth: { ...initialAuthState, status: 'authenticated' } });
     expect(await runGuard('/digest')).toBe(true);
-    expect(api.isAuthenticated).not.toHaveBeenCalled();
+    expect(api.currentUser).not.toHaveBeenCalled();
   });
 
   it('checks the session and allows a signed-in user', async () => {
-    api.isAuthenticated.mockReturnValue(of(true));
+    api.currentUser.mockReturnValue(of(alice));
     expect(await runGuard('/digest')).toBe(true);
-    expect(store.dispatch).toHaveBeenCalledWith(
-      AuthActions.sessionChecked({ authenticated: true }),
-    );
+    expect(store.dispatch).toHaveBeenCalledWith(AuthActions.sessionChecked({ user: alice }));
   });
 
   it('redirects a signed-out user to /login with the original URL', async () => {
-    api.isAuthenticated.mockReturnValue(of(false));
+    api.currentUser.mockReturnValue(of(null));
     const result = await runGuard('/medications?tab=all');
     const router = TestBed.inject(Router);
     expect(result).toBeInstanceOf(UrlTree);
     expect(router.serializeUrl(result as UrlTree)).toBe('/login?next=%2Fmedications%3Ftab%3Dall');
-    expect(store.dispatch).toHaveBeenCalledWith(
-      AuthActions.sessionChecked({ authenticated: false }),
-    );
+    expect(store.dispatch).toHaveBeenCalledWith(AuthActions.sessionChecked({ user: null }));
   });
 
   it('omits next for the home page', async () => {
-    api.isAuthenticated.mockReturnValue(of(false));
+    api.currentUser.mockReturnValue(of(null));
     const result = await runGuard('/');
     expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/login');
   });

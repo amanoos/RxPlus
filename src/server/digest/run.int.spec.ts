@@ -7,6 +7,7 @@ import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
 import type { TakeawayProvider } from '../literature/takeaways';
 import { createMedicationsRepository } from '../medications/repository';
+import { seedTestUsers } from '../tests/test-users';
 import type { OpenFdaClient, SummaryLabel } from '../openfda/client';
 import type { PubMedClient } from '../pubmed/client';
 import { createDigestRepository } from './repository';
@@ -56,14 +57,18 @@ describe('digest run (integration)', () => {
   const { db, pool } = createDb(url);
   const repo = createDigestRepository(db);
   const alternatives = createAlternativesRepository(db);
-  const medications = createMedicationsRepository(db);
+  const allMedications = createMedicationsRepository(db);
+  // What the runner reads, as wired in digest/service.ts.
+  const medications = { list: () => allMedications.listAllActive() };
 
   beforeAll(() => runMigrations(url, 'drizzle'));
   beforeEach(async () => {
     await db.execute(
       sql`truncate digests, digest_items, digest_label_versions, alternative_lists, alternative_drugs, medications`,
     );
-    const lisinopril = await medications.create({
+    const { alice } = await seedTestUsers(db);
+    const alicesList = allMedications.forUser(alice.id);
+    const lisinopril = await alicesList.create({
       rxcui: '314076',
       tty: 'SCD',
       name: 'lisinopril 10 MG Oral Tablet',
@@ -74,11 +79,11 @@ describe('digest run (integration)', () => {
       notes: null,
       startedOn: null,
     });
-    await medications.update(lisinopril.id, {
+    await alicesList.update(lisinopril.id, {
       takenForId: 'D006973',
       takenForName: 'Hypertension',
     });
-    const stopped = await medications.create({
+    const stopped = await alicesList.create({
       rxcui: '861007',
       tty: 'SCD',
       name: 'metformin 500 MG Oral Tablet',
@@ -89,7 +94,7 @@ describe('digest run (integration)', () => {
       notes: null,
       startedOn: null,
     });
-    await medications.update(stopped.id, { stoppedOn: '2026-01-01' });
+    await alicesList.update(stopped.id, { stoppedOn: '2026-01-01' });
   });
   // The e2e server shares this database: leave no running digest for its startup to resume.
   afterAll(async () => {

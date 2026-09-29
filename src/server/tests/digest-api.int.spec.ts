@@ -16,7 +16,7 @@ import readRoute from '../routes/api/digests/[id]/read.post';
 import listRoute from '../routes/api/digests/index.get';
 import runRoute from '../routes/api/digests/run.post';
 import unreadRoute from '../routes/api/digests/unread-count.get';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, TEST_USER_HEADER, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -50,12 +50,13 @@ describe('digest API (integration)', () => {
   };
   const openFda = { summaryLabel: vi.fn(async () => null) };
   let handle: (req: Request) => Promise<Response>;
-  const call = (method: string, path: string) =>
-    handle(new Request(`http://localhost${path}`, { method }));
+  let users: TestUsers;
+  /** Runs as Alice unless another test user is named. */
+  const call = (method: string, path: string, as: keyof TestUsers = 'alice') =>
+    handle(new Request(`http://localhost${path}`, { method, headers: { [TEST_USER_HEADER]: as } }));
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     usePubMedClient(pubmed);
@@ -64,18 +65,21 @@ describe('digest API (integration)', () => {
     useTakeawayProvider({ unavailable: 'No local model configured (OLLAMA_MODEL).' });
     resetDigestRunner();
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/digests', listRoute)
-          .get('/api/digests/unread-count', unreadRoute)
-          .post('/api/digests/run', runRoute)
-          .post('/api/digests/:id/read', readRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter()
+            .get('/api/digests', listRoute)
+            .get('/api/digests/unread-count', unreadRoute)
+            .post('/api/digests/run', runRoute)
+            .post('/api/digests/:id/read', readRoute),
+        ),
     );
   });
   beforeEach(async () => {
     gate = null;
     await db.execute(sql`truncate digests, digest_items, digest_label_versions, medications`);
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     usePubMedClient(undefined);
@@ -90,17 +94,19 @@ describe('digest API (integration)', () => {
   });
 
   const addLisinopril = () =>
-    createMedicationsRepository(db).create({
-      rxcui: '314076',
-      tty: 'SCD',
-      name: 'lisinopril 10 MG Oral Tablet',
-      strength: '10 MG',
-      doseForm: 'Oral Tablet',
-      brandName: null,
-      ingredients: [{ rxcui: '29046', name: 'lisinopril' }],
-      notes: null,
-      startedOn: null,
-    });
+    createMedicationsRepository(db)
+      .forUser(users.alice.id)
+      .create({
+        rxcui: '314076',
+        tty: 'SCD',
+        name: 'lisinopril 10 MG Oral Tablet',
+        strength: '10 MG',
+        doseForm: 'Oral Tablet',
+        brandName: null,
+        ingredients: [{ rxcui: '29046', name: 'lisinopril' }],
+        notes: null,
+        startedOn: null,
+      });
 
   it('lists nothing before the first run, with the next scheduled time', async () => {
     const res = await call('GET', '/api/digests');
@@ -130,6 +136,9 @@ describe('digest API (integration)', () => {
     const after = await (await call('GET', '/api/digests')).json();
     expect(after.running).toBeNull();
     expect(after.hasActiveMedications).toBe(true);
+    // The medications are Alice's: Bob has none of his own.
+    const bobs = await (await call('GET', '/api/digests', 'bob')).json();
+    expect(bobs.hasActiveMedications).toBe(false);
     expect(after.digests).toHaveLength(1);
     expect(after.digests[0]).toMatchObject({
       id: running.id,

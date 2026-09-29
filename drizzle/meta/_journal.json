@@ -50,6 +50,20 @@
       "when": 1790590066918,
       "tag": "0006_medication_costs",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790652075534,
+      "tag": "0007_create_users",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790675140631,
+      "tag": "0008_medications_per_user",
+      "breakpoints": true
     }
   ]
 }

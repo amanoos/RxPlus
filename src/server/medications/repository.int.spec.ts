@@ -3,6 +3,8 @@ import { sql } from 'drizzle-orm';
 
 import { createDb } from '../db/client';
 import { runMigrations } from '../db/migrate';
+import { createUsersRepository } from '../accounts/repository';
+import { seedTestUsers, type TestUsers } from '../tests/test-users';
 import {
   createMedicationsRepository,
   DuplicateActiveMedicationError,
@@ -34,13 +36,18 @@ const zestril: NewMedication = {
 
 describe('medications repository (integration)', () => {
   const { db, pool } = createDb(url);
-  const repo = createMedicationsRepository(db);
+  const all = createMedicationsRepository(db);
+  let users: TestUsers;
+  // Alice's list, used by the single-user tests below.
+  let repo: ReturnType<typeof all.forUser>;
 
   beforeAll(async () => {
     await runMigrations(url, 'drizzle');
   });
   beforeEach(async () => {
     await db.execute(sql`truncate table medications`);
+    users = await seedTestUsers(db);
+    repo = all.forUser(users.alice.id);
   });
   afterAll(() => pool.end());
 
@@ -102,5 +109,63 @@ describe('medications repository (integration)', () => {
     const created = await repo.create(lisinopril);
     expect(await repo.remove(created.id)).toBe(true);
     expect(await repo.get(created.id)).toBeNull();
+  });
+
+  describe('two users', () => {
+    it('keeps each list to its owner', async () => {
+      const bob = all.forUser(users.bob.id);
+      const mine = await repo.create(lisinopril);
+      expect(mine.userId).toBe(users.alice.id);
+      expect(await bob.list()).toEqual([]);
+      expect((await repo.list()).map((m) => m.id)).toEqual([mine.id]);
+    });
+
+    it("never reads, changes or deletes another user's row", async () => {
+      const bob = all.forUser(users.bob.id);
+      const mine = await repo.create(lisinopril);
+      expect(await bob.get(mine.id)).toBeNull();
+      expect(await bob.update(mine.id, { notes: 'hijacked' })).toBeNull();
+      expect(await bob.remove(mine.id)).toBe(false);
+      expect(await repo.get(mine.id)).toMatchObject({ notes: 'morning' });
+    });
+
+    it('lets both have the same product active, but neither twice', async () => {
+      const bob = all.forUser(users.bob.id);
+      await repo.create(lisinopril);
+      await expect(bob.create(lisinopril)).resolves.toMatchObject({ userId: users.bob.id });
+      await expect(bob.create(lisinopril)).rejects.toBeInstanceOf(DuplicateActiveMedicationError);
+    });
+
+    it("deletes a user's medications with the account, leaving others", async () => {
+      const bob = all.forUser(users.bob.id);
+      await repo.create(lisinopril);
+      await bob.create(zestril);
+      await createUsersRepository(db).remove('alice');
+      expect((await all.listAllActive()).map((m) => m.userId)).toEqual([users.bob.id]);
+    });
+
+    it('looks a saved product up by RXCUI without any user data', async () => {
+      await repo.create({ ...lisinopril, notes: 'private note' });
+      const found = await all.productByRxcui('314076');
+      expect(found).toEqual({
+        rxcui: '314076',
+        tty: 'SCD',
+        name: 'lisinopril 10 MG Oral Tablet',
+        strength: '10 MG',
+        doseForm: 'Oral Tablet',
+        brandName: null,
+        ingredients: [{ rxcui: '29046', name: 'lisinopril' }],
+      });
+      expect(await all.productByRxcui('999')).toBeNull();
+    });
+
+    it("lists every user's active medications for the digest runner", async () => {
+      const bob = all.forUser(users.bob.id);
+      const a = await repo.create(lisinopril);
+      const b = await bob.create(zestril);
+      const stopped = await bob.create({ ...lisinopril, rxcui: '197884', name: 'x' });
+      await bob.update(stopped.id, { stoppedOn: '2026-05-01' });
+      expect((await all.listAllActive()).map((m) => m.id).sort()).toEqual([a.id, b.id].sort());
+    });
   });
 });

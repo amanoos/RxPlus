@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 import { db } from '../db/client';
 import { drugFactsService } from '../drug-info/facts';
-import { createMedicationsRepository, type MedicationsRepository } from '../medications/repository';
+import { createMedicationsRepository, type UserMedications } from '../medications/repository';
 import { openFda } from '../openfda';
 import { rxnav, type RxNavClient } from '../rxnorm';
 import type { RxClassRef } from '../rxnorm/client';
@@ -62,7 +62,8 @@ export interface AlternativesResponse {
 interface Deps {
   repo: AlternativesRepository;
   builder: Pick<AlternativesBuilder, 'ensure'>;
-  medications: Pick<MedicationsRepository, 'list'>;
+  /** The signed-in user's list: "taken for" comes from their saved medication. */
+  medications: Pick<UserMedications, 'list'>;
   rxnav: Pick<RxNavClient, 'drugFacts' | 'epcClasses'>;
   /** The product's ingredients (saved medications skip RxNav). */
   ingredients: (rxcui: string) => Promise<{ rxcui: string; name: string }[]>;
@@ -181,13 +182,13 @@ export function sharedAlternativesBuilder(): AlternativesBuilder {
   return sharedBuilder;
 }
 
-/** Service wired to the app database and upstream clients. */
-export function alternativesService() {
+/** Service for the signed-in user, wired to the app database and upstream clients. */
+export function alternativesService(userId: string) {
   const facts = drugFactsService();
   return createAlternativesService({
     repo: createAlternativesRepository(db()),
     builder: sharedAlternativesBuilder(),
-    medications: createMedicationsRepository(db()),
+    medications: createMedicationsRepository(db()).forUser(userId),
     rxnav: rxnav(),
     ingredients: async (rxcui) => (await facts.product(rxcui)).ingredients,
   });

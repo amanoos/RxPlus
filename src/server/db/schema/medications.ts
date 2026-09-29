@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   date,
+  index,
   integer,
   jsonb,
   numeric,
@@ -11,6 +12,8 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 
+import { users } from './users';
+
 export interface Ingredient {
   rxcui: string;
   name: string;
@@ -20,6 +23,10 @@ export const medications = pgTable(
   'medications',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    /** Whose list this is (SPEC-per-user-medications.md). */
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
     /** RxNorm product (SCD generic or SBD branded). */
     rxcui: text('rxcui').notNull(),
     tty: text('tty', { enum: ['SCD', 'SBD'] }).notNull(),
@@ -47,10 +54,11 @@ export const medications = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
-    // A product can be on the active list only once.
+    // A product can be on one user's active list only once.
     uniqueIndex('medications_active_rxcui_idx')
-      .on(t.rxcui)
+      .on(t.userId, t.rxcui)
       .where(sql`${t.stoppedOn} is null`),
+    index('medications_user_id_idx').on(t.userId),
   ],
 );
 

@@ -14,7 +14,7 @@ import listRoute from '../routes/api/drugs/[rxcui]/alternatives/index.get';
 import refreshRoute from '../routes/api/drugs/[rxcui]/alternatives/refresh.post';
 import { useRxNavClient, type RxNavClient, type RxProductDetails } from '../rxnorm';
 import type { RxConcept } from '../rxnorm/client';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, TEST_USER_HEADER, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -77,25 +77,28 @@ describe('alternatives API (integration)', () => {
     indications: vi.fn(async () => []),
   };
   let handle: (req: Request) => Promise<Response>;
-  const call = (method: string, path: string) =>
-    handle(new Request(`http://localhost${path}`, { method }));
+  let users: TestUsers;
+  /** Runs as Alice unless another test user is named. */
+  const call = (method: string, path: string, as: keyof TestUsers = 'alice') =>
+    handle(new Request(`http://localhost${path}`, { method, headers: { [TEST_USER_HEADER]: as } }));
   const names = (drugs: { name: string }[]) => drugs.map((d) => d.name);
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useRxNavClient(rxnav as unknown as RxNavClient);
     useOpenFdaClient(openFda as unknown as OpenFdaClient);
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/drugs/:rxcui/alternatives', listRoute)
-          .post('/api/drugs/:rxcui/alternatives/refresh', refreshRoute)
-          .post('/api/alternatives/:ingredient/hidden/:rxcui', hideRoute)
-          .delete('/api/alternatives/:ingredient/hidden/:rxcui', unhideRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter()
+            .get('/api/drugs/:rxcui/alternatives', listRoute)
+            .post('/api/drugs/:rxcui/alternatives/refresh', refreshRoute)
+            .post('/api/alternatives/:ingredient/hidden/:rxcui', hideRoute)
+            .delete('/api/alternatives/:ingredient/hidden/:rxcui', unhideRoute),
+        ),
     );
   });
   beforeEach(async () => {
@@ -103,6 +106,7 @@ describe('alternatives API (integration)', () => {
     await db.execute(
       sql`truncate alternative_lists, alternative_drugs, alternative_hidden, medications`,
     );
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useRxNavClient(undefined);
@@ -164,6 +168,7 @@ describe('alternatives API (integration)', () => {
     const [med] = await db
       .insert(medications)
       .values({
+        userId: users.alice.id,
         ...LISINOPRIL,
         notes: null,
         startedOn: null,
@@ -177,6 +182,11 @@ describe('alternatives API (integration)', () => {
       conditionSource: 'medication',
       medicationId: med.id,
     });
+
+    // Bob hasn't saved lisinopril: Alice's "taken for" isn't his.
+    const bobs = await (await call('GET', '/api/drugs/314076/alternatives', 'bob')).json();
+    expect(bobs.conditionSource).not.toBe('medication');
+    expect(bobs.medicationId ?? null).toBeNull();
     await settleAlternativeJobs();
   });
 

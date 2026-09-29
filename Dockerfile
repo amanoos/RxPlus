@@ -16,7 +16,7 @@ ENV NODE_ENV=production \
     TZ=America/New_York
 WORKDIR /app
 COPY --from=build --chown=node:node /app/dist/analog ./dist/analog
-COPY --from=build --chown=node:node /app/dist/migrate.cjs /app/dist/ddi-import.cjs ./dist/
+COPY --from=build --chown=node:node /app/dist/migrate.cjs /app/dist/ddi-import.cjs /app/dist/user.cjs ./dist/
 COPY --from=build --chown=node:node /app/drizzle ./drizzle
 USER node
 EXPOSE 3000

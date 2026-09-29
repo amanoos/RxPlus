@@ -18,11 +18,11 @@ describe('AuthApi', () => {
   });
   afterEach(() => http.verify());
 
-  it('posts the password to /api/auth/login', async () => {
-    const result = firstValueFrom(api.login('pw'));
+  it('posts the username and password to /api/auth/login', async () => {
+    const result = firstValueFrom(api.login('alice', 'pw'));
     const req = http.expectOne('/api/auth/login');
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ password: 'pw' });
+    expect(req.request.body).toEqual({ username: 'alice', password: 'pw' });
     req.flush(null, { status: 204, statusText: 'No Content' });
     await expect(result).resolves.toBeNull();
   });
@@ -35,13 +35,14 @@ describe('AuthApi', () => {
     await expect(result).resolves.toBeNull();
   });
 
-  it('maps /api/auth/me to a boolean', async () => {
-    const yes = firstValueFrom(api.isAuthenticated());
-    http.expectOne('/api/auth/me').flush({ authenticated: true });
-    await expect(yes).resolves.toBe(true);
+  it('maps /api/auth/me to the user, or null when signed out', async () => {
+    const alice = { id: 'u1', username: 'alice' };
+    const yes = firstValueFrom(api.currentUser());
+    http.expectOne('/api/auth/me').flush({ authenticated: true, user: alice });
+    await expect(yes).resolves.toEqual(alice);
 
-    const no = firstValueFrom(api.isAuthenticated());
+    const no = firstValueFrom(api.currentUser());
     http.expectOne('/api/auth/me').flush(null, { status: 401, statusText: 'Unauthorized' });
-    await expect(no).resolves.toBe(false);
+    await expect(no).resolves.toBeNull();
   });
 });

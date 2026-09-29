@@ -19,7 +19,7 @@ import getRoute from '../routes/api/drugs/[rxcui]/summary.get';
 import postRoute from '../routes/api/drugs/[rxcui]/summary.post';
 import { useRxNavClient, type RxNavClient } from '../rxnorm';
 import { env } from '../utils/env';
-import { hashPassword } from '../utils/password';
+import { seedTestUsers, testUserMiddleware, type TestUsers } from './test-users';
 
 const TEST_DB =
   process.env['TEST_DATABASE_URL'] ?? 'postgres://rxplus:rxplus@localhost:5433/rxplus_test';
@@ -73,23 +73,25 @@ describe('drug summary API (integration)', () => {
     generate,
   });
   let handle: (req: Request) => Promise<Response>;
+  let users: TestUsers;
   const get = () => handle(new Request('http://localhost/api/drugs/314076/summary'));
   const post = () =>
     handle(new Request('http://localhost/api/drugs/314076/summary', { method: 'POST' }));
 
   beforeAll(async () => {
     process.env['DATABASE_URL'] = TEST_DB;
-    process.env['APP_PASSWORD_HASH'] = await hashPassword('irrelevant-password');
     process.env['SESSION_SECRET'] = 's'.repeat(32);
     await runMigrations(TEST_DB, 'drizzle');
     useOpenFdaClient(openFda as unknown as OpenFdaClient);
     useRxNavClient(rxnav as unknown as RxNavClient);
     handle = toWebHandler(
-      createApp().use(
-        createRouter()
-          .get('/api/drugs/:rxcui/summary', getRoute)
-          .post('/api/drugs/:rxcui/summary', postRoute),
-      ),
+      createApp()
+        .use(testUserMiddleware(() => users, 'alice'))
+        .use(
+          createRouter()
+            .get('/api/drugs/:rxcui/summary', getRoute)
+            .post('/api/drugs/:rxcui/summary', postRoute),
+        ),
     );
   });
   beforeEach(async () => {
@@ -106,6 +108,7 @@ describe('drug summary API (integration)', () => {
     });
     useSummaryProvider({ provider: provider() });
     await db.execute(sql`truncate drug_summaries, medications`);
+    users = await seedTestUsers(db);
   });
   afterAll(async () => {
     useOpenFdaClient(undefined);
@@ -251,6 +254,7 @@ describe('drug summary API (integration)', () => {
 
   it('uses a saved medication for the drug names without calling RxNav', async () => {
     await db.insert(medications).values({
+      userId: users.alice.id,
       rxcui: '314076',
       tty: 'SCD',
       name: 'lisinopril 10 MG Oral Tablet',

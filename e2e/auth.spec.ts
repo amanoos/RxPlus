@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { E2E_PASSWORD, signIn } from './helpers';
+import { E2E_PASSWORD, E2E_USERNAME, signIn } from './helpers';
 
 test('redirects to login when not signed in', async ({ page }) => {
   await page.goto('/medications');
@@ -8,15 +8,19 @@ test('redirects to login when not signed in', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'RxPlus' })).toBeVisible();
 });
 
-test('rejects a wrong password, then signs in and survives a hard refresh', async ({ page }) => {
+test('rejects a wrong password, then signs in by username and survives a hard refresh', async ({
+  page,
+}) => {
   await page.goto('/medications');
 
   await signIn(page, 'not-the-password');
-  await expect(page.getByText('Incorrect password.')).toBeVisible();
+  await expect(page.getByText('Invalid username or password.')).toBeVisible();
   await expect(page).toHaveURL(/\/login/);
 
-  await signIn(page, E2E_PASSWORD);
+  // Usernames are case-insensitive.
+  await signIn(page, E2E_PASSWORD, E2E_USERNAME.toUpperCase());
   await expect(page).toHaveURL('/medications');
+  await expect(page.getByTestId('signed-in-user')).toHaveText(`Signed in as ${E2E_USERNAME}`);
   await expect(page.getByRole('heading', { name: 'Medications', exact: true })).toBeVisible();
 
   await page.reload();

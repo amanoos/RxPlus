@@ -27,15 +27,20 @@ describe('LoginPage', () => {
     return { fixture, store, el: fixture.nativeElement as HTMLElement };
   };
 
+  const type = (el: HTMLElement, id: string, value: string) => {
+    const input = el.querySelector<HTMLInputElement>(`input#${id}`);
+    if (!input) throw new Error(`${id} input not found`);
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+  };
   const submit = async (
     el: HTMLElement,
     fixture: { whenStable(): Promise<unknown> },
     password: string,
+    username = 'alice',
   ) => {
-    const input = el.querySelector<HTMLInputElement>('input#password');
-    if (!input) throw new Error('password input not found');
-    input.value = password;
-    input.dispatchEvent(new Event('input'));
+    type(el, 'username', username);
+    type(el, 'password', password);
     el.querySelector('form')?.dispatchEvent(new Event('submit'));
     await fixture.whenStable();
   };
@@ -44,7 +49,7 @@ describe('LoginPage', () => {
     const { fixture, store, el } = await setup('/digest');
     await submit(el, fixture, 'my-password');
     expect(store.dispatch).toHaveBeenCalledWith(
-      AuthActions.login({ password: 'my-password', redirectTo: '/digest' }),
+      AuthActions.login({ username: 'alice', password: 'my-password', redirectTo: '/digest' }),
     );
   });
 
@@ -52,18 +57,30 @@ describe('LoginPage', () => {
     const { fixture, store, el } = await setup('https://evil.example');
     await submit(el, fixture, 'my-password');
     expect(store.dispatch).toHaveBeenCalledWith(
-      AuthActions.login({ password: 'my-password', redirectTo: '/' }),
+      AuthActions.login({ username: 'alice', password: 'my-password', redirectTo: '/' }),
     );
   });
 
-  it('does not submit an empty password', async () => {
+  it('does not submit without a username or a password', async () => {
     const { fixture, store, el } = await setup(null);
     await submit(el, fixture, '');
+    await submit(el, fixture, 'my-password', '');
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
+  it('asks for the username with sign-in autocomplete hints', async () => {
+    const { el } = await setup(null);
+    expect(el.querySelector('input#username')?.getAttribute('autocomplete')).toBe('username');
+    expect(el.querySelector('input#password')?.getAttribute('autocomplete')).toBe(
+      'current-password',
+    );
+  });
+
   it('shows the error from the store', async () => {
-    const { el } = await setup(null, { ...initialAuthState, error: 'Incorrect password.' });
-    expect(el.textContent).toContain('Incorrect password.');
+    const { el } = await setup(null, {
+      ...initialAuthState,
+      error: 'Invalid username or password.',
+    });
+    expect(el.textContent).toContain('Invalid username or password.');
   });
 });
