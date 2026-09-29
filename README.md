@@ -39,7 +39,7 @@ Disk space: about 2 GB for the app, plus 5–10 GB per local AI model. Your own 
 ### 2. Download and configure
 
 ```bash
-git clone https://github.com/amanoos/my-tracker.git rxplus
+git clone https://github.com/amanoos/RxPlus.git rxplus
 cd rxplus
 cp .env.example .env
 ```
@@ -169,7 +169,7 @@ This also opens port 11434 to your network. Ollama has no authentication, so kee
 ### Set up
 
 ```bash
-git clone https://github.com/amanoos/my-tracker.git rxplus && cd rxplus
+git clone https://github.com/amanoos/RxPlus.git rxplus && cd rxplus
 npm ci
 cp .env.example .env     # fill in section 1 and 2 (see "Run the app"); DATABASE_URL points at the dev database
 npm run db:up            # dev PostgreSQL on localhost:${DB_DEV_PORT}

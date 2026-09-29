@@ -233,7 +233,7 @@ export default class LoginPage {
 
 ## Resolved Decisions (2026-09-26)
 
-1. **Git:** repository initialized locally; remote `origin` = `https://github.com/amanoos/my-tracker.git`.
+1. **Git:** repository initialized locally; remote `origin` = `https://github.com/amanoos/my-tracker.git` (renamed to `amanoos/RxPlus` and made public on 2026-09-29).
 2. **Home server:** Ubuntu on x86_64. Use standard `linux/amd64` Docker images and build on the server with `docker compose up -d --build`.
 3. **Access:** LAN only. `COOKIE_SECURE=false`, no TLS termination in this module.
 4. **Time zone:** `TZ=America/New_York` on both containers, for the digest schedule later.
