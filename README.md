@@ -1,47 +1,234 @@
 # RxPlus
 
-A personal, single-user medication watchlist. Built with [Analog](https://analogjs.org) (Angular + SSR), PrimeNG, Tailwind CSS, NgRx, Drizzle and PostgreSQL.
+A personal, single-user medication watchlist that runs on your own computer or home server. It keeps track of the prescriptions you take and their strengths, and shows:
 
-- What and why: [docs/intent/rx-tracker.md](docs/intent/rx-tracker.md)
-- Modules and build order: [CAPABILITY-MAP.md](CAPABILITY-MAP.md)
-- All modules built: [foundation](SPEC-foundation.md) ([tasks](tasks/foundation/todo.md)) · [medications](SPEC-medications.md) ([tasks](tasks/medications/todo.md)) · [interactions](SPEC-interactions.md) ([tasks](tasks/interactions/todo.md)) · [drug-info](SPEC-drug-info.md) ([tasks](tasks/drug-info/todo.md)) · [literature](SPEC-literature.md) ([tasks](tasks/literature/todo.md)) · [alternatives](SPEC-alternatives.md) ([tasks](tasks/alternatives/todo.md)) · [digest](SPEC-digest.md) ([tasks](tasks/digest/todo.md)) · [pricing](SPEC-pricing.md) ([tasks](tasks/pricing/todo.md))
+- what each drug is for, its FDA label in plain language, and the side effects most often reported
+- interactions between your medications
+- up to 10 research papers and current clinical trials per drug, with plain-language takeaways
+- other drugs for the same condition, including newly approved ones
+- cash prices at Cost Plus Drugs next to what your insurance copay costs you
+- a weekly **What's new** digest: new papers, trial results, newly listed drugs and FDA label changes
 
-## Configuration
+It is for information and for questions to bring to your prescriber or pharmacist. It never recommends starting, stopping or switching a medication.
 
-Copy `.env.example` to `.env` and fill it in. `.env` is gitignored; never commit it.
+Built with [Analog](https://analogjs.org) (Angular + SSR), PrimeNG, Tailwind CSS, NgRx, Drizzle and PostgreSQL.
 
-| Variable                            | How to set it                                                                                                                           |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `POSTGRES_PASSWORD`                 | Any strong password. Use letters and digits only: it is embedded in a connection URL.                                                   |
-| `DATABASE_URL`                      | Local dev only: `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`. Compose sets its own.                           |
-| `APP_PASSWORD_HASH`                 | `npm run hash-password` (asks for your login password, at least 12 characters).                                                         |
-| `SESSION_SECRET`                    | `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`                                                   |
-| `COOKIE_SECURE`                     | `false` on the LAN over plain HTTP.                                                                                                     |
-| `VITE_PRIMEUI_LICENSE`              | Your PrimeUI Community License key. Build-time: baked into the client bundle.                                                           |
-| `DB_DEV_PORT`                       | Host port for the dev database (default 5432; change it if that port is taken).                                                         |
-| `APP_PORT`                          | Host port for the app in Docker (default 3000).                                                                                         |
-| `RXNAV_BASE_URL`                    | Optional. RxNorm API base (default `https://rxnav.nlm.nih.gov/REST`). The e2e tests point it at a local stub.                           |
-| `OPENFDA_BASE_URL`                  | Optional. openFDA drug API base (default `https://api.fda.gov/drug`).                                                                   |
-| `OPENFDA_API_KEY`                   | Optional, free from open.fda.gov. Raises the keyless limit of 1,000 requests/day. Never logged.                                         |
-| `MEDLINEPLUS_BASE_URL`              | Optional. MedlinePlus Connect base (default `https://connect.medlineplus.gov/service`).                                                 |
-| `SUMMARY_PROVIDER`                  | `ollama` (default, local model) or `claude`. See [AI summaries](#ai-summaries).                                                         |
-| `OLLAMA_BASE_URL`                   | Local dev: `http://127.0.0.1:11434` (not `localhost`, which Node may resolve to IPv6). Compose sets its own.                            |
-| `OLLAMA_MODEL`                      | The Ollama model to use, e.g. `qwen2.5:7b`. Without it, summaries are unavailable (the rest of the page works).                         |
-| `OLLAMA_NUM_CTX`                    | Optional. Context window in tokens (default 16384); long labels need it.                                                                |
-| `OLLAMA_TIMEOUT_MS`                 | Optional. Per-attempt time limit (default 600000, 10 minutes).                                                                          |
-| `ANTHROPIC_API_KEY`                 | Only for `SUMMARY_PROVIDER=claude`. Never logged.                                                                                       |
-| `AI_DAILY_LIMIT`                    | Optional. Claude requests per day: summaries, research and digest takeaways together (default 20). Not for the local model.             |
-| `OLLAMA_CHECK_MODEL`                | Optional. A (stronger) local model that checks each research takeaway against its quote. Off when unset.                                |
-| `OLLAMA_TAKEAWAY_MODEL`             | Optional. The local model for research and digest takeaways (default `OLLAMA_MODEL`). Recommended: `qwen3:8b` (`ollama pull qwen3:8b`). |
-| `TAKEAWAY_PROVIDER`                 | Optional. `ollama` or `claude` for takeaways only (default: `SUMMARY_PROVIDER`).                                                        |
-| `NCBI_API_KEY`                      | Optional, free from an NCBI account. Raises PubMed's limit from 3 to 10 requests/s. Never logged.                                       |
-| `NCBI_EMAIL`                        | Optional. Your contact address, sent to PubMed with `tool=rxplus` as NCBI asks.                                                         |
-| `PUBMED_BASE_URL`, `CTGOV_BASE_URL` | Optional. PubMed E-utilities and ClinicalTrials.gov API bases; the e2e tests point them at a local stub.                                |
-| `COSTPLUS_BASE_URL`                 | Optional. Cost Plus Drugs public price API (default: its public endpoint); the e2e tests point it at a local stub.                      |
+- [Run the app (users)](#run-the-app-users)
+- [Develop (developers)](#develop-developers)
+- [Configuration reference](#configuration-reference)
+- [How it works](#how-it-works)
+- [Backups](#backups)
 
-The server refuses to start, naming the variable, if a required value is missing or invalid.
+## Run the app (users)
 
-## Drug data
+The app runs in Docker: one container for the app, one for its PostgreSQL database, and one that backs the database up every night. Only you can sign in (a single password). It's meant for your home network, not the internet.
+
+### 1. Install the prerequisites
+
+| What                  | Why                                                                                        | Where                                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Docker**            | Runs the app and its database                                                              | Windows or macOS: [Docker Desktop](https://www.docker.com/products/docker-desktop/). Linux: [Docker Engine](https://docs.docker.com/engine/install/) with the Compose plugin. |
+| **Git**               | Downloads the app                                                                          | [git-scm.com](https://git-scm.com/downloads)                                                                                                                                  |
+| **Ollama** (optional) | Free local AI for drug summaries and takeaways; needs a GPU with about 8 GB for good speed | [ollama.com/download](https://ollama.com/download), then `ollama pull qwen2.5:7b`. See [AI summaries](#ai-summaries).                                                         |
+
+Disk space: about 2 GB for the app, plus 5–10 GB per local AI model. Your own data stays under about 100 MB after years of use.
+
+### 2. Download and configure
+
+```bash
+git clone https://github.com/amanoos/my-tracker.git rxplus
+cd rxplus
+cp .env.example .env
+```
+
+Open `.env` in a text editor. Every setting is explained there, including how to get each optional key. You need to fill in four values:
+
+1. **`APP_PASSWORD_HASH`**: your login password, as a hash. Run this, type your password twice (at least 12 characters), and replace the `APP_PASSWORD_HASH=` line in `.env` with the `APP_PASSWORD_HASH=scrypt:...` line it prints:
+   ```bash
+   docker run --rm -it -v "${PWD}:/app" -w /app node:24-bookworm-slim node scripts/hash-password.ts
+   ```
+   With Node.js 24 installed, `npm run hash-password` does the same.
+2. **`SESSION_SECRET`**: at least 32 random characters, e.g. from `openssl rand -base64 32`.
+3. **`POSTGRES_PASSWORD`**: any strong password (letters and digits only) for the database.
+4. **`VITE_PRIMEUI_LICENSE`**: the free PrimeUI Community License key (sign-up link in `.env`). The app also works without it.
+
+Optional, all explained in `.env`:
+
+- **AI:** `OLLAMA_MODEL`, and/or an Anthropic API key for Claude.
+- **Higher rate limits:** free openFDA and NCBI keys.
+- **Backup folder:** `BACKUP_DIR`.
+
+### 3. Start it
+
+```bash
+docker compose up -d --build
+docker compose run --rm app node dist/ddi-import.cjs   # drug interaction data, one time, about 5 minutes
+```
+
+The first command builds the app (a few minutes the first time), creates the database and starts everything. The second loads the DDInter interaction data; rerun it only when DDInter publishes a new release.
+
+Check that it's running:
+
+```bash
+docker compose ps                     # app and backup running, db healthy
+curl http://localhost:3000/api/health # {"status":"ok","db":"ok"}
+```
+
+Open **http://localhost:3000** (or your `APP_PORT`) and sign in with your password.
+
+### 4. First steps in the app
+
+1. **Medications:** add each prescription (search the drug, then pick the exact product and strength).
+2. **Edit** each one to set what it's **taken for**, **units per month** and, if you have insurance, your **copay per fill**. "Taken for" drives the alternatives shown and the digest's watch for new drugs; units and copay drive the Costs page.
+3. Open a medication's **About this drug** page: facts, the AI label summary, research, alternatives and prices. The first visit builds these in the background, taking one to a few minutes.
+4. **What's new:** press **Run now** for your first digest, or wait for Monday 6:00 AM.
+
+### 5. Use it from your phone or tablet (optional)
+
+Other devices on your home network can use **http://\<computer-ip\>:3000**. Give the computer a fixed IP address, either a DHCP reservation in your router or a static address. Then allow port 3000 in the firewall, from your home network only, in an administrator shell:
+
+- **Windows with Docker Desktop:** if `%USERPROFILE%\.wslconfig` has `networkingMode=mirrored`, the port belongs to WSL and needs a Hyper-V firewall rule:
+  ```powershell
+  New-NetFirewallHyperVRule -Name "RxPlus-LAN" -DisplayName "RxPlus (LAN only)" -Direction Inbound -VMCreatorId "{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}" -Protocol TCP -LocalPorts 3000 -RemoteAddresses 192.168.1.0/24 -Action Allow
+  ```
+  Otherwise, use a Windows Firewall rule:
+  ```powershell
+  New-NetFirewallRule -DisplayName "RxPlus (LAN only)" -Direction Inbound -Protocol TCP -LocalPort 3000 -RemoteAddress 192.168.1.0/24 -Action Allow -Profile Any
+  ```
+- **Linux:** `sudo ufw allow from 192.168.1.0/24 to any port 3000 proto tcp`
+
+Replace `192.168.1.0/24` with your network's range. With mirrored networking, the computer itself can't open its own LAN address; test from another device. Keep the app off the internet: the database and a local Ollama have no protection of their own beyond your network.
+
+### 6. Keep it running and up to date
+
+- The app restarts by itself with Docker. It only runs while the computer is on and awake, so turn off sleep on the machine that hosts it. A digest missed while it was off runs at the next start.
+- **Update** to a new version:
+  ```bash
+  docker compose exec backup sh /backup.sh once   # a backup first
+  git pull
+  docker compose up -d --build                     # database migrations run automatically
+  ```
+- Clean up old Docker layers every few months: `docker image prune` and `docker builder prune`.
+- Your data lives in the `rxplus_db-data` Docker volume. `docker compose down` keeps it; `docker compose down -v` **deletes it**. See [Backups](#backups).
+- `POSTGRES_PASSWORD` is fixed when the database is first created; changing it later in `.env` doesn't change the database's password. Changing `VITE_PRIMEUI_LICENSE` needs a rebuild (`--build`).
+
+### Linux home server with Ollama
+
+On Linux, install Ollama with `curl -fsSL https://ollama.com/install.sh | sh`. The app container reaches it through `host.docker.internal`, so Ollama must listen on all interfaces:
+
+```bash
+sudo systemctl edit ollama   # add the two lines below, save
+#   [Service]
+#   Environment="OLLAMA_HOST=0.0.0.0"
+sudo systemctl restart ollama
+```
+
+This also opens port 11434 to your network. Ollama has no authentication, so keep the server LAN-only, or firewall the port to the Docker bridge. On Windows and macOS, Docker Desktop reaches a local Ollama without this.
+
+## Develop (developers)
+
+### Prerequisites
+
+- **Node.js 24** (see `.nvmrc`; `nvm use` picks it up)
+- **Docker**, for the development and test databases
+- **Google Chrome**, for the Playwright end-to-end tests
+- **Ollama** (optional), only to work on AI features against a real model. Everything else runs against stubs.
+
+### Set up
+
+```bash
+git clone https://github.com/amanoos/my-tracker.git rxplus && cd rxplus
+npm ci
+cp .env.example .env     # fill in section 1 and 2 (see "Run the app"); DATABASE_URL points at the dev database
+npm run db:up            # dev PostgreSQL on localhost:${DB_DEV_PORT}
+npm run db:migrate       # create the tables
+npm run ddi:import       # optional: interaction data (~5 minutes)
+npm run dev              # http://localhost:5173
+```
+
+To run the Docker app alongside development, keep the dev database's port by including the dev overlay:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build app
+```
+
+A plain `docker compose up` recreates the database container without the port that `npm run dev` uses.
+
+### Project layout
+
+| Path                                  | What                                                                                                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/`                            | Angular client: `pages/` (file-based routes), `features/<module>/` (components, NgRx store, API services), `core/` (auth, layout)                                         |
+| `src/server/`                         | Nitro server: `routes/api/` (file-based API routes), one folder per module (service, repository, upstream client), `db/schema/`, `plugins/`, `tasks/` (the weekly digest) |
+| `drizzle/`                            | SQL migrations generated from `src/server/db/schema`                                                                                                                      |
+| `scripts/`                            | Password hash, DDInter import, migrations runner, backup script                                                                                                           |
+| `e2e/`                                | Playwright specs and the stub server that stands in for every upstream API                                                                                                |
+| `SPEC-<module>.md`, `tasks/<module>/` | The spec and task plan behind each module; [CAPABILITY-MAP.md](CAPABILITY-MAP.md) lists the modules and build order                                                       |
+| `docs/`                               | [Intent](docs/intent/rx-tracker.md) and [research on the data sources](docs/research/free-data-sources.md)                                                                |
+
+Framework conventions for Analog (routing, server routes, data fetching) are in `node_modules/@analogjs/platform/AGENTS.md`; [AGENTS.md](AGENTS.md) points AI assistants there.
+
+### Tests
+
+```bash
+npm test               # unit tests (no database needed)
+npm run db:test:up     # throwaway PostgreSQL on localhost:5433 (in memory)
+npm run test:int       # integration tests against it
+npm run e2e            # test DB + production build + Playwright (installed Chrome; stubbed upstream APIs and AI)
+npm run test:coverage  # unit + integration with coverage (needs the test DB); 80% lines minimum
+npm run lint
+npm run db:test:down
+```
+
+Integration and e2e tests reset tables in the test database, including any DDInter import there, so use the dev database for manual checks. Always run `npm run build` before committing UI changes: it type-checks templates, which `tsc` doesn't.
+
+### Database migrations
+
+```bash
+npm run db:generate  # after changing src/server/db/schema/*: writes SQL to drizzle/
+npm run db:migrate   # apply to the dev database
+```
+
+Commit the generated `drizzle/` files with the schema change. In Docker, migrations run automatically when the app container starts, before the server; if they fail, the container exits and the server never starts.
+
+### Rules of the codebase
+
+- Never commit `.env`, API keys, backups or DDInter data.
+- AI never gives dosing or start/stop advice and never sets interaction severity; only public label text and paper abstracts are sent to models.
+- Alternatives never rank drugs or recommend switching.
+
+## Configuration reference
+
+All settings live in `.env`. [`.env.example`](.env.example) explains each one and how to get the optional keys. The server refuses to start if a required value is missing or invalid, and names the variable.
+
+| Variable                                                                                                               | Required | Purpose                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `APP_PASSWORD_HASH`                                                                                                    | yes      | Login password hash, from `npm run hash-password`                                                   |
+| `SESSION_SECRET`                                                                                                       | yes      | Signs the session cookie; at least 32 random characters                                             |
+| `POSTGRES_PASSWORD`                                                                                                    | yes      | Database password (letters and digits only)                                                         |
+| `DATABASE_URL`                                                                                                         | dev only | `postgres://rxplus:<POSTGRES_PASSWORD>@localhost:<DB_DEV_PORT>/rxplus`; Docker Compose sets its own |
+| `COOKIE_SECURE`                                                                                                        |          | `true` only over HTTPS (default `false`)                                                            |
+| `PORT`, `APP_PORT`                                                                                                     |          | Server port (3000) and the host port Docker publishes (3000)                                        |
+| `DB_DEV_PORT`                                                                                                          |          | Host port of the dev database (default 5432)                                                        |
+| `TZ`                                                                                                                   |          | Time zone for the weekly digest and nightly backup (default `America/New_York`)                     |
+| `VITE_PRIMEUI_LICENSE`                                                                                                 |          | PrimeUI Community License key; build-time                                                           |
+| `OPENFDA_API_KEY`                                                                                                      |          | Free; raises openFDA from 1,000 to 120,000 requests a day                                           |
+| `NCBI_API_KEY`, `NCBI_EMAIL`                                                                                           |          | Free; raises PubMed from 3 to 10 requests a second; contact email NCBI asks for                     |
+| `SUMMARY_PROVIDER`                                                                                                     |          | `ollama` (default) or `claude`, for drug label summaries                                            |
+| `TAKEAWAY_PROVIDER`                                                                                                    |          | `ollama` or `claude`, for research and digest takeaways (default: `SUMMARY_PROVIDER`)               |
+| `OLLAMA_BASE_URL`                                                                                                      |          | Dev: `http://127.0.0.1:11434` (not `localhost`); Docker Compose sets its own                        |
+| `OLLAMA_MODEL`                                                                                                         |          | Local model, e.g. `qwen2.5:7b`; empty turns local AI off                                            |
+| `OLLAMA_TAKEAWAY_MODEL`                                                                                                |          | Local model for takeaways (default `OLLAMA_MODEL`), e.g. `qwen3:8b`                                 |
+| `OLLAMA_CHECK_MODEL`                                                                                                   |          | A stronger local model that double-checks takeaways; off when unset                                 |
+| `OLLAMA_NUM_CTX`, `OLLAMA_TIMEOUT_MS`                                                                                  |          | Context window (16384) and per-call time limit (600000 ms)                                          |
+| `ANTHROPIC_API_KEY`                                                                                                    |          | For Claude (paid); never logged                                                                     |
+| `AI_DAILY_LIMIT`                                                                                                       |          | Most Claude requests a day, summaries and takeaways together (default 20)                           |
+| `BACKUP_DIR`, `BACKUP_KEEP`, `BACKUP_HOUR`                                                                             |          | Backup folder (`./backups`), how many to keep (30), hour of the nightly dump (3)                    |
+| `RXNAV_BASE_URL`, `OPENFDA_BASE_URL`, `MEDLINEPLUS_BASE_URL`, `PUBMED_BASE_URL`, `CTGOV_BASE_URL`, `COSTPLUS_BASE_URL` |          | Upstream API bases; defaults are the public services. The e2e tests point them at a stub            |
+
+## How it works
+
+### Drug data
 
 Medications are looked up in [RxNorm](https://www.nlm.nih.gov/research/umls/rxnorm/) through NLM's free RxNav API (no key needed). Only the server talks to RxNav: requests time out after 5 seconds, are retried once on network errors, and are cached (drug names 24 hours, product details 7 days). If RxNav is down, adding a medication shows "Drug lookup is unavailable right now"; your saved list keeps working.
 
@@ -68,23 +255,7 @@ Each medication links to a page (`/drugs/<rxcui>`) with its drug class, uses and
 
 An AI model rewrites the product's FDA label in plain language under five headings. Only the public label text is sent to the model. Every sentence must quote the label, and the server checks each quote against the label text before showing it. Sentences it can't link are marked "not linked to the label", and sentences telling you to start, stop or change a medication are removed. A summary is stored per label version and reused until the FDA label changes ("Check for a newer label").
 
-**Local model (default): Ollama on the home server.** Generation takes a few minutes on a consumer GPU; the page shows progress and you can leave and come back.
-
-```bash
-curl -fsSL https://ollama.com/install.sh | sh   # installs Ollama as a systemd service
-ollama pull qwen2.5:7b                          # ~4.7 GB
-```
-
-The app container reaches Ollama on the host through `host.docker.internal` (set up in `docker-compose.yml`), so Ollama must listen on all interfaces, not just localhost:
-
-```bash
-sudo systemctl edit ollama   # add the two lines below, save
-#   [Service]
-#   Environment="OLLAMA_HOST=0.0.0.0"
-sudo systemctl restart ollama
-```
-
-This also opens port 11434 to your LAN. Ollama has no authentication, so keep the server LAN-only (or firewall the port to the Docker bridge). Then set `OLLAMA_MODEL=qwen2.5:7b` in `.env` and restart the app. For development on your PC, run Ollama locally and set `OLLAMA_BASE_URL=http://127.0.0.1:11434`.
+**Local model (default): Ollama.** Generation takes a few minutes on a consumer GPU; the page shows progress and you can leave and come back. Install Ollama, `ollama pull qwen2.5:7b` (~4.7 GB), and set `OLLAMA_MODEL=qwen2.5:7b`. For a Linux server, see [Linux home server with Ollama](#linux-home-server-with-ollama).
 
 **Claude (optional).** Set `SUMMARY_PROVIDER=claude` and `ANTHROPIC_API_KEY`. Summaries then use Claude Opus 5 with the label cited through the API's citations feature (about $0.10–0.20 each), capped at `AI_DAILY_LIMIT` per day. There is no automatic fallback between providers.
 
@@ -95,7 +266,11 @@ This also opens port 11434 to your LAN. Ollama has no authentication, so keep th
 Each drug page has a **Research** section per ingredient:
 
 - **Papers:** up to 10 from PubMed, strongest evidence first: up to 4 meta-analyses or systematic reviews (the ingredient in the title or abstract), then randomized trials (the ingredient as a main topic), in PubMed's relevance order. Only papers with an abstract are listed, with links to PubMed and to the free full text when there is one.
-- **Takeaways:** one plain-language line per paper, written by AI from the paper's abstract (only abstracts are sent; `OLLAMA_TAKEAWAY_MODEL` or `TAKEAWAY_PROVIDER` choose the model, otherwise the summaries' one). Each paper is labeled with who was studied (people, animals, lab, review), read from its abstract. The model picks one results or conclusion sentence and rewrites only that; the server checks that the sentence really is in that paper's abstract, and the page shows it right under the takeaway ("In the study: …") so you can compare. Takeaways it can't link are marked, and advice sentences are removed. All takeaways for a drug are written in one background call (about 4–5 minutes with `qwen2.5:7b`).
+- **Takeaways:** one plain-language line per paper, written by AI from the paper's abstract. Only abstracts are sent. `TAKEAWAY_PROVIDER` or `OLLAMA_TAKEAWAY_MODEL` choose the model; otherwise it's the summaries' one.
+  - The model picks one results or conclusion sentence and rewrites only that. The server checks that the sentence really is in that paper's abstract, and the page shows it right under the takeaway ("In the study: …") so you can compare.
+  - Takeaways it can't link are marked, advice sentences are removed, and takeaways worded as if about you are flagged.
+  - Each paper is labeled with who was studied (people, animals, lab, review), read from its abstract.
+  - All takeaways for a drug are written in one background call: about 4–5 minutes with a local model, well under a minute with Claude.
 - **Trials:** up to 5 from ClinicalTrials.gov: completed with posted results, then recruiting.
 - **Hide** a paper you don't find useful and the next one takes its place (Show hidden → Show again to undo).
 
@@ -123,7 +298,7 @@ Once a week the app collects what changed for the medications you take (stopped 
 - **Label changes:** a new FDA label version for a product you take (the drug page then writes a new summary).
 - Nothing is reported twice. The first digest records the current condition lists and label versions without reporting them.
 
-**When:** every Monday at 6:00 AM in the server's time zone (`TZ`). If the server was off then, the digest runs at the next start once the last one is more than a week old; a run cut off by a restart is marked failed and run again. **Run now** on the page starts one at any time (one at a time). A run takes a few minutes: about a minute per condition, plus one takeaway call per ingredient with new papers (live, four medications: 5 minutes with `qwen2.5:7b`). If a source or the model fails, the digest says what couldn't be checked; if the run itself fails, the page offers Try again.
+**When:** every Monday at 6:00 AM in the server's time zone (`TZ`). If the server was off then, the digest runs at the next start once the last one is more than a week old; a run cut off by a restart is marked failed and run again. **Run now** on the page starts one at any time (one at a time). A run takes a few minutes: about a minute per condition, plus one takeaway call per ingredient with new papers. If a source or the model fails, the digest says what couldn't be checked; if the run itself fails, the page offers Try again.
 
 ### Prices and costs
 
@@ -133,78 +308,12 @@ Once a week the app collects what changed for the medications you take (stopped 
 
 See [docs/research/free-data-sources.md](docs/research/free-data-sources.md) for the sources considered.
 
-## Development
-
-```bash
-npm ci
-npm run db:up        # dev Postgres on localhost:${DB_DEV_PORT}
-npm run dev          # http://localhost:5173
-```
-
-## Tests
-
-```bash
-npm test             # unit tests (no database needed)
-npm run db:test:up   # throwaway Postgres on localhost:5433
-npm run test:int     # integration tests against it
-npm run e2e          # test DB + build + Playwright (installed Chrome; stub RxNav/openFDA; sample DDInter data)
-npm run db:test:down
-npm run lint
-npm run test:coverage  # unit + integration with coverage (needs the test DB)
-```
-
-Integration and e2e tests reset tables in the test database (including any DDInter import there). Use the dev database for manual checks.
-
-## Database migrations
-
-```bash
-npm run db:generate  # after changing src/server/db/schema/*: writes SQL to drizzle/
-npm run db:migrate   # apply to the dev database
-```
-
-Commit the generated `drizzle/` files with the schema change. In Docker, migrations run automatically on container start, before the server; if they fail, the container exits and the server never starts.
-
-## Deploy (home server, Ubuntu x86_64, LAN only)
-
-Prerequisites: Docker Engine with the Compose plugin, and a clone of this repository.
-
-```bash
-git clone https://github.com/amanoos/my-tracker.git rxplus && cd rxplus
-cp .env.example .env
-npm run hash-password          # or run it on your PC and paste the result
-# edit .env: POSTGRES_PASSWORD, APP_PASSWORD_HASH, SESSION_SECRET, VITE_PRIMEUI_LICENSE,
-#            OLLAMA_MODEL (after setting up Ollama, see "AI summaries")
-docker compose up -d --build
-docker compose run --rm app node dist/ddi-import.cjs   # interaction data, ~5 minutes
-```
-
-Open `http://<server-ip>:3000` (or your `APP_PORT`). Check it:
-
-```bash
-docker compose ps                     # app running, db healthy
-docker compose logs app               # "[migrate] ..." then "Listening on ..."
-curl http://localhost:3000/api/health # {"status":"ok","db":"ok"}
-```
-
-Update to a new version:
-
-```bash
-git pull && docker compose up -d --build
-```
-
-Notes:
-
-- The database has no published port; only the app container can reach it. Data lives in the `rxplus_db-data` volume.
-- `docker compose down` keeps the data. `docker compose down -v` **deletes the database**.
-- `POSTGRES_PASSWORD` is fixed when the volume is first created. Changing it later in `.env` doesn't change the database password.
-- Changing `VITE_PRIMEUI_LICENSE` needs a rebuild (`--build`), because it is baked in at build time.
-
 ## Backups
 
 The `backup` service in Docker Compose dumps the database with `pg_dump` into `backups/` (or `BACKUP_DIR`): once when it starts if there's no dump for today, then every night at 3:00 AM (`BACKUP_HOUR`, server time zone). It keeps the newest 30 (`BACKUP_KEEP`). Each file is a complete copy (medications, research, digests, interaction data) in PostgreSQL's custom format, e.g. `rxplus-2026-09-28-175538.dump`.
 
 - `backups/` holds personal data: it is gitignored; never commit or share it.
-- The default folder is on the same disk as the database. That protects against a deleted volume or a bad update, not a failed disk: point `BACKUP_DIR` at another drive or a synced folder (e.g. `BACKUP_DIR=D:/RxPlus-backups`) for that.
+- Keep backups on a different disk from Docker's data (on Windows, Docker Desktop keeps it on C:), so a failed disk doesn't take both. For protection against losing the whole computer, point `BACKUP_DIR` at a synced folder (e.g. `BACKUP_DIR=D:/RxPlus-backups`).
 
 ```bash
 docker compose logs backup                     # "[backup] wrote rxplus-….dump (92K)"
