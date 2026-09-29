@@ -177,7 +177,7 @@ A new NgRx feature, `interactions`:
 1. **AI:** not in this module. Severity comes from DDInter and explanations are verbatim FDA label quotes. The Claude API arrives with `drug-info`; an optional "Explain this interaction" may be added later.
 2. **Add-dialog warning:** yes, shown before _Add_; adding stays allowed.
 3. **ONC high-priority overlay:** not now.
-4. **Repository:** `amanoos/my-tracker` is private. DDInter data is still never committed.
+4. **Repository:** `amanoos/RxPlus` (formerly `my-tracker`) is public since 2026-09-29. DDInter data is still never committed.
 
 ## Open questions
 
