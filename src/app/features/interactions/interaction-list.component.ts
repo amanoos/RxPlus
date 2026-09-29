@@ -34,11 +34,7 @@ const TAGS: Record<
       @for (result of results(); track key(result)) {
         @let k = key(result);
         @let tag = tags[result.level];
-        <li
-          class="rounded-lg border border-surface-200 p-4 dark:border-surface-800"
-          [attr.data-level]="result.level"
-          data-testid="interaction"
-        >
+        <li class="rx-card p-5" [attr.data-level]="result.level" data-testid="interaction">
           <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
               <h3 class="font-semibold capitalize">

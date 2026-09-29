@@ -7,6 +7,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { digestFeature } from '../../features/digest/store/digest.reducer';
 import { AuthActions } from '../auth/auth.actions';
 import { selectAuthUser } from '../auth/auth.selectors';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: '/' },
@@ -19,7 +20,7 @@ export const NAV_ITEMS = [
 /** Layout for signed-in pages: top bar, navigation (drawer below 768px), and content. */
 @Component({
   selector: 'app-shell',
-  imports: [RouterLink, RouterLinkActive, ButtonModule, DrawerModule],
+  imports: [RouterLink, RouterLinkActive, ButtonModule, DrawerModule, ThemeToggleComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a
@@ -30,7 +31,7 @@ export const NAV_ITEMS = [
     </a>
 
     <header
-      class="sticky top-0 z-10 border-b border-surface-200 bg-surface-0/90 backdrop-blur dark:border-surface-800 dark:bg-surface-950/90"
+      class="sticky top-0 z-10 border-b border-primary-100 bg-surface-0/90 backdrop-blur dark:border-surface-800 dark:bg-surface-950/90"
     >
       <div class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4">
         <button
@@ -55,16 +56,21 @@ export const NAV_ITEMS = [
           }
         </button>
 
-        <a routerLink="/" class="text-lg font-semibold">RxPlus</a>
+        <a routerLink="/" class="flex items-center gap-2 text-xl font-extrabold tracking-tight">
+          <span class="rx-icon-tile h-8 w-8 rounded-[10px] text-xs font-bold" aria-hidden="true"
+            >Rx</span
+          >
+          <span class="rx-gradient-text">RxPlus</span>
+        </a>
 
         <nav aria-label="Main" class="hidden gap-1 md:flex">
           @for (item of navItems; track item.path) {
             <a
               [routerLink]="item.path"
-              routerLinkActive="bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
+              routerLinkActive="bg-primary-100 font-semibold text-primary-700 dark:bg-primary-950 dark:text-primary-300"
               [routerLinkActiveOptions]="{ exact: item.path === '/' }"
               ariaCurrentWhenActive="page"
-              class="rounded px-3 py-2 text-sm font-medium hover:bg-surface-100 dark:hover:bg-surface-800"
+              class="rounded-full px-3.5 py-2 text-sm font-medium hover:bg-primary-50 dark:hover:bg-surface-800"
             >
               {{ item.label }}
               @if (item.path === '/digest' && unread()) {
@@ -87,6 +93,7 @@ export const NAV_ITEMS = [
               ><span class="sr-only">Signed in as </span>{{ user.username }}</span
             >
           }
+          <app-theme-toggle />
           <p-button
             data-testid="logout"
             label="Log out"
@@ -106,10 +113,10 @@ export const NAV_ITEMS = [
             <li>
               <a
                 [routerLink]="item.path"
-                routerLinkActive="bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300"
+                routerLinkActive="bg-primary-100 font-semibold text-primary-700 dark:bg-primary-950 dark:text-primary-300"
                 [routerLinkActiveOptions]="{ exact: item.path === '/' }"
                 ariaCurrentWhenActive="page"
-                class="block rounded px-3 py-2 font-medium hover:bg-surface-100 dark:hover:bg-surface-800"
+                class="block rounded-full px-4 py-2 font-medium hover:bg-primary-50 dark:hover:bg-surface-800"
                 (click)="drawerOpen.set(false)"
               >
                 {{ item.label }}

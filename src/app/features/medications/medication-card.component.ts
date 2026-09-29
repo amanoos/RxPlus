@@ -3,32 +3,34 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 
+import { IconComponent } from '../../shared/ui/icon.component';
+
 import type { Medication } from './medication';
 
 @Component({
   selector: 'app-medication-card',
-  imports: [DatePipe, RouterLink, TagModule],
+  imports: [DatePipe, IconComponent, RouterLink, TagModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let med = medication();
-    <article
-      class="flex flex-col gap-3 rounded-lg border border-surface-200 p-4 dark:border-surface-800"
-      [attr.aria-labelledby]="'med-' + med.id"
-    >
-      <div class="flex flex-col gap-2">
-        <h3 [id]="'med-' + med.id" class="text-base font-semibold leading-snug">
-          {{ med.name }}
-        </h3>
-        <div class="flex flex-wrap gap-2">
-          @if (med.strength) {
-            <p-tag [value]="med.strength" severity="info" />
-          }
-          @if (med.doseForm) {
-            <p-tag [value]="med.doseForm" severity="secondary" />
-          }
-          @if (med.brandName) {
-            <p-tag [value]="med.brandName" severity="contrast" />
-          }
+    <article class="rx-card flex flex-col gap-3 p-5" [attr.aria-labelledby]="'med-' + med.id">
+      <div class="flex items-start gap-3">
+        <span class="rx-icon-tile"><app-icon name="capsule" /></span>
+        <div class="flex min-w-0 flex-col gap-2">
+          <h3 [id]="'med-' + med.id" class="text-base font-semibold leading-snug">
+            {{ med.name }}
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            @if (med.strength) {
+              <p-tag [value]="med.strength" />
+            }
+            @if (med.doseForm) {
+              <p-tag [value]="med.doseForm" severity="secondary" />
+            }
+            @if (med.brandName) {
+              <p-tag [value]="med.brandName" severity="contrast" />
+            }
+          </div>
         </div>
       </div>
 

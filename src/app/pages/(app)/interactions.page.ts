@@ -18,7 +18,7 @@ export const routeMeta: RouteMeta = { title: 'Interactions · RxPlus' };
   imports: [MessageModule, InteractionListComponent, ProductPickerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1 class="text-2xl font-semibold">Interactions</h1>
+    <h1 class="text-3xl font-bold tracking-tight">Interactions</h1>
 
     @if (noData()) {
       <p-message severity="warn" styleClass="mt-4" data-testid="no-data">
@@ -26,7 +26,7 @@ export const routeMeta: RouteMeta = { title: 'Interactions · RxPlus' };
         Docker, <code>docker compose run --rm app node dist/ddi-import.cjs</code>) and reload.
       </p-message>
     } @else {
-      <section class="mt-6" aria-labelledby="check-heading">
+      <section class="rx-card mt-6 p-5" aria-labelledby="check-heading">
         <h2 id="check-heading" class="text-lg font-semibold">Check a new prescription</h2>
         <p class="mb-4 text-sm text-surface-600 dark:text-surface-300">
           Pick the drug and strength you were prescribed to compare it with what you take now.

@@ -20,7 +20,7 @@ const time = (iso: string, options: Intl.DateTimeFormatOptions) =>
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-center gap-3">
-      <h1 class="text-2xl font-semibold">What’s new</h1>
+      <h1 class="text-3xl font-bold tracking-tight">What’s new</h1>
       <p-button
         label="Run now"
         size="small"
@@ -60,23 +60,19 @@ const time = (iso: string, options: Intl.DateTimeFormatOptions) =>
       <p class="mt-6 text-sm">Loading…</p>
     } @else if (data) {
       @if (!data.hasActiveMedications) {
-        <p class="mt-6 text-sm" data-testid="no-medications">
+        <p class="rx-card mt-6 p-5 text-sm" data-testid="no-medications">
           You have no active medications, so there’s nothing to follow. Add one on the Medications
           page.
         </p>
       } @else if (!data.digests.length && !data.running) {
-        <p class="mt-6 text-sm" data-testid="no-digests">
+        <p class="rx-card mt-6 p-5 text-sm" data-testid="no-digests">
           No digest yet. The first one arrives {{ nextRun(data.nextRun) }}, or press Run now.
         </p>
       }
 
       <div class="mt-6 flex flex-col gap-4">
         @for (digest of data.digests; track digest.id; let first = $first) {
-          <details
-            class="rounded border border-surface-200 p-4 dark:border-surface-700"
-            [open]="first"
-            data-testid="digest"
-          >
+          <details class="rx-card p-5" [open]="first" data-testid="digest">
             <summary class="cursor-pointer font-semibold">
               {{ title(digest) }}
               @if (digest.unread) {

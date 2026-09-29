@@ -45,7 +45,7 @@ export const routeMeta: RouteMeta = { title: 'Medications · RxPlus' };
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="text-2xl font-semibold">Medications</h1>
+      <h1 class="text-3xl font-bold tracking-tight">Medications</h1>
       @if (!isEmpty()) {
         <p-button label="Add medication" (onClick)="addOpen.set(true)" />
       }
@@ -57,7 +57,7 @@ export const routeMeta: RouteMeta = { title: 'Medications · RxPlus' };
 
     @if (isEmpty()) {
       <section
-        class="mt-8 flex flex-col items-center gap-3 rounded-lg border border-dashed border-surface-300 p-8 text-center dark:border-surface-700"
+        class="mt-8 flex flex-col items-center gap-3 rounded-[20px] border-2 border-dashed border-primary-200 bg-surface-0 p-8 text-center dark:border-surface-700 dark:bg-surface-900"
       >
         <h2 class="text-lg font-semibold">No medications yet</h2>
         <p class="text-surface-600 dark:text-surface-300">
